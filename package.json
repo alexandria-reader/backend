@@ -1,0 +1,19 @@
+{
+  "name": "vocabulous",
+  "version": "0.1.0",
+  "description": "Team Capstone Europe Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Team-Capstone-Europe/project-repo.git"
+  },
+  "author": "Dana, Eamon, Marc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Team-Capstone-Europe/project-repo/issues"
+  },
+  "homepage": "https://github.com/Team-Capstone-Europe/project-repo#readme"
+}
