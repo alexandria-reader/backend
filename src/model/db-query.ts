@@ -12,6 +12,8 @@ const logQuery = function(statement: string):void {
 };
 
 const isProduction: boolean = (config.NODE_ENV === 'production');
+const isStaging: boolean = (config.NODE_ENV === 'staging');
+
 const CONNECTION: ConnectionOptions = {
   connectionString: config.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
