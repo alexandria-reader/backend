@@ -12,6 +12,7 @@ const getOne = async function(textId: number) {
   return result.rows[0];
 };
 
-export const postText = function() {
-
+export default {
+  getAll,
+  getOne,
 };
