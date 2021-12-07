@@ -11,8 +11,8 @@ router.get('/', async(_req, res) => {
 router.get('/:id', async(req, res) => {
   const id = Number(req.params.id);
 
-  const texts = await textService.getOne(id);
-  res.send(texts);
+  const text = await textService.getOne(id);
+  res.send(text);
 });
 
 router.post('/', async(req, _res) => {

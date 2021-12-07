@@ -15,7 +15,7 @@ const getOne = async function(wordId: number) {
 const getSome = async function(languageId: number, userId: number) {
   const FIND_WORDS = 'SELECT * FROM words AS w JOIN users_words AS uw ON w.id = uw.word_id WHERE w.language_id = %L AND uw.user_id = %L';
   const result = await dbQuery(FIND_WORDS, languageId, userId);
-  return result.rows[0];
+  return result.rows;
 };
 
 
