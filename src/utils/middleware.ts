@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 // // helpful functions for later, not yet implemented
 
 // export const unknownEndpoint = function(request, response) => {
@@ -27,4 +28,31 @@
 //   request.user = user;
 
 //   next();
+// };
+
+
+const errorHandler = function(error: Error, _req: Request, _res: Response, next: NextFunction) {
+  console.log('Error handler');
+  console.error(error.message);
+  console.error(error);
+
+  // if (error?.code)
+  // .catch((error) => {
+  //   if (error.code === '23505') {
+  //     if (error.detail.match(/username/)) {
+  //       throw new Error('Username already exists');
+  //     } if (error.detail.match(/email/)) {
+  //       throw new Error('Email already exists');
+  //     }
+  //   }
+
+  //   throw new Error('Something went wrong');
+  // });
+  next(error);
+};
+
+export default errorHandler;
+
+// export default {
+//   errorHandler,
 // };

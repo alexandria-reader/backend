@@ -19,9 +19,10 @@ userRouter.post('/', async (req, res) => {
 
   const userCreated = await addNewUser(newUser);
 
-  if (userCreated) {
+  if (userCreated === true) {
     res.send(`User ${newUser.username} succesfully created`);
   } else {
+    // throw userCreated;
     res.send('Something went wrong');
   }
 });

@@ -7,22 +7,25 @@ export const selectAllUsers = async function() {
   return result.rows;
 };
 
-export const addNewUser = async function (user: User) {
+export const addNewUser = async function (user: User): Promise<boolean> {
   const { username, passwordHash, email } = user;
 
   const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L)';
-  const result = await dbQuery(ADD_USER, username, passwordHash, email)
-    .catch((error) => {
-      if (error.code === '23505') {
-        if (error.detail.match(/username/)) {
-          throw new Error('Username already exists');
-        } if (error.detail.match(/email/)) {
-          throw new Error('Email already exists');
-        }
-      }
+  const result = await dbQuery(ADD_USER, username, passwordHash, email).catch((error) => error);
 
-      throw new Error('Something went wrong');
-    });
+  // Need to catch errors thrown by posgres
+    // .catch((error) => {
+    //   // error
+    //   if (error.code === '23505') {
+    //     if (error.detail.match(/username/)) {
+    //       throw new Error('Username already exists');
+    //     } if (error.detail.match(/email/)) {
+    //       throw new Error('Email already exists');
+    //     }
+    //   }
 
-  return result.rowCount > 0;
+    //   throw new Error('Something went wrong');
+    // });
+
+  return result.rowCount > 1;
 };

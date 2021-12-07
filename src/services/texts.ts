@@ -9,6 +9,7 @@ const getAll = async function() {
 const getOne = async function(textId: number) {
   const FIND_TEXT = 'SELECT * FROM texts WHERE id = %L';
   const result = await dbQuery(FIND_TEXT, textId);
+  console.log(result);
   return result.rows[0];
 };
 
