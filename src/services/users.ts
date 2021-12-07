@@ -8,10 +8,21 @@ export const selectAllUsers = async function() {
 };
 
 export const addNewUser = async function (user: User) {
-  console.log(user);
   const { username, passwordHash, email } = user;
 
   const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L)';
-  const result = await dbQuery(ADD_USER, username, passwordHash, email);
+  const result = await dbQuery(ADD_USER, username, passwordHash, email)
+    .catch((error) => {
+      if (error.code === '23505') {
+        if (error.detail.match(/username/)) {
+          throw new Error('Username already exists');
+        } if (error.detail.match(/email/)) {
+          throw new Error('Email already exists');
+        }
+      }
+
+      throw new Error('Something went wrong');
+    });
+
   return result.rowCount > 0;
 };
