@@ -24,7 +24,8 @@
     "@typescript-eslint/func-names": ["off"],
     "func-names": ["off"],
     "@typescript-eslint/space-before-function-paren": ["off"],
-    "space-before-function-paren": ["off"]
+    "space-before-function-paren": ["off"],
+    "no-multiple-empty-lines": ["error", { "max": 2 }],
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
