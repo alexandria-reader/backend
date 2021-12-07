@@ -14,11 +14,13 @@ const logQuery = function(statement: string):void {
 const isProduction: boolean = (config.NODE_ENV === 'production');
 const CONNECTION: ConnectionOptions = {
   connectionString: config.DATABASE_URL,
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  ssl: { rejectUnauthorized: false },
+  // ssl: isProduction ? { rejectUnauthorized: false } : false,
 };
 
 export default async function(statement: string, ...parameters: any) {
   const sql = format(statement, ...parameters);
+
   const client = new Client(CONNECTION);
 
   await client.connect();
