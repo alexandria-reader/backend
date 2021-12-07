@@ -1,25 +1,34 @@
-// import bcrypt from 'bcrypt';
-// import express from 'express';
-// import User from '../services/users'; // needs to be implemented
+import bcrypt from 'bcrypt';
+import express from 'express';
+import { selectAllUsers, addNewUser } from '../services/users'; // needs to be implemented
+import { User } from '../types';
 
-// const userRouter = express.Router();
+const userRouter = express.Router();
 
-// userRouter.post('/', async (req, res) => {
-//   // const { body } = req;
+userRouter.post('/', async (req, res) => {
+  const { username, password, email } = req.body;
 
-//   // const saltRounds = 10;
-//   // const passwordHash = await bcrypt.hash(body.password, saltRounds);
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
 
-//   // const user = new User({ // User needs to be implemented
-//   //   username: body.username,
-//   //   passwordHash,
-//   // });
+  const newUser: User = {
+    username,
+    passwordHash,
+    email,
+  };
 
-//   // const savedUser = await user.save();
+  const userCreated = await addNewUser(newUser);
 
-//   // res.json(savedUser);
+  if (userCreated) {
+    res.send(`User ${newUser.username} succesfully created`);
+  } else {
+    res.send('Something went wrong');
+  }
+});
 
-//   res.send('Creating user');
-// });
+userRouter.get('/', async (_req, res) => {
+  const users = await selectAllUsers();
+  res.send(users);
+});
 
-// export default userRouter;
+export default userRouter;
