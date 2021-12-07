@@ -17,8 +17,8 @@ router.get('/:id', async(req, res) => {
 
 router.post('/', async(req, _res) => {
   const { body } = req;
-  const { title, text } = body;
-  
+  // const { title, text } = body;
+  // waiting for services
 });
 
 export default router;

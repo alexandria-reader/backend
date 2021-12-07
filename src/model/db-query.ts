@@ -20,7 +20,9 @@ const CONNECTION: ConnectionOptions = {
 };
 
 export default async function(statement: string, ...parameters: any) {
+  console.log(parameters);
   const sql = format(statement, ...parameters);
+  console.log(sql);
   const client = new Client(CONNECTION);
 
   await client.connect();
