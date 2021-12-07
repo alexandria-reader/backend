@@ -1,19 +1,24 @@
 import express from 'express';
-import { getAllTexts } from '../services/texts';
+import textService from '../services/texts';
 
 const router = express.Router();
 
 router.get('/', async(_req, res) => {
-  const texts = await getAllTexts();
+  const texts = await textService.getAll();
   res.send(texts);
 });
 
-// router.post('/', async(req, res) => {
-//   const { body } = req;
-//   // const { title, text } = body;
+router.get('/:id', async(req, res) => {
+  const id = Number(req.params.id);
 
-//   // insert db logic here
-//   // res.send(result);
-// });
+  const texts = await textService.getOne(id);
+  res.send(texts);
+});
+
+router.post('/', async(req, _res) => {
+  const { body } = req;
+  const { title, text } = body;
+  
+});
 
 export default router;
