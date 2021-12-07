@@ -20,7 +20,11 @@
       "error",
       { "argsIgnorePattern": "^_" }
     ],
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    "@typescript-eslint/func-names": ["off"],
+    "func-names": ["off"],
+    "@typescript-eslint/space-before-function-paren": ["off"],
+    "space-before-function-paren": ["off"]
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
