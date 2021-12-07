@@ -39,3 +39,11 @@ VALUES
 (1, 'rattled by', phraseto_tsquery('rattled by'), true),
 (1, 'carriages', phraseto_tsquery('carriages'), false),
 (1, 'New Year''s eve', phraseto_tsquery('New Year''s eve'), true);
+
+INSERT INTO users_words(user_id, word_id, word_status)
+VALUES
+(1, 1, 'learning'),
+(1, 3, 'known'),
+(1, 5, 'learning'),
+(1, 7, 'known'),
+(1, 9, 'learning');

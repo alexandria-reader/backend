@@ -12,9 +12,11 @@ const logQuery = function(statement: string):void {
 };
 
 const isProduction: boolean = (config.NODE_ENV === 'production');
+const isStaging: boolean = (config.NODE_ENV === 'staging');
+
 const CONNECTION: ConnectionOptions = {
-  connectionString: config.DATABASE_URL,
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  connectionString: isStaging ? config.STAGING_DATABASE_URL : config.DATABASE_URL,
+  ssl: (isProduction || isStaging) ? { rejectUnauthorized: false } : false,
 };
 
 export default async function(statement: string, ...parameters: any) {

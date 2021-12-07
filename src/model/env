@@ -1,0 +1,2 @@
+DATABASE_URL="postgresql://[user]:[password]@localhost:5432/[databasename]"
+STAGING_DATABASE_URL="postgres://[user]:[password]@[host]:5432/[databasename]"
