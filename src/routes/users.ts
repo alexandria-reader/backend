@@ -1,9 +1,25 @@
+import bcrypt from 'bcrypt';
 import express from 'express';
+import User from '../services/users'; // needs to be implemented
 
-const router = express.Router();
+const userRouter = express.Router();
 
-router.get('/', (_req, res) => {
-  res.send('Getting users');
+userRouter.post('/', async (req, res) => {
+  const { body } = req;
+
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(body.password, saltRounds);
+
+  const user = new User({ // User needs to be implemented
+    username: body.username,
+    passwordHash,
+  });
+
+  const savedUser = await user.save();
+
+  res.json(savedUser);
+
+  res.send('Creating user');
 });
 
-export default router;
+export default userRouter;
