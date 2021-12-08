@@ -27,7 +27,6 @@ const getOne = async function(wordId: number): Promise<Word | null> {
   return result.rows[0];
 };
 
-
 const getSome = async function(languageId: number, userId: number): Promise<Array<Word> | null> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT * FROM words AS w 

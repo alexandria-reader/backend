@@ -3,6 +3,7 @@ import cors from 'cors';
 import textsRouter from './routes/texts';
 import translationsRouter from './routes/translations';
 import usersRouter from './routes/users';
+import wordsRouter from './routes/words';
 // import { unknownEndpoint } from './utils/middleware';
 
 const app = express();
@@ -19,7 +20,7 @@ app.get('/ping', (_req, res) => {
 app.use('/api/texts', textsRouter);
 app.use('/api/translations', translationsRouter);
 app.use('/api/users', usersRouter);
-// app.use('/api/users', usersRouter);
+app.use('/api/words', wordsRouter);
 // app.use(unknownEndpoint);
 
 app.listen(PORT, () => {
