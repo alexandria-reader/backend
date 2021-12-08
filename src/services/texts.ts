@@ -1,5 +1,9 @@
 import dbQuery from '../model/db-query';
-import { Text, TextDB, convertTextTypes } from '../types';
+import languages from './languages';
+
+import {
+  Text, TextDB, convertTextTypes, Language,
+} from '../types';
 
 
 const getAll = async function(): Promise<Array<Text> | null> {
@@ -15,7 +19,7 @@ const getAll = async function(): Promise<Array<Text> | null> {
 };
 
 
-const getOne = async function(textId: number): Promise<Text | null> {
+const getById = async function(textId: number): Promise<Text | null> {
   const TEXT_BY_ID: string = `
     SELECT * FROM texts WHERE id = %L`;
 
@@ -45,24 +49,28 @@ const addNew = async function(textData: Text) {
     VALUES 
     (%s, %L, %L, %L, %L, %L, %L, %L)`;
 
-  const tsConfig = 'english';
+  const textLanguage: Language | null = await languages.getById(languageId);
+  let tsConfig: string | null;
 
-  await dbQuery(
-    ADD_TEXT,
-    userId,
-    languageId,
-    title,
-    author || null,
-    body,
-    tsConfig,
-    sourceURL || null,
-    sourceType || null,
-  );
+  if (textLanguage) {
+    tsConfig = textLanguage.name;
+    await dbQuery(
+      ADD_TEXT,
+      userId,
+      languageId,
+      title,
+      author || null,
+      body,
+      tsConfig,
+      sourceURL || null,
+      sourceType || null,
+    );
+  }
 };
 
 
 export default {
   getAll,
-  getOne,
+  getById,
   addNew,
 };

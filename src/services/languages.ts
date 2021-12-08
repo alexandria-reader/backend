@@ -14,7 +14,7 @@ const getAll = async function(): Promise<Array<Language> | null> {
 };
 
 
-const getOne = async function(languageId: string): Promise<Language | null> {
+const getById = async function(languageId: string): Promise<Language | null> {
   const LANGUAGE_BY_ID: string = `
     SELECT * FROM languages WHERE id = %L`;
 
@@ -55,6 +55,6 @@ const addNew = async function(languageData: Language) {
 
 export default {
   getAll,
-  getOne,
+  getById,
   addNew,
 };

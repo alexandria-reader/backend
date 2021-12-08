@@ -30,9 +30,9 @@ export type TextDB = {
   title: string,
   author: string | null,
   body: string,
-  ts_config: string,
-  tsvector_simple: string,
-  tsvector_language: string,
+  // ts_config: string,
+  // tsvector_simple: string,
+  // tsvector_language: string,
   source_url: string | null,
   source_type: string | null,
   upload_time: string,
@@ -56,7 +56,7 @@ export const convertTextTypes = function(dbItem: TextDB): Text {
 
 
 export type Word = {
-  id: number,
+  id?: number,
   languageId: number,
   word: string,
 };
@@ -65,9 +65,9 @@ export type WordDB = {
   id: number,
   language_id: number,
   word: string,
-  ts_config: string,
-  tsquery_simple: string,
-  tsquery_language: string,
+  // ts_config: string,
+  // tsquery_simple: string,
+  // tsquery_language: string,
 };
 
 export const convertWordTypes = function(dbItem: WordDB): Word {
