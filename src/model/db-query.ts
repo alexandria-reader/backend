@@ -19,16 +19,14 @@ const CONNECTION: ConnectionOptions = {
   ssl: (isProduction || isStaging) ? { rejectUnauthorized: false } : false,
 };
 
-export default async function(statement: string, ...parameters: any) {
-  console.log(parameters);
+export default async function(statement: string, ...parameters: Array<unknown>) {
+  console.log('\n== parameters ==\n', parameters, '\n');
+
   const sql = format(statement, ...parameters);
-  console.log(sql);
   const client = new Client(CONNECTION);
 
   await client.connect();
-
   logQuery(sql);
-
   const result = await client.query(sql);
   await client.end();
 

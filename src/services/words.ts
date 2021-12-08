@@ -1,21 +1,45 @@
 import dbQuery from '../model/db-query';
+import { Word, WordDB, convertWordTypes } from '../types';
 
-const getAll = async function() {
-  const FIND_ALL_WORDS = 'SELECT * FROM words';
-  const result = await dbQuery(FIND_ALL_WORDS);
-  return result.rows;
+
+const getAll = async function(): Promise<Array<Word> | null> {
+  const ALL_WORDS: string = `
+    SELECT * FROM words`;
+
+  const result = await dbQuery(ALL_WORDS);
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-const getOne = async function(wordId: number) {
-  const FIND_WORD = 'SELECT * FROM words WHERE id = %L';
-  const result = await dbQuery(FIND_WORD, wordId);
+
+const getOne = async function(wordId: number): Promise<Word | null> {
+  const WORD_BY_ID: string = `
+    SELECT * FROM words WHERE id = %L`;
+
+  const result = await dbQuery(WORD_BY_ID, wordId);
+  if (result.rows.length === 0) {
+    return null;
+  }
+
   return result.rows[0];
 };
 
-const getSome = async function(languageId: number, userId: number) {
-  const FIND_WORDS = 'SELECT * FROM words AS w JOIN users_words AS uw ON w.id = uw.word_id WHERE w.language_id = %L AND uw.user_id = %L';
-  const result = await dbQuery(FIND_WORDS, languageId, userId);
-  return result.rows[0];
+
+const getSome = async function(languageId: number, userId: number): Promise<Array<Word> | null> {
+  const WORDS_BY_LANGUAGE_AND_USER: string = `
+    SELECT * FROM words AS w 
+    JOIN users_words AS uw ON w.id = uw.word_id 
+    WHERE w.language_id = %L AND uw.user_id = %L`;
+
+  const result = await dbQuery(WORDS_BY_LANGUAGE_AND_USER, languageId, userId);
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
 

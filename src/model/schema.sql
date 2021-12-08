@@ -25,7 +25,7 @@ CREATE TABLE words(
     id serial PRIMARY KEY,
     language_id int REFERENCES languages (id) ON DELETE CASCADE,
     word text NOT NULL,
-    ts_parsed_word tsquery,
+    ts_parsed_word tsquery NOT NULL,
     is_compound boolean NOT NULL
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE texts(
     title text NOT NULL,
     author text,
     "text" text NOT NULL,
-    ts_parsed_text tsvector,
+    ts_parsed_text tsvector NOT NULL,
     source_url text,
     source_type text,
     upload_time timestamptz DEFAULT now(),
