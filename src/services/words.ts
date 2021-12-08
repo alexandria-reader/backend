@@ -27,7 +27,7 @@ const getOne = async function(wordId: number): Promise<Word | null> {
   return result.rows[0];
 };
 
-const getSome = async function(languageId: number, userId: number): Promise<Array<Word> | null> {
+const getSome = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT * FROM words AS w 
     JOIN users_words AS uw ON w.id = uw.word_id 
@@ -40,7 +40,6 @@ const getSome = async function(languageId: number, userId: number): Promise<Arra
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
-
 
 export default {
   getAll,

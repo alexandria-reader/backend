@@ -9,11 +9,10 @@ export interface User {
   email: string
 }
 
-
 export type Text = {
   id?: number,
   userId: number,
-  languageId: number,
+  languageId: string,
   title: string,
   author?: string | null,
   text: string,
@@ -27,7 +26,7 @@ export type Text = {
 export type TextDB = {
   id: number,
   user_id: number,
-  language_id: number,
+  language_id: string,
   title: string,
   author: string | null,
   text: string,
@@ -57,7 +56,7 @@ export const convertTextTypes = function(dbItem: TextDB): Text {
 
 export type Word = {
   id: number,
-  languageId: number,
+  languageId: string,
   word: string,
   tsParsedWord: string,
   isCompound: boolean
@@ -65,7 +64,7 @@ export type Word = {
 
 export type WordDB = {
   id: number,
-  language_id: number,
+  language_id: string,
   word: string,
   ts_parsed_word: string,
   is_compound: boolean
@@ -78,5 +77,28 @@ export const convertWordTypes = function(dbItem: WordDB): Word {
     word: dbItem.word,
     tsParsedWord: dbItem.ts_parsed_word,
     isCompound: dbItem.is_compound,
+  };
+};
+
+export type Translation = {
+  id: number,
+  wordId: number,
+  translation: string,
+  targetLanguageId: string
+};
+
+export type TranslationDB = {
+  id: number,
+  word_id: number,
+  translation: string,
+  target_language_id: string
+};
+
+export const convertTranslationTypes = function(dbItem: TranslationDB): Translation {
+  return {
+    id: dbItem.id,
+    wordId: dbItem.word_id,
+    translation: dbItem.translation,
+    targetLanguageId: dbItem.target_language_id,
   };
 };

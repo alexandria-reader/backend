@@ -8,18 +8,20 @@ router.get('/', async(_req, res) => {
   res.send(words);
 });
 
-router.get('/:id', async(req, res) => {
-  const id = Number(req.params.id);
+// router.get('/:id/user/:userId', async(req, res) => {
+//   const id = Number(req.params.id);
 
-  const word = await wordService.getOne(id);
-  res.send(word);
-});
+//   const word = await wordService.getOne(id);
+//   res.send(word);
+// });
 
-router.get('/:languageId/:userId', async(req, res) => {
-  const languageId = Number(req.params.languageId);
-  const userId = Number(req.params.userId);
-
-  const words = await wordService.getSome(languageId, userId);
+router.get('/:lang/user/:userId', async(req, res) => {
+  const language = req.params.lang;
+  const user = {
+    user: req.params.userId,
+  };
+  const userId = Number(user.user);
+  const words = await wordService.getSome(language, userId);
   res.send(words);
 });
 
