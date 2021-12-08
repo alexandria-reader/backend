@@ -34,16 +34,18 @@ const addNew = async function(textData: Text) {
     languageId,
     title,
     author,
-    text,
+    body,
     sourceURL,
     sourceType,
   } = textData;
 
   const ADD_TEXT: string = `
     INSERT INTO texts 
-    (user_id, language_id, title, author, text, ts_parsed_text, source_url, source_type)
+    (user_id, language_id, title, author, body, ts_config, source_url, source_type)
     VALUES 
-    (%s, %s, %L, %L, %L, to_tsvector(%L), %L, %L)`;
+    (%s, %L, %L, %L, %L, %L, %L, %L)`;
+
+  const tsConfig = 'english';
 
   await dbQuery(
     ADD_TEXT,
@@ -51,8 +53,8 @@ const addNew = async function(textData: Text) {
     languageId,
     title,
     author || null,
-    text,
-    text,
+    body,
+    tsConfig,
     sourceURL || null,
     sourceType || null,
   );

@@ -77,3 +77,30 @@ export const convertWordTypes = function(dbItem: WordDB): Word {
     word: dbItem.word,
   };
 };
+
+
+export type Language = {
+  id: string,
+  name: string,
+  googleTranslateURL?: string | null,
+  eachCharIsWord: boolean,
+  isRightToLeft: boolean
+};
+
+export type LanguageDB = {
+  id: string,
+  name: string,
+  google_translate_url: string | null,
+  each_char_is_word: boolean,
+  is_right_to_left: boolean
+};
+
+export const convertLanguageTypes = function(dbItem: LanguageDB): Language {
+  return {
+    id: dbItem.id,
+    name: dbItem.name,
+    googleTranslateURL: dbItem.google_translate_url,
+    eachCharIsWord: dbItem.each_char_is_word,
+    isRightToLeft: dbItem.is_right_to_left,
+  };
+};
