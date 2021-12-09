@@ -15,12 +15,24 @@ router.get('/:id', async(req, res) => {
   res.send(wordById);
 });
 
-router.get('/:languageId/:userId', async(req, res) => {
-  const languageId = Number(req.params.languageId);
-  const userId = Number(req.params.userId);
+router.get('/:lang/user/:userId', async(req, res) => {
+  const language = req.params.lang;
+  const user = {
+    user: req.params.userId,
+  };
+  const userId = Number(user.user);
+  const words = await wordService.getSome(language, userId);
+  res.send(words);
 
-  const wordsByLanguageAndUser = await words.getByLanguageAndUser(languageId, userId);
-  res.send(wordsByLanguageAndUser);
+router.put('/word/:wordId/user/:userId', async(req, res) => {
+  const { status } = req.body;
+  const data = {
+    wordId: req.params.wordId,
+    userId: req.params.userId,
+  };
+  const { wordId, userId } = data;
+  const word = await wordService.putOne(Number(wordId), Number(userId), status);
+  res.send(word);
 });
 
 export default router;
