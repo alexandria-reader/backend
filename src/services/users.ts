@@ -1,6 +1,6 @@
+import bcrypt from 'bcrypt';
 import dbQuery from '../model/db-query';
 import { User } from '../types';
-import bcrypt from 'bcrypt';
 
 export const selectAllUsers = async function() {
   const SELECT_ALL_USERS = 'SELECT * FROM users';
@@ -28,7 +28,6 @@ export const updateUserPassword = async function (
   newPassword: string,
 ): Promise<boolean> {
   const findUserById = 'SELECT * FROM users WHERE id = %L';
-
   const user = await dbQuery(findUserById, userId);
   const passwordsMatch = await bcrypt.compare(currentPassword, user.rows[0].password_hash);
 
