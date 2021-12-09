@@ -1,4 +1,5 @@
 import dbQuery from '../model/db-query';
+
 import { Text, TextDB, convertTextTypes } from '../types';
 
 
@@ -15,7 +16,7 @@ const getAll = async function(): Promise<Array<Text> | null> {
 };
 
 
-const getOne = async function(textId: number): Promise<Text | null> {
+const getById = async function(textId: number): Promise<Text | null> {
   const TEXT_BY_ID: string = `
     SELECT * FROM texts WHERE id = %L`;
 
@@ -34,16 +35,16 @@ const addNew = async function(textData: Text) {
     languageId,
     title,
     author,
-    text,
+    body,
     sourceURL,
     sourceType,
   } = textData;
 
   const ADD_TEXT: string = `
     INSERT INTO texts 
-    (user_id, language_id, title, author, text, ts_parsed_text, source_url, source_type)
+    (user_id, language_id, title, author, body, ts_config, source_url, source_type)
     VALUES 
-    (%s, %s, %L, %L, %L, to_tsvector(%L), %L, %L)`;
+    (%s, %L, %L, %L, %L, (SELECT FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)`;
 
   await dbQuery(
     ADD_TEXT,
@@ -51,8 +52,8 @@ const addNew = async function(textData: Text) {
     languageId,
     title,
     author || null,
-    text,
-    text,
+    body,
+    languageId,
     sourceURL || null,
     sourceType || null,
   );
@@ -61,6 +62,6 @@ const addNew = async function(textData: Text) {
 
 export default {
   getAll,
-  getOne,
+  getById,
   addNew,
 };

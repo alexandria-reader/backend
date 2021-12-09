@@ -1,18 +1,18 @@
 import express from 'express';
-import wordService from '../services/words';
+import words from '../services/words';
 
 const router = express.Router();
 
 router.get('/', async(_req, res) => {
-  const words = await wordService.getAll();
-  res.send(words);
+  const allWords = await words.getAll();
+  res.send(allWords);
 });
 
 router.get('/:id', async(req, res) => {
   const id = Number(req.params.id);
 
-  const word = await wordService.getOne(id);
-  res.send(word);
+  const wordById = await words.getById(id);
+  res.send(wordById);
 });
 
 router.get('/:lang/user/:userId', async(req, res) => {
@@ -23,7 +23,6 @@ router.get('/:lang/user/:userId', async(req, res) => {
   const userId = Number(user.user);
   const words = await wordService.getSome(language, userId);
   res.send(words);
-});
 
 router.put('/word/:wordId/user/:userId', async(req, res) => {
   const { status } = req.body;

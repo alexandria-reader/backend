@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import dbQuery from '../model/db-query';
 import { Word, WordDB, convertWordTypes } from '../types';
 
@@ -15,7 +16,7 @@ const getAll = async function(): Promise<Array<Word> | null> {
 };
 
 
-const getOne = async function(wordId: number): Promise<Word | null> {
+const getById = async function(wordId: number): Promise<Word | null> {
   const WORD_BY_ID: string = `
     SELECT * FROM words WHERE id = %L`;
 
@@ -27,7 +28,8 @@ const getOne = async function(wordId: number): Promise<Word | null> {
   return result.rows[0];
 };
 
-const getSome = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
+
+const getByLanguageAndUser = async function(languageId: number, userId: number): Promise<Array<Word> | null> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT * FROM words AS w 
     JOIN users_words AS uw ON w.id = uw.word_id 
@@ -54,9 +56,51 @@ const putOne = async function( wordId: number, userId: number, status: string): 
 };
 
 
+const getByLanguageAndWord = async function(languageId: number, word: string): Promise<Array<Word> | null> {
+  const WORD_BY_LANGUAGE_AND_WORD: string = `
+    SELECT * FROM words 
+    WHERE language_id = %L and word = %L`;
+
+  const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows[0];
+};
+
+
+const addNew = async function(wordData: Word): Promise<boolean> {
+  const {
+    languageId,
+    word,
+  } = wordData;
+
+  const ADD_WORD: string = `
+    INSERT INTO words 
+    (language_id, word)
+    VALUES 
+    (%L, %L)`;
+
+  if (await getByLanguageAndWord(languageId, word)) {
+    console.log('word already exists');
+    return false;
+  }
+
+  await dbQuery(
+    ADD_WORD,
+    languageId,
+    word,
+  );
+  return true;
+};
+
+
 export default {
   getAll,
-  getOne,
-  getSome,
-  putOne,
+  getById,
+  getByLanguageAndUser,
+  getByLanguageAndWord,
+  addNew,
+  putOne
 };

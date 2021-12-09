@@ -12,16 +12,21 @@ const logQuery = function(statement: string):void {
 };
 
 const isProduction: boolean = (config.NODE_ENV === 'production');
-const isStaging: boolean = (config.NODE_ENV === 'staging');
+
+let connectionString: string | undefined;
+console.log(config.NODE_ENV);
+if (isProduction) {
+  connectionString = config.DATABASE_URL;
+} else {
+  connectionString = config[`${config.NODE_ENV?.toUpperCase()}_DATABASE_URL`];
+}
 
 const CONNECTION: ConnectionOptions = {
-  connectionString: isStaging ? config.STAGING_DATABASE_URL : config.DATABASE_URL,
-  ssl: (isProduction || isStaging) ? { rejectUnauthorized: false } : false,
+  connectionString,
+  ssl: connectionString?.includes('localhost') ? false : { rejectUnauthorized: false },
 };
 
 export default async function(statement: string, ...parameters: Array<unknown>) {
-  console.log('\n== parameters ==\n', parameters, '\n');
-
   const sql = format(statement, ...parameters);
   const client = new Client(CONNECTION);
 
