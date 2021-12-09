@@ -58,9 +58,9 @@ CREATE TABLE texts (
     body text NOT NULL,
     ts_config regconfig NOT NULL,
     tsvector_simple tsvector 
-        GENERATED ALWAYS AS (to_tsvector('simple', body)) STORED,
+        GENERATED ALWAYS AS (to_tsvector('simple', title || ' ' || body)) STORED,
     tsvector_language tsvector
-        GENERATED ALWAYS AS (to_tsvector(ts_config, body)) STORED,
+        GENERATED ALWAYS AS (to_tsvector(ts_config, title || ' ' || body)) STORED,
     source_url text,
     source_type text,
     upload_time timestamptz DEFAULT now(),
