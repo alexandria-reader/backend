@@ -58,9 +58,9 @@ CREATE TABLE texts (
     body text NOT NULL,
     ts_config regconfig NOT NULL,
     tsvector_simple tsvector 
-        GENERATED ALWAYS AS (to_tsvector('simple', body)) STORED,
+        GENERATED ALWAYS AS (to_tsvector('simple', title || ' ' || body)) STORED,
     tsvector_language tsvector
-        GENERATED ALWAYS AS (to_tsvector(ts_config, body)) STORED,
+        GENERATED ALWAYS AS (to_tsvector(ts_config, title || ' ' || body)) STORED,
     source_url text,
     source_type text,
     upload_time timestamptz DEFAULT now(),
@@ -114,7 +114,7 @@ CREATE TABLE users_know_languages (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     known_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    is_native boolean NOT NULL
+    is_native boolean DEFAULT false
 );
 
 
