@@ -98,8 +98,8 @@ CREATE TABLE languagepairs (
 CREATE TABLE webdictionaries (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     language_pair_id int REFERENCES languagepairs (id) ON DELETE CASCADE,
-    "name" int NOT NULL,
-    "url" int NOT NULL
+    "name" text NOT NULL,
+    "url" text NOT NULL
 );
 
 
