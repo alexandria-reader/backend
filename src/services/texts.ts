@@ -1,9 +1,6 @@
 import dbQuery from '../model/db-query';
-import languages from './languages';
 
-import {
-  Text, TextDB, convertTextTypes, Language,
-} from '../types';
+import { Text, TextDB, convertTextTypes } from '../types';
 
 
 const getAll = async function(): Promise<Array<Text> | null> {
@@ -47,25 +44,19 @@ const addNew = async function(textData: Text) {
     INSERT INTO texts 
     (user_id, language_id, title, author, body, ts_config, source_url, source_type)
     VALUES 
-    (%s, %L, %L, %L, %L, %L, %L, %L)`;
+    (%s, %L, %L, %L, %L, (SELECT FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)`;
 
-  const textLanguage: Language | null = await languages.getById(languageId);
-  let tsConfig: string | null;
-
-  if (textLanguage) {
-    tsConfig = textLanguage.name;
-    await dbQuery(
-      ADD_TEXT,
-      userId,
-      languageId,
-      title,
-      author || null,
-      body,
-      tsConfig,
-      sourceURL || null,
-      sourceType || null,
-    );
-  }
+  await dbQuery(
+    ADD_TEXT,
+    userId,
+    languageId,
+    title,
+    author || null,
+    body,
+    languageId,
+    sourceURL || null,
+    sourceType || null,
+  );
 };
 
 
