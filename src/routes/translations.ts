@@ -3,8 +3,12 @@ import translationService from '../services/translations';
 
 const router = express.Router();
 
-router.get('/', async (_req, res) => {
-  const results = await translationService.getAll();
+router.get('/user/:userId', async (req, res) => {
+  const data = {
+    userId: req.params.userId,
+  };
+
+  const results = await translationService.getAll(Number(data.userId));
   res.send(results);
 });
 

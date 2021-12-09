@@ -1,8 +1,8 @@
 import dbQuery from '../model/db-query';
 
-const getAll = async function() {
-  const FIND_TRANSLATIONS = 'SELECT * FROM translations';
-  const results = await dbQuery(FIND_TRANSLATIONS);
+const getAll = async function(userId: number) {
+  const FIND_TRANSLATIONS = 'SELECT * FROM translations AS t JOIN users_translations AS ut ON t.id = ut.translation_id AND user_id = %L';
+  const results = await dbQuery(FIND_TRANSLATIONS, userId);
   return results.rows;
 };
 
