@@ -1,26 +1,26 @@
 import express from 'express';
-import wordService from '../services/words';
+import words from '../services/words';
 
 const router = express.Router();
 
 router.get('/', async(_req, res) => {
-  const words = await wordService.getAll();
-  res.send(words);
+  const allWords = await words.getAll();
+  res.send(allWords);
 });
 
 router.get('/:id', async(req, res) => {
   const id = Number(req.params.id);
 
-  const word = await wordService.getOne(id);
-  res.send(word);
+  const wordById = await words.getById(id);
+  res.send(wordById);
 });
 
 router.get('/:languageId/:userId', async(req, res) => {
   const languageId = Number(req.params.languageId);
   const userId = Number(req.params.userId);
 
-  const words = await wordService.getSome(languageId, userId);
-  res.send(words);
+  const wordsByLanguageAndUser = await words.getByLanguageAndUser(languageId, userId);
+  res.send(wordsByLanguageAndUser);
 });
 
 export default router;
