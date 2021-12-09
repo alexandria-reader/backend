@@ -29,7 +29,7 @@ const getById = async function(wordId: number): Promise<Word | null> {
 };
 
 
-const getByLanguageAndUser = async function(languageId: number, userId: number): Promise<Array<Word> | null> {
+const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT * FROM words AS w 
     JOIN users_words AS uw ON w.id = uw.word_id 
@@ -43,20 +43,25 @@ const getByLanguageAndUser = async function(languageId: number, userId: number):
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-// eslint-disable-next-line max-len
-const putOne = async function( wordId: number, userId: number, status: string): Promise<Array<Word> | null> {
-  const WORDS_BY_LANGUAGE_AND_USER: string = 'UPDATE users_words SET word_status = %L WHERE user_id = %L AND word_id = %L; ';
 
-  const result = await dbQuery(WORDS_BY_LANGUAGE_AND_USER, status, userId, wordId);
-  if (result.rows.length === 0) {
-    return null;
-  }
+const updateStatus = async function(wordId: number, userId: number, status: string): Promise<Word | null> {
+  const WORDS_BY_LANGUAGE_AND_USER: string = `
+    UPDATE users_words 
+    SET word_status = %L 
+    WHERE user_id = %L AND word_id = %L`;
 
-  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
+  await dbQuery(
+    WORDS_BY_LANGUAGE_AND_USER,
+    status,
+    userId,
+    wordId,
+  );
+
+  return getById(wordId);
 };
 
 
-const getByLanguageAndWord = async function(languageId: number, word: string): Promise<Array<Word> | null> {
+const getByLanguageAndWord = async function(languageId: string, word: string): Promise<Array<Word> | null> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
     SELECT * FROM words 
     WHERE language_id = %L and word = %L`;
@@ -102,5 +107,5 @@ export default {
   getByLanguageAndUser,
   getByLanguageAndWord,
   addNew,
-  putOne
+  updateStatus,
 };
