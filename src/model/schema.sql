@@ -98,8 +98,8 @@ CREATE TABLE languagepairs (
 CREATE TABLE webdictionaries (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     language_pair_id int REFERENCES languagepairs (id) ON DELETE CASCADE,
-    "name" int NOT NULL,
-    "url" int NOT NULL
+    "name" text NOT NULL,
+    "url" text NOT NULL
 );
 
 
@@ -114,7 +114,7 @@ CREATE TABLE users_know_languages (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     known_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    is_native boolean NOT NULL
+    is_native boolean DEFAULT false
 );
 
 
