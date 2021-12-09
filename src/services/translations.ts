@@ -18,15 +18,12 @@ const getSome = async function(wordId: number, userId: number) {
   return result.rows;
 };
 
-const getDictionaries = async function(sourceId: string, targetId: string) {
-  const FIND_LANG_PAIR = 'SELECT * FROM languagepairs WHERE source_language_id = %L AND target_language_id = %L';
-  const languagePairQuery = await dbQuery(FIND_LANG_PAIR, sourceId, targetId);
-  const languagePairId = Number(languagePairQuery.rows[0].id);
-
-  const FIND_DICTIONARIES = 'SELECT * FROM webdictionaries WHERE id = %L';
-  const result = await dbQuery(FIND_DICTIONARIES, languagePairId);
-  return result.rows[0];
-};
+// Move to webdictionaries services
+// const getDictionaries = async function(pairId: number) {
+//   const FIND_LANG_PAIR = 'SELECT * FROM webdictionaries WHERE language_pair_id = %L';
+//   const result = await dbQuery(FIND_LANG_PAIR, pairId);
+//   return result.rows;
+// };
 
 const getAllForOneWord = async function(wordId: number, targetId: string) {
   const FIND_DICTIONARIES = 'SELECT * FROM translations WHERE word_id = %L AND target_language_id = %L';
@@ -35,12 +32,34 @@ const getAllForOneWord = async function(wordId: number, targetId: string) {
 };
 
 const postOne = async function(
+  userId: number,
   wordId: number,
   translation: string,
-  targetLanguageId: number,
+  targetLang: string,
 ) {
   const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L)';
-  const result = await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLanguageId);
+  await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
+  const LAST_INSERTION = 'SELECT * FROM translations WHERE id=(SELECT max(id) FROM translations)';
+  const resultLastInsertion = await dbQuery(LAST_INSERTION);
+  const lastInsertionId = resultLastInsertion.rows[0].id;
+  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id) VALUES(%L, %L)';
+  const result = await dbQuery(USER_TRANSLATION, userId, lastInsertionId);
+  return result;
+};
+
+const putOne = async function(
+  userId: number,
+  wordId: number,
+  translation: string,
+  targetLang: string,
+) {
+  const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L)';
+  await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
+  const LAST_INSERTION = 'SELECT * FROM translations WHERE id=(SELECT max(id) FROM translations)';
+  const resultLastInsertion = await dbQuery(LAST_INSERTION);
+  const lastInsertionId = resultLastInsertion.rows[0].id;
+  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id) VALUES(%L, %L)';
+  const result = await dbQuery(USER_TRANSLATION, userId, lastInsertionId);
   return result;
 };
 
@@ -48,7 +67,7 @@ export default {
   getAll,
   getOne,
   getSome,
-  getDictionaries,
   getAllForOneWord,
   postOne,
+  putOne,
 };

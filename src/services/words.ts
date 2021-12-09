@@ -41,8 +41,22 @@ const getSome = async function(languageId: string, userId: number): Promise<Arra
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
+// eslint-disable-next-line max-len
+const putOne = async function( wordId: number, userId: number, status: string): Promise<Array<Word> | null> {
+  const WORDS_BY_LANGUAGE_AND_USER: string = 'UPDATE users_words SET word_status = %L WHERE user_id = %L AND word_id = %L; ';
+
+  const result = await dbQuery(WORDS_BY_LANGUAGE_AND_USER, status, userId, wordId);
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
+};
+
+
 export default {
   getAll,
   getOne,
   getSome,
+  putOne,
 };

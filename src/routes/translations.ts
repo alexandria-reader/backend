@@ -14,8 +14,6 @@ router.get('/:id', async (req, res) => {
   res.send(result);
 });
 
-// Given word id, returns word information for a user
-// Test by going running SELECT * FROM users_words; and matching users with words they might know
 router.get('/word/:wordId/user/:userId', async (req, res) => {
   const data = {
     word: req.params.wordId,
@@ -27,19 +25,15 @@ router.get('/word/:wordId/user/:userId', async (req, res) => {
   res.send(result);
 });
 
-// Given target language id, return list of dictionaries available for the language
-router.get('/source/:sourcelangId/target/:targetlangId', async (req, res) => {
-  const data = {
-    sourceLang: req.params.sourcelangId,
-    targetLang: req.params.targetlangId,
-  };
-  const sourceId = data.sourceLang;
-  const targetId = data.targetLang;
-  const result = await translationService.getDictionaries(sourceId, targetId);
-  res.send(result);
-});
+// Move to routing for webdictionaries?
+// router.get('/pair/:pairId', async (req, res) => {
+//   const data = {
+//     pair: req.params.pairId,
+//   };
+//   const result = await translationService.getDictionaries(Number(data.pair));
+//   res.send(result);
+// });
 
-// Given word and target language, find all translations of the word, try word/1/target/de, or word/1/target/fr
 router.get('/word/:wordId/target/:targetId', async (req, res) => {
   const data = {
     wordId: req.params.wordId,
@@ -50,12 +44,33 @@ router.get('/word/:wordId/target/:targetId', async (req, res) => {
   res.send(translation);
 });
 
-router.post('/word/:wordId/lang/:langId/user/:userId', async (req, res) => {
-  const request = req.body;
+router.post('/user/:userId', async (req, res) => {
+  const data = {
+    userId: req.params.userId,
+    wordId: req.body.wordId,
+    translation: req.body.translation,
+    targetLang: req.body.targetLang,
+  };
   const {
-    wordId, translation, targetLanguageId,
-  } = request;
-  const transReq = await translationService.postOne(wordId, translation, targetLanguageId);
+    userId, wordId, translation, targetLang,
+  } = data;
+  // eslint-disable-next-line max-len
+  const transReq = await translationService.postOne(Number(userId), Number(wordId), translation, targetLang);
+  res.send(transReq);
+});
+
+router.put('/user/:userId', async (req, res) => {
+  const data = {
+    userId: req.params.userId,
+    wordId: req.body.wordId,
+    translation: req.body.translation,
+    targetLang: req.body.targetLang,
+  };
+  const {
+    userId, wordId, translation, targetLang,
+  } = data;
+  // eslint-disable-next-line max-len
+  const transReq = await translationService.postOne(Number(userId), Number(wordId), translation, targetLang);
   res.send(transReq);
 });
 
