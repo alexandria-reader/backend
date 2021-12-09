@@ -14,12 +14,14 @@ const logQuery = function(statement: string):void {
 const isProduction: boolean = (config.NODE_ENV === 'production');
 
 let connectionString: string | undefined;
-console.log(config.NODE_ENV);
+
 if (isProduction) {
   connectionString = config.DATABASE_URL;
 } else {
   connectionString = config[`${config.NODE_ENV?.toUpperCase()}_DATABASE_URL`];
 }
+
+console.log(config.NODE_ENV);
 
 const CONNECTION: ConnectionOptions = {
   connectionString,

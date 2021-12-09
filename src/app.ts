@@ -28,3 +28,5 @@ app.use('/api/words', wordsRouter);
 app.listen(Number(PORT), String(HOST), () => {
   console.log(`That word-learn app is listening on port ${PORT} of ${HOST}.`);
 });
+
+export default app;

@@ -47,6 +47,7 @@ userRouter.put('/:userId', async (req, res) => {
   const { password: currentPassword, newPassword } = req.body;
 
   const updated = await updateUserPassword(userId, currentPassword, newPassword);
+
   if (updated) {
     res.send('Your password has been updated');
   } else {
