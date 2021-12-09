@@ -9,7 +9,6 @@ export interface User {
   email: string,
 }
 
-
 export type Text = {
   id?: number,
   userId: number,
@@ -57,13 +56,13 @@ export const convertTextTypes = function(dbItem: TextDB): Text {
 
 export type Word = {
   id?: number,
-  languageId: number,
+  languageId: string,
   word: string,
 };
 
 export type WordDB = {
   id: number,
-  language_id: number,
+  language_id: string,
   word: string,
   // ts_config: string,
   // tsquery_simple: string,
@@ -148,5 +147,28 @@ export const convertWebdictionaryTypes = function(dbItem: WebdictionaryDB): Webd
     targetLanguageId: dbItem.target_language_id,
     name: dbItem.name,
     url: dbItem.url,
+  };
+};
+
+export type Translation = {
+  id: number,
+  wordId: number,
+  translation: string,
+  targetLanguageId: string
+};
+
+export type TranslationDB = {
+  id: number,
+  word_id: number,
+  translation: string,
+  target_language_id: string
+};
+
+export const convertTranslationTypes = function(dbItem: TranslationDB): Translation {
+  return {
+    id: dbItem.id,
+    wordId: dbItem.word_id,
+    translation: dbItem.translation,
+    targetLanguageId: dbItem.target_language_id,
   };
 };
