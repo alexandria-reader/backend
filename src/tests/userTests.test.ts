@@ -30,22 +30,23 @@ describe('Testing adding users', () => {
       .post('/api/users')
       .send(newUser)
       .expect(200)
-      .expect('User test user succesfully created');
+      .expect('Content-Type', /application\/json/)
+      .expect('{"message":"User test user succesfully created"}');
   });
 
-  // the error handling needs work before this can be implemented
-  // test('duplicate users are not added', async () => {
-  //   const newUser = {
-  //     username: 'test user',
-  //     password: '12345',
-  //     email: 'test@userRouter.com',
-  //   };
+  test('duplicate users are not added', async () => {
+    const newUser = {
+      username: 'test user',
+      password: '12345',
+      email: 'test@userRouter.com',
+    };
 
-  //   await api
-  //     .post('/api/users')
-  //     .send(newUser)
-  //     .expect(200)
-  //     .expect('User test user succesfully created');
-  // });
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect('{"message":"Name already exists"}');
+  });
 });
 

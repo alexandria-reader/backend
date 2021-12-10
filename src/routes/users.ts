@@ -4,14 +4,8 @@ import { selectAllUsers, addNewUser, updateUserPassword } from '../services/user
 import { User } from '../types';
 
 const userRouter = express.Router();
-// const saltPassword = async function(password: string): Promise<string> {
-//   const saltRounds = 10;
-//   const passwordHash = await bcrypt.hash(password, saltRounds);
-//   return passwordHash;
-// };
 
-
-userRouter.post('/', async (req, res, next) => {
+userRouter.post('/', async (req, res) => {
   const { username, password, email } = req.body;
 
   const saltRounds = 10;
@@ -23,17 +17,9 @@ userRouter.post('/', async (req, res, next) => {
     email,
   };
 
-  try {
-    const userCreated = await addNewUser(newUser);
+  const userCreatedMessage = await addNewUser(newUser);
 
-    if (userCreated) {
-      res.send(`User ${newUser.username} succesfully created`);
-    } else {
-      res.send('Something went wrong');
-    }
-  } catch (error) {
-    next(error);
-  }
+  res.json(userCreatedMessage);
 });
 
 userRouter.get('/', async (_req, res) => {

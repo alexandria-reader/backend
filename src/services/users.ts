@@ -13,8 +13,23 @@ export const addNewUser = async function (user: User) {
 
   const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L)';
 
-  const result = await dbQuery(ADD_USER, username, passwordHash, email);
-  return result.rowCount > 0;
+  try {
+    const result = await dbQuery(ADD_USER, username, passwordHash, email);
+    if (result.rowCount > 0) {
+      return { message: `User ${username} succesfully created` };
+    }
+    return result.rowCount > 0;
+  } catch (error: any) {
+    console.log(error);
+    if (error.code === '23505') {
+      if (/email/.test(error.detail)) {
+        return { message: 'Email already exists' };
+      } if (/username/.test(error.detail)) {
+        return { message: 'Name already exists' };
+      }
+    }
+    return { message: 'Something went wrong.' };
+  }
 };
 
 // reset password
