@@ -29,13 +29,13 @@ const getById = async function(wordId: number): Promise<Word | null> {
 };
 
 
-const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
+const getByLanguageAndUser = async function(langId: string, userId: number): Promise<Array<Word> | null> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT * FROM words AS w 
     JOIN users_words AS uw ON w.id = uw.word_id 
     WHERE w.language_id = %L AND uw.user_id = %L`;
 
-  const result = await dbQuery(WORDS_BY_LANGUAGE_AND_USER, languageId, userId);
+  const result = await dbQuery(WORDS_BY_LANGUAGE_AND_USER, langId, userId);
   if (result.rows.length === 0) {
     return null;
   }
