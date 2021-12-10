@@ -34,6 +34,7 @@ describe('Testing adding users', () => {
       .expect('{"message":"User test user succesfully created"}');
   });
 
+  // this test keeps jest from exiting
   test('duplicate users are not added', async () => {
     const newUser = {
       username: 'test user',

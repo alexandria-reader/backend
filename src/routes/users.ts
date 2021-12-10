@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import express from 'express';
-import { selectAllUsers, addNewUser, updateUserPassword } from '../services/users'; // needs to be implemented
+import userServices from '../services/users'; // needs to be implemented
 import { User } from '../types';
 
 const userRouter = express.Router();
@@ -17,13 +17,13 @@ userRouter.post('/', async (req, res) => {
     email,
   };
 
-  const userCreatedMessage = await addNewUser(newUser);
+  const userCreatedMessage = await userServices.addNewUser(newUser);
 
   res.json(userCreatedMessage);
 });
 
 userRouter.get('/', async (_req, res) => {
-  const users = await selectAllUsers();
+  const users = await userServices.selectAllUsers();
   res.send(users);
 });
 
@@ -32,7 +32,7 @@ userRouter.put('/:userId', async (req, res) => {
   const { userId } = req.params;
   const { password: currentPassword, newPassword } = req.body;
 
-  const updated = await updateUserPassword(userId, currentPassword, newPassword);
+  const updated = await userServices.updateUserPassword(userId, currentPassword, newPassword);
 
   if (updated) {
     res.send('Your password has been updated');

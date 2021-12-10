@@ -2,13 +2,13 @@ import bcrypt from 'bcrypt';
 import dbQuery from '../model/db-query';
 import { User } from '../types';
 
-export const selectAllUsers = async function() {
+const selectAllUsers = async function() {
   const SELECT_ALL_USERS = 'SELECT * FROM users';
   const result = await dbQuery(SELECT_ALL_USERS);
   return result.rows;
 };
 
-export const addNewUser = async function (user: User) {
+const addNewUser = async function (user: User) {
   const { username, passwordHash, email } = user;
 
   const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L)';
@@ -20,7 +20,7 @@ export const addNewUser = async function (user: User) {
     }
     return result.rowCount > 0;
   } catch (error: any) {
-    console.log(error);
+    // need to figure out how to get a type for pg errors
     if (error.code === '23505') {
       if (/email/.test(error.detail)) {
         return { message: 'Email already exists' };
@@ -32,12 +32,7 @@ export const addNewUser = async function (user: User) {
   }
 };
 
-// reset password
-// find user
-// check if password hash matches db
-// if so, replace password hash with new password hash
-
-export const updateUserPassword = async function (
+const updateUserPassword = async function (
   userId: string,
   currentPassword: string,
   newPassword: string,
@@ -57,7 +52,12 @@ export const updateUserPassword = async function (
   return false;
 };
 
-// add user tests
+export default {
+  selectAllUsers,
+  addNewUser,
+  updateUserPassword,
+};
+
 // add update password / email routes
 // set user source/known language
 // set language to be learned
