@@ -49,6 +49,28 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
 };
 
 
+// const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word> | null> {
+//   const tsvectorType = simple ? 'simple' : 'language';
+
+//   const USER_WORDS_IN_TEXT: string = `
+//     SELECT w.word
+//       FROM words AS w
+//       JOIN users_words AS uw ON w.id = uw.word_id
+//      WHERE uw.user_id = %s AND
+//            w.language_id =
+//           (SELECT t.tsvector_${tsvectorType} FROM texts AS t
+//             WHERE t.id = %s) @@ w.tsquery_${tsvectorType}`;
+
+//   const result = await dbQuery(USER_WORDS_IN_TEXT, languageId, userId);
+
+//   if (!result.rows || result.rows.length === 0) {
+//     return null;
+//   }
+
+//   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
+// };
+
+
 // Helper function to check whether a word already exist in a given language
 const getWordInLanguage = async function(word: string, languageId: string): Promise<Word | null> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
@@ -118,13 +140,13 @@ const remove = async function(wordId: number): Promise <Word | null> {
 
 // Retrieves word status string for given user
 const getStatus = async function(userId: number, wordId: number): Promise<string | null> {
-  const GET_USER_WORD_STATUS: string = `
+  const USER_WORD_STATUS: string = `
     SELECT word_status FROM users_words 
      WHERE user_id = %s AND
            word_id = %s`;
 
   const result = await dbQuery(
-    GET_USER_WORD_STATUS,
+    USER_WORD_STATUS,
     userId,
     wordId,
   );
@@ -159,7 +181,7 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
 
 
 const updateStatus = async function(wordId: number, userId: number, status: string): Promise<string | null> {
-  const WORDS_BY_LANGUAGE_AND_USER: string = `
+  const UPDATE_USER_WORD_STATUS: string = `
        UPDATE users_words 
           SET word_status = %L 
         WHERE user_id = %L AND
@@ -167,7 +189,7 @@ const updateStatus = async function(wordId: number, userId: number, status: stri
     RETURNING *`;
 
   const result = await dbQuery(
-    WORDS_BY_LANGUAGE_AND_USER,
+    UPDATE_USER_WORD_STATUS,
     status,
     userId,
     wordId,
