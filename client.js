@@ -18,4 +18,3 @@ pgclient.query(schema, (err, _res) => {
   if (err) throw err;
   pgclient.end();
 });
-
