@@ -37,10 +37,16 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
     SELECT * FROM words AS w 
       JOIN users_words AS uw 
         ON w.id = uw.word_id 
-     WHERE w.language_id = %L AND 
+     WHERE w.language_id = %L 
+           AND 
            uw.user_id = %L`;
 
-  const result = await dbQuery(WORDS_BY_LANGUAGE_AND_USER, languageId, userId);
+  const result = await dbQuery(
+    WORDS_BY_LANGUAGE_AND_USER,
+    languageId,
+    userId,
+  );
+
   if (!result.rows || result.rows.length === 0) {
     return null;
   }
@@ -49,33 +55,42 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
 };
 
 
-// const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word> | null> {
-//   const tsvectorType = simple ? 'simple' : 'language';
+const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word> | null> {
+  const tsvectorType = simple ? 'simple' : 'language';
 
-//   const USER_WORDS_IN_TEXT: string = `
-//     SELECT w.word
-//       FROM words AS w
-//       JOIN users_words AS uw ON w.id = uw.word_id
-//      WHERE uw.user_id = %s AND
-//            w.language_id =
-//           (SELECT t.tsvector_${tsvectorType} FROM texts AS t
-//             WHERE t.id = %s) @@ w.tsquery_${tsvectorType}`;
+  const USER_WORDS_IN_TEXT: string = `
+    SELECT w.word
+      FROM words AS w
+      JOIN users_words AS uw ON w.id = uw.word_id
+     WHERE uw.user_id = %s 
+           AND
+           w.language_id = (SELECT t.language_id FROM texts AS t 
+                             WHERE t.id = %s)
+           AND
+           w.tsquery_${tsvectorType} @@ (SELECT t.tsvector_${tsvectorType} FROM texts AS t 
+                                          WHERE t.id = %s)`;
 
-//   const result = await dbQuery(USER_WORDS_IN_TEXT, languageId, userId);
+  const result = await dbQuery(
+    USER_WORDS_IN_TEXT,
+    userId,
+    textId,
+    textId,
+  );
 
-//   if (!result.rows || result.rows.length === 0) {
-//     return null;
-//   }
+  if (!result.rows || result.rows.length === 0) {
+    return null;
+  }
 
-//   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
-// };
+  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
+};
 
 
 // Helper function to check whether a word already exist in a given language
 const getWordInLanguage = async function(word: string, languageId: string): Promise<Word | null> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
     SELECT * FROM words 
-     WHERE language_id = %L AND 
+     WHERE language_id = %L 
+           AND 
            word = %L`;
 
   const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
@@ -142,7 +157,8 @@ const remove = async function(wordId: number): Promise <Word | null> {
 const getStatus = async function(userId: number, wordId: number): Promise<string | null> {
   const USER_WORD_STATUS: string = `
     SELECT word_status FROM users_words 
-     WHERE user_id = %s AND
+     WHERE user_id = %s 
+           AND
            word_id = %s`;
 
   const result = await dbQuery(
@@ -184,7 +200,8 @@ const updateStatus = async function(wordId: number, userId: number, status: stri
   const UPDATE_USER_WORD_STATUS: string = `
        UPDATE users_words 
           SET word_status = %L 
-        WHERE user_id = %L AND
+        WHERE user_id = %L 
+              AND
               word_id = %L
     RETURNING *`;
 
@@ -207,6 +224,7 @@ export default {
   getAll,
   getById,
   getByLanguageAndUser,
+  getUserwordsInText,
   addNew,
   remove,
   getStatus,
