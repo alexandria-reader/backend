@@ -23,26 +23,14 @@ if (isProduction) {
 
 const CONNECTION: ConnectionOptions = {
   connectionString,
-  ssl: connectionString?.includes('localhost') ? false : { rejectUnauthorized: false },
+  ssl: connectionString?.includes('amazonaws') ? { rejectUnauthorized: false } : false,
 };
 
 export default async function(statement: string, ...parameters: Array<unknown>) {
   const sql = format(statement, ...parameters);
 
-  let client;
-  if (config.NODE_ENV === 'test') {
-    client = new Client({
-      host: process.env.POSTGRES_HOST,
-      port: 5432,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
-    });
-  } else {
-    client = new Client(CONNECTION);
-  }
+  const client = new Client(CONNECTION);
 
-  // const client = new Client(CONNECTION);
   await client.connect();
   logQuery(sql);
   const result = await client.query(sql);
