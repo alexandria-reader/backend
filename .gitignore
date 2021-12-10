@@ -1,3 +1,4 @@
 node_modules
 .env
 src/model/temp.sql
+.vscode

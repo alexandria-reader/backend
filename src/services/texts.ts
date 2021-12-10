@@ -8,7 +8,7 @@ const getAll = async function(): Promise<Array<Text> | null> {
     SELECT * FROM texts`;
 
   const result = await dbQuery(ALL_TEXTS);
-  if (result.rows.length === 0) {
+  if (!result.rows || result.rows.length === 0) {
     return null;
   }
 
@@ -18,10 +18,11 @@ const getAll = async function(): Promise<Array<Text> | null> {
 
 const getById = async function(textId: number): Promise<Text | null> {
   const TEXT_BY_ID: string = `
-    SELECT * FROM texts WHERE id = %L`;
+    SELECT * FROM texts 
+     WHERE id = %L`;
 
   const result = await dbQuery(TEXT_BY_ID, textId);
-  if (result.rows.length === 0) {
+  if (!result.rows || result.rows.length === 0) {
     return null;
   }
 
@@ -29,7 +30,7 @@ const getById = async function(textId: number): Promise<Text | null> {
 };
 
 
-const addNew = async function(textData: Text) {
+const addNew = async function(textData: Text): Promise<Text | null> {
   const {
     userId,
     languageId,
@@ -41,12 +42,13 @@ const addNew = async function(textData: Text) {
   } = textData;
 
   const ADD_TEXT: string = `
-    INSERT INTO texts 
-    (user_id, language_id, title, author, body, ts_config, source_url, source_type)
-    VALUES 
-    (%s, %L, %L, %L, %L, (SELECT FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)`;
+    INSERT INTO texts (user_id, language_id, title, author,
+                       body, ts_config, source_url, source_type)
+         VALUES (%s, %L, %L, %L, %L, 
+                 (SELECT FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)
+      RETURNING *`;
 
-  await dbQuery(
+  const result = await dbQuery(
     ADD_TEXT,
     userId,
     languageId,
@@ -57,6 +59,56 @@ const addNew = async function(textData: Text) {
     sourceURL || null,
     sourceType || null,
   );
+
+  if (!result.rows || result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
+};
+
+
+const update = async function(textData: Text): Promise<Text | null> {
+  const {
+    id,
+    userId,
+    languageId,
+    title,
+    author,
+    body,
+    sourceURL,
+    sourceType,
+  } = textData;
+
+  const ADD_TEXT: string = `
+       UPDATE texts 
+          SET user_id = %s, 
+              language_id = %L, 
+              title = %L, 
+              author = %L, 
+              body = %L, 
+              source_url = %L, 
+              source_type = %L
+        WHERE id = %s 
+    RETURNING *`;
+
+  const result = await dbQuery(
+    ADD_TEXT,
+    userId,
+    languageId,
+    title,
+    author || null,
+    body,
+    sourceURL || null,
+    sourceType || null,
+    id,
+  );
+
+  if (!result.rows || result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
 };
 
 
@@ -64,4 +116,5 @@ export default {
   getAll,
   getById,
   addNew,
+  update,
 };
