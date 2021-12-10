@@ -25,6 +25,16 @@ router.get('/:langId/user/:userId', async(req, res) => {
   res.send(wordsByLanguageAndUser);
 });
 
+// Which service to use to specify the connection between user and word?
+// Error when running the addNew service
+router.post('/', async(req, res) => {
+  const data = req.body;
+  // const userId = Number(req.params.userId);
+
+  const updatedWord = await words.addNew(data);
+  res.send(updatedWord);
+});
+
 router.put('/word/:wordId/user/:userId', async(req, res) => {
   const { status } = req.body;
   const { wordId, userId } = req.params;

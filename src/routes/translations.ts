@@ -14,29 +14,20 @@ router.get('/user/:userId', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const translationId = Number(req.params.id);
-  const result = await translation.getOneByTranslation(translationId);
+  const result = await translation.getOne(translationId);
   res.send(result);
 });
 
 router.get('/word/:wordId/user/:userId', async (req, res) => {
   const data = {
-    word: req.params.wordId,
-    user: req.params.userId,
+    wordId: req.params.wordId,
+    userId: req.params.userId,
   };
-  const wordId = Number(data.word);
-  const userId = Number(data.user);
-  const result = await translation.getAllByWord(wordId, userId);
+  const wordId = Number(data.userId);
+  const userId = Number(data.userId);
+  const result = await translation.getByWord(wordId, userId);
   res.send(result);
 });
-
-// Move to routing for webdictionaries?
-// router.get('/pair/:pairId', async (req, res) => {
-//   const data = {
-//     pair: req.params.pairId,
-//   };
-//   const result = await translationService.getDictionaries(Number(data.pair));
-//   res.send(result);
-// });
 
 router.get('/word/:wordId/target/:targetId', async (req, res) => {
   const data = {
@@ -44,7 +35,7 @@ router.get('/word/:wordId/target/:targetId', async (req, res) => {
     targetId: req.params.targetId,
   };
   const { wordId, targetId } = data;
-  const translationRes = await translation.getAllForOneWord(Number(wordId), targetId);
+  const translationRes = await translation.getAllByWordByLang(Number(wordId), targetId);
   res.send(translationRes);
 });
 
@@ -59,22 +50,27 @@ router.post('/user/:userId', async (req, res) => {
     userId, wordId, tran, targetLang,
   } = data;
   // eslint-disable-next-line max-len
-  const transReq = await translation.addOneTranslation(Number(userId), Number(wordId), tran, targetLang);
+  const transReq = await translation.add(Number(userId), Number(wordId), tran, targetLang);
+  res.send(transReq);
+});
+
+router.delete('/:translationId', async (req, res) => {
+  const { translationId } = req.params;
+  // eslint-disable-next-line max-len
+  const transReq = await translation.remove(Number(translationId));
   res.send(transReq);
 });
 
 router.put('/user/:userId', async (req, res) => {
   const data = {
-    userId: req.params.userId,
-    wordId: req.body.wordId,
     tran: req.body.translation,
     targetLang: req.body.targetLang,
   };
   const {
-    userId, wordId, tran, targetLang,
+    tran, targetLang,
   } = data;
   // eslint-disable-next-line max-len
-  const transReq = await translation.updateOneTranslation(Number(userId), Number(wordId), tran, targetLang);
+  const transReq = await translation.update(tran, targetLang);
   res.send(transReq);
 });
 
