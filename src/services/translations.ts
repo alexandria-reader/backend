@@ -31,7 +31,7 @@ const getAllForOneWord = async function(wordId: number, targetId: string) {
   return result.rows[0];
 };
 
-const postOne = async function(
+const addOne = async function(
   userId: number,
   wordId: number,
   translation: string,
@@ -47,7 +47,7 @@ const postOne = async function(
   return result;
 };
 
-const putOne = async function(
+const updateOne = async function(
   userId: number,
   wordId: number,
   translation: string,
@@ -68,6 +68,6 @@ export default {
   getOne,
   getSome,
   getAllForOneWord,
-  postOne,
-  putOne,
+  addOne,
+  updateOne,
 };
