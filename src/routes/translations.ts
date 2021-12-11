@@ -23,7 +23,7 @@ router.get('/word/:wordId/user/:userId', async (req, res) => {
     wordId: req.params.wordId,
     userId: req.params.userId,
   };
-  const wordId = Number(data.userId);
+  const wordId = Number(data.wordId);
   const userId = Number(data.userId);
   const result = await translation.getByWord(wordId, userId);
   res.send(result);

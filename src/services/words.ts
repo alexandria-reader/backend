@@ -83,7 +83,6 @@ const getUserwordsInText = async function(userId: number, textId: number, simple
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-
 // Helper function to check whether a word already exist in a given language
 const getWordInLanguage = async function(word: string, languageId: string): Promise<Word | null> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
@@ -108,21 +107,22 @@ const addNew = async function(wordData: Word): Promise<Word | null> {
     word,
   } = wordData;
 
-  const existingWord = await getWordInLanguage(languageId, word);
+  const existingWord = await getWordInLanguage(word, languageId);
   if (existingWord) {
     console.log('word already exists, returning original');
     return existingWord;
   }
 
   const ADD_WORD: string = `
-    INSERT INTO words (language_id, word)
-         VALUES (%L, %L)
-      RETURNING *`;
+  INSERT INTO words (language_id, word, ts_config)
+    VALUES (%L, %L, (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig)
+  RETURNING *`;
 
   const result = await dbQuery(
     ADD_WORD,
     languageId,
     word,
+    languageId,
   );
 
   if (!result.rows || result.rows.length === 0) {
@@ -191,9 +191,8 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
     return null;
   }
 
-  return result.rows[0].word_status;
+  return result.rows[0];
 };
-
 
 const updateStatus = async function(wordId: number, userId: number, status: string): Promise<string | null> {
   const UPDATE_USER_WORD_STATUS: string = `
