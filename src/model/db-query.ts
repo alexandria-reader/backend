@@ -21,15 +21,14 @@ if (isProduction) {
   connectionString = config[`${config.NODE_ENV?.toUpperCase()}_DATABASE_URL`];
 }
 
-console.log(config.NODE_ENV);
-
 const CONNECTION: ConnectionOptions = {
   connectionString,
-  ssl: connectionString?.includes('localhost') ? false : { rejectUnauthorized: false },
+  ssl: connectionString?.includes('amazonaws') ? { rejectUnauthorized: false } : false,
 };
 
 export default async function(statement: string, ...parameters: Array<unknown>) {
   const sql = format(statement, ...parameters);
+
   const client = new Client(CONNECTION);
 
   await client.connect();
