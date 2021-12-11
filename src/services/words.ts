@@ -9,7 +9,7 @@ const getAll = async function(): Promise<Array<Word> | null> {
     SELECT * FROM words`;
 
   const result = await dbQuery(ALL_WORDS);
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -23,7 +23,7 @@ const getById = async function(wordId: number): Promise<Word | null> {
     WHERE id = %L`;
 
   const result = await dbQuery(WORD_BY_ID, wordId);
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -47,7 +47,7 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
     userId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -76,7 +76,7 @@ const getUserwordsInText = async function(userId: number, textId: number, simple
     textId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -94,7 +94,7 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
 
   const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -126,7 +126,7 @@ const addNew = async function(wordData: Word): Promise<Word | null> {
     languageId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -145,7 +145,7 @@ const remove = async function(wordId: number): Promise <Word | null> {
     wordId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -167,7 +167,7 @@ const getStatus = async function(userId: number, wordId: number): Promise<string
     wordId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -188,7 +188,7 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
     wordStatus,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -212,7 +212,7 @@ const updateStatus = async function(wordId: number, userId: number, status: stri
     wordId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 

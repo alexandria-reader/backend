@@ -8,7 +8,8 @@ const getAll = async function(): Promise<Array<Text> | null> {
     SELECT * FROM texts`;
 
   const result = await dbQuery(ALL_TEXTS);
-  if (!result.rows || result.rows.length === 0) {
+
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -22,7 +23,7 @@ const getById = async function(textId: number): Promise<Text | null> {
      WHERE id = %L`;
 
   const result = await dbQuery(TEXT_BY_ID, textId);
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -60,7 +61,7 @@ const addNew = async function(textData: Text): Promise<Text | null> {
     sourceType || null,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
@@ -104,7 +105,7 @@ const update = async function(textData: Text): Promise<Text | null> {
     id,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
     return null;
   }
 
