@@ -54,7 +54,6 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-
 const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word> | null> {
   const tsvectorType = simple ? 'simple' : 'language';
 
