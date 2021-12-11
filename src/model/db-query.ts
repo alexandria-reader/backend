@@ -33,6 +33,7 @@ export default async function(statement: string, ...parameters: Array<unknown>) 
 
   await client.connect();
   logQuery(sql);
+  // when pg throws an error, the connection doesn't close
   const result = await client.query(sql);
   await client.end();
 

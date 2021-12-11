@@ -11,14 +11,14 @@ const selectAllUsers = async function() {
 const addNewUser = async function (user: User) {
   const { username, passwordHash, email } = user;
 
-  const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L)';
+  const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L) RETURNING *';
 
   try {
     const result = await dbQuery(ADD_USER, username, passwordHash, email);
     if (result.rowCount > 0) {
+      console.log(result);
       return { message: `User ${username} succesfully created` };
     }
-    return result.rowCount > 0;
   } catch (error: any) {
     // need to figure out how to get a type for pg errors
     if (error.code === '23505') {
@@ -28,8 +28,11 @@ const addNewUser = async function (user: User) {
         return { message: 'Name already exists' };
       }
     }
+
     return { message: 'Something went wrong.' };
   }
+
+  return { message: 'Something went wrong.' };
 };
 
 const updateUserPassword = async function (
