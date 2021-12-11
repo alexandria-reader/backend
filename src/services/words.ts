@@ -115,14 +115,15 @@ const addNew = async function(wordData: Word): Promise<Word | null> {
   }
 
   const ADD_WORD: string = `
-    INSERT INTO words (language_id, word)
-         VALUES (%L, %L)
+    INSERT INTO words (language_id, word, ts_config)
+         VALUES (%L, %L, (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig)
       RETURNING *`;
 
   const result = await dbQuery(
     ADD_WORD,
     languageId,
     word,
+    languageId,
   );
 
   if (!result.rows || result.rows.length === 0) {

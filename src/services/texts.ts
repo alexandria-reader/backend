@@ -45,7 +45,7 @@ const addNew = async function(textData: Text): Promise<Text | null> {
     INSERT INTO texts (user_id, language_id, title, author,
                        body, ts_config, source_url, source_type)
          VALUES (%s, %L, %L, %L, %L, 
-                 (SELECT FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)
+                 (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)
       RETURNING *`;
 
   const result = await dbQuery(
