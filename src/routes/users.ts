@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import express from 'express';
-import userServices from '../services/users'; // needs to be implemented
+import userServices from '../services/users';
 import { User } from '../types';
 
 const userRouter = express.Router();
@@ -29,6 +29,7 @@ userRouter.get('/', async (_req, res) => {
 
 // reset password
 userRouter.put('/:userId', async (req, res) => {
+  // check user is logged in first
   const { userId } = req.params;
   const { password: currentPassword, newPassword } = req.body;
 
@@ -39,6 +40,16 @@ userRouter.put('/:userId', async (req, res) => {
   } else {
     res.send('Passwords do not match');
   }
+});
+
+userRouter.delete('/:userId', async (req, res) => {
+  // check user is logged in first
+  const { userId } = req.params;
+  const { password } = req.body;
+
+  const message = await userServices.removeUser(userId, password);
+
+  res.json(message);
 });
 
 // set known language
