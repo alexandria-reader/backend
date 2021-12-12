@@ -26,7 +26,6 @@ router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
   res.send(wordsByLanguageAndUser);
 });
 
-
 router.post('/user/:userId', async(req, res): Promise<void> => {
   const wordData: Word = req.body;
   const userId: number = Number(req.params.userId);
