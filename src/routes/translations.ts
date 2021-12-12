@@ -39,6 +39,7 @@ router.get('/word/:wordId/target/:targetId', async (req, res) => {
   res.send(translationRes);
 });
 
+// test done
 router.post('/user/:userId', async (req, res) => {
   const data = {
     userId: req.params.userId,
@@ -50,15 +51,24 @@ router.post('/user/:userId', async (req, res) => {
     userId, wordId, tran, targetLang,
   } = data;
   // eslint-disable-next-line max-len
-  const transReq = await translation.add(Number(userId), Number(wordId), tran, targetLang);
-  res.send(transReq);
+  const added = await translation.add(Number(userId), Number(wordId), tran, targetLang);
+  if (added) {
+    res.send('New translation added');
+  } else {
+    res.send('There is a problem with adding the translation');
+  }
 });
 
+// WIP testing
 router.delete('/:translationId', async (req, res) => {
   const { translationId } = req.params;
   // eslint-disable-next-line max-len
-  const transReq = await translation.remove(Number(translationId));
-  res.send(transReq);
+  const deleted = await translation.remove(Number(translationId));
+  if (deleted) {
+    res.send('Translation deleted');
+  } else {
+    res.send('There is a problem with deleting the translation');
+  }
 });
 
 router.put('/user/:userId', async (req, res) => {
