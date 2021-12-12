@@ -7,6 +7,7 @@ import translationsRouter from './routes/translations';
 import usersRouter from './routes/users';
 import wordsRouter from './routes/words';
 
+import { errorMiddleware, notFoundMiddleware } from './utils/errorHandler';
 
 const app = express();
 app.use(cors());
@@ -21,5 +22,8 @@ app.use('/api/texts', textsRouter);
 app.use('/api/translations', translationsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/words', wordsRouter);
+
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
 
 export default app;
