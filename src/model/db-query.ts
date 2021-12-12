@@ -31,22 +31,15 @@ export default async function(statement: string, ...parameters: Array<unknown>) 
   const sql = format(statement, ...parameters);
 
   const client = new Client(CONNECTION);
-
-  // await client.connect();
-  // logQuery(sql);
-  // const result = await client.query(sql);
-  // await client.end();
-  // return result;
+  await client.connect();
 
   try {
-    await client.connect();
     logQuery(sql);
     const result = await client.query(sql);
     await client.end();
     return result;
   } catch (error) {
-    console.log('Could not execute query: ', error);
-    await client.end();
-    return null;
+    client.end();
+    throw error;
   }
 }

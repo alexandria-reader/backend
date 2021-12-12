@@ -9,7 +9,7 @@
     "staging": "cross-env NODE_ENV=staging ts-node-dev src/server.ts",
     "lint": "eslint --ext .ts .",
     "start": "node build/server.js",
-    "test": "NODE_ENV=test jest --verbose --runInBand --forceExit --detectOpenHandles"
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "repository": {
     "type": "git",

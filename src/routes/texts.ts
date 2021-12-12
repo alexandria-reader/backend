@@ -4,15 +4,25 @@ import texts from '../services/texts';
 const router = express.Router();
 
 router.get('/', async(_req, res) => {
-  const allTexts = await texts.getAll();
-  res.send(allTexts);
+  try {
+    const allTexts = await texts.getAll();
+    res.status(200).json(allTexts);
+  } catch (error: any) {
+    console.log(error.message || error);
+    res.status(400).send(error.message || error);
+  }
 });
 
 router.get('/:id', async(req, res) => {
   const id = Number(req.params.id);
 
-  const textById = await texts.getById(id);
-  res.send(textById);
+  try {
+    const textById = await texts.getById(id);
+    res.status(200).json(textById);
+  } catch (error: any) {
+    console.log(error.message || error);
+    res.status(400).send(error.message || error);
+  }
 });
 
 router.post('/', async(_req, _res) => {

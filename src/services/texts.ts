@@ -3,35 +3,28 @@ import dbQuery from '../model/db-query';
 import { Text, TextDB, convertTextTypes } from '../types';
 
 
-const getAll = async function(): Promise<Array<Text> | null> {
+const getAll = async function(): Promise<Array<Text>> {
   const ALL_TEXTS: string = `
     SELECT * FROM texts`;
 
   const result = await dbQuery(ALL_TEXTS);
 
-  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
-    return null;
-  }
-
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
 };
 
 
-const getById = async function(textId: number): Promise<Text | null> {
+const getById = async function(textId: number): Promise<Text> {
   const TEXT_BY_ID: string = `
     SELECT * FROM texts 
      WHERE id = %L`;
 
   const result = await dbQuery(TEXT_BY_ID, textId);
-  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
-    return null;
-  }
 
-  return result.rows[0];
+  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
 };
 
 
-const addNew = async function(textData: Text): Promise<Text | null> {
+const addNew = async function(textData: Text): Promise<Text> {
   const {
     userId,
     languageId,
@@ -60,10 +53,6 @@ const addNew = async function(textData: Text): Promise<Text | null> {
     sourceURL || null,
     sourceType || null,
   );
-
-  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
-    return null;
-  }
 
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
 };
@@ -104,10 +93,6 @@ const update = async function(textData: Text): Promise<Text | null> {
     sourceType || null,
     id,
   );
-
-  if ((result && (!result.rows || result.rows.length === 0)) || !result) {
-    return null;
-  }
 
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
 };
