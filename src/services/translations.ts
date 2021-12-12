@@ -6,6 +6,12 @@ const getAllByUser = async function(userId: number) {
   return results.rows;
 };
 
+const getAll = async function() {
+  const FIND_TRANSLATIONS = 'SELECT * FROM translations';
+  const results = await dbQuery(FIND_TRANSLATIONS);
+  return results.rows;
+};
+
 const getOne = async function(translationId: number) {
   const FIND_TRANSLATION = 'SELECT * FROM translations WHERE id = %L';
   const result = await dbQuery(FIND_TRANSLATION, translationId);
@@ -73,6 +79,7 @@ const remove = async function(
 
 export default {
   getAllByUser,
+  getAll,
   getOne,
   getByWord,
   getAllByWordByLang,

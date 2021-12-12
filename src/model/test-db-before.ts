@@ -140,17 +140,6 @@ CREATE TABLE webdictionary_preferences (
     webdictionary_id int REFERENCES webdictionaries (id) ON DELETE CASCADE
 );
 
-DELETE FROM users;
-DELETE FROM admins;
-DELETE FROM languages;
-DELETE FROM words;
-DELETE FROM texts;
-DELETE FROM translations;
-DELETE FROM contexts;
-DELETE FROM languagepairs;
-DELETE FROM webdictionaries;
-
-
 INSERT INTO users (username, password_hash, email)
 VALUES
 ('eamon', 'eamonpwhash', 'eamon@example.com'),

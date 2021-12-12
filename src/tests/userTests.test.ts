@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import app from '../app';
 import dbQuery from '../model/db-query';
-import resetDbCommands from '../model/test-db-before';
+import resetDbCommands from '../model/test-db-reset';
 
 const api = supertest(app);
 
