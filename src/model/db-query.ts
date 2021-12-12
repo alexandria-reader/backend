@@ -36,10 +36,8 @@ export default async function(statement: string, ...parameters: Array<unknown>) 
   try {
     logQuery(sql);
     const result = await client.query(sql);
-    await client.end();
     return result;
-  } catch (error) {
-    client.end();
-    throw error;
+  } finally {
+    await client.end();
   }
 }
