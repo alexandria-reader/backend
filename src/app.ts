@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
+import 'express-async-errors';
 
 import textsRouter from './routes/texts';
 import translationsRouter from './routes/translations';
 import usersRouter from './routes/users';
 import wordsRouter from './routes/words';
+
 
 const app = express();
 app.use(cors());
