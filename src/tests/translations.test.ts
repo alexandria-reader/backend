@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import app from '../app';
 import dbQuery from '../model/db-query';
 import before from '../model/test-db-before';
+import resetDatabase from '../model/test-db-reset';
 
 const api = supertest(app);
 
@@ -106,4 +107,8 @@ describe('Testing updating translations', () => {
       .expect('Content-Type', 'text/html; charset=utf-8')
       .expect('Translation updated');
   });
+});
+
+afterAll(async () => {
+  await dbQuery(resetDatabase);
 });

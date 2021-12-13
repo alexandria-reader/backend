@@ -14,11 +14,11 @@ const addNewUser = async function (userData: User): Promise<User> {
 
   const CHECK_USERNAME = 'SELECT * FROM users WHERE username = %L';
   let checkResult = await dbQuery(CHECK_USERNAME, username);
-  if (checkResult.rowCount > 0) throw boom.notAcceptable('Username already taken.');
+  if (checkResult.rowCount > 0) throw boom.notAcceptable('Username already in use.');
 
   const CHECK_EMAIL = 'SELECT * FROM users WHERE email = %L';
   checkResult = await dbQuery(CHECK_EMAIL, email);
-  if (checkResult.rowCount > 0) throw boom.notAcceptable('Email already in user by different user.');
+  if (checkResult.rowCount > 0) throw boom.notAcceptable('Email already in use.');
 
   const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L) RETURNING *';
   const result = await dbQuery(ADD_USER, username, passwordHash, email);

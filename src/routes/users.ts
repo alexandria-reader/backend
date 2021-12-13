@@ -36,9 +36,9 @@ userRouter.put('/:userId', async (req, res) => {
   const updated = await userServices.updateUserPassword(userId, currentPassword, newPassword);
 
   if (updated) {
-    res.send('Your password has been updated');
+    res.json({ message: 'Your password has been updated' });
   } else {
-    res.send('Passwords do not match');
+    res.send({ message: 'Incorrect password' });
   }
 });
 
