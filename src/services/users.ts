@@ -26,14 +26,19 @@ const addNewUser = async function (userData: User): Promise<User> {
   return convertUserTypes(result.rows[0]);
 };
 
+const verifyPassword = async function(userId: string, password: string): Promise<boolean> {
+  const findUserById = 'SELECT * FROM users WHERE id = %L';
+  const user = await dbQuery(findUserById, userId);
+  const passwordsMatch = await bcrypt.compare(password, user.rows[0].password_hash);
+  return passwordsMatch;
+};
+
 const updateUserPassword = async function (
   userId: string,
   currentPassword: string,
   newPassword: string,
 ): Promise<boolean> {
-  const findUserById = 'SELECT * FROM users WHERE id = %L';
-  const user = await dbQuery(findUserById, userId);
-  const passwordsMatch = await bcrypt.compare(currentPassword, user.rows[0].password_hash);
+  const passwordsMatch = await verifyPassword(userId, currentPassword);
 
   if (passwordsMatch) {
     const saltRounds = 10;
@@ -46,10 +51,31 @@ const updateUserPassword = async function (
   return false;
 };
 
+const removeUser = async function (userId: string, password: string) {
+  const passwordsMatch = await verifyPassword(userId, password);
+
+  if (passwordsMatch) {
+    // add email check once login is implemented
+    try {
+      const deleteUser = 'DELETE FROM users WHERE id = %L';
+      const result = await dbQuery(deleteUser, userId);
+
+      if (result.rowCount > 0) {
+        return { message: 'Your account has been deleted' };
+      }
+    } catch (error) {
+      return { message: 'Something went wrong.' };
+    }
+  }
+
+  return { message: 'Passwords do not match' };
+};
+
 export default {
   selectAllUsers,
   addNewUser,
   updateUserPassword,
+  removeUser,
 };
 
 // add update password / email routes
