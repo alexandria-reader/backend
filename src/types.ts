@@ -3,11 +3,29 @@ export type ConnectionOptions = {
   ssl: boolean | Object,
 };
 
-export interface User {
+export type User = {
+  id?: number,
   username: string,
   passwordHash: string,
   email: string,
-}
+};
+
+export type UserDB = {
+  id: number,
+  username: string,
+  password_hash: string,
+  email: string,
+};
+
+export const convertUserTypes = function(dbItem: UserDB): User {
+  return {
+    id: dbItem.id,
+    username: dbItem.username,
+    passwordHash: dbItem.password_hash,
+    email: dbItem.email,
+  };
+};
+
 
 export type Text = {
   id?: number,

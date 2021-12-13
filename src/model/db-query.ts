@@ -34,7 +34,7 @@ export default async function(statement: string, ...parameters: Array<unknown>) 
   await client.connect();
 
   try {
-    logQuery(sql);
+    if (config.NODE_ENV !== 'test') logQuery(sql);
     const result = await client.query(sql);
     return result;
   } finally {

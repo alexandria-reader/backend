@@ -43,8 +43,8 @@ router.put('/:id/user/:userId', async(req, res): Promise<void> => {
   const { status } = req.body;
   const { id, userId } = req.params;
 
-  const updatedWord = await words.updateStatus(Number(id), Number(userId), status);
-  res.send(updatedWord);
+  const updatedStatus = await words.updateStatus(Number(id), Number(userId), status);
+  res.send(updatedStatus);
 });
 
 export default router;

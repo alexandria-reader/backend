@@ -11,15 +11,15 @@ userRouter.post('/', async (req, res) => {
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  const newUser: User = {
+  const userData: User = {
     username,
     passwordHash,
     email,
   };
 
-  const userCreatedMessage = await userServices.addNewUser(newUser);
+  const newUser = await userServices.addNewUser(userData);
 
-  res.json(userCreatedMessage);
+  res.status(201).json(newUser);
 });
 
 userRouter.get('/', async (_req, res) => {

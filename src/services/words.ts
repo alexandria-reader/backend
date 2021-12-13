@@ -21,7 +21,7 @@ const getById = async function(wordId: number): Promise<Word> {
 
   const result = await dbQuery(WORD_BY_ID, wordId);
 
-  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
+  return convertWordTypes(result.rows[0]);
 };
 
 
@@ -79,7 +79,7 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
 
   const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
 
-  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
+  return convertWordTypes(result.rows[0]);
 };
 
 
@@ -107,7 +107,7 @@ const addNew = async function(wordData: Word): Promise<Word> {
     languageId,
   );
 
-  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
+  return convertWordTypes(result.rows[0]);
 };
 
 
@@ -122,7 +122,7 @@ const remove = async function(wordId: number): Promise <Word> {
     wordId,
   );
 
-  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
+  return convertWordTypes(result.rows[0]);
 };
 
 

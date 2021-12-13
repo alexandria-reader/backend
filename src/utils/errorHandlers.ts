@@ -1,11 +1,11 @@
 import boom from '@hapi/boom';
 import type { Request, Response, NextFunction } from 'express';
 
-export const notFoundMiddleware = function(_req: Request, _res: Response, next: NextFunction) {
+export const notFoundHandler = function(_req: Request, _res: Response, next: NextFunction) {
   next(boom.notFound('The requested resource does not exist.'));
 };
 
-export const errorMiddleware = function(
+export const generalErrorHandler = function(
   err: Error,
   _req: Request,
   res: Response,

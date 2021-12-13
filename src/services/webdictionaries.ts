@@ -16,7 +16,7 @@ const addWebdictionary = async function(languagepairId: number, name: string, ur
     url,
   );
 
-  return result.rows.map((dbItem: WebdictionaryDB): Webdictionary => convertWebdictionaryTypes(dbItem))[0];
+  return convertWebdictionaryTypes(result.rows[0]);
 };
 
 
