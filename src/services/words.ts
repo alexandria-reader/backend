@@ -4,35 +4,29 @@ import { Word, WordDB, convertWordTypes } from '../types';
 
 
 // Returning all words in the database is most likely not needed
-const getAll = async function(): Promise<Array<Word> | null> {
+const getAll = async function(): Promise<Array<Word>> {
   const ALL_WORDS: string = `
     SELECT * FROM words`;
 
   const result = await dbQuery(ALL_WORDS);
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
 
-const getById = async function(wordId: number): Promise<Word | null> {
+const getById = async function(wordId: number): Promise<Word> {
   const WORD_BY_ID: string = `
     SELECT * FROM words 
     WHERE id = %L`;
 
   const result = await dbQuery(WORD_BY_ID, wordId);
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
 };
 
 
 // Finds all words in a given language that are connected to the user
-const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
+const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word>> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT * FROM words AS w 
       JOIN users_words AS uw 
@@ -47,14 +41,10 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
     userId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word> | null> {
+const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word>> {
   const tsvectorType = simple ? 'simple' : 'language';
 
   const USER_WORDS_IN_TEXT: string = `
@@ -76,16 +66,11 @@ const getUserwordsInText = async function(userId: number, textId: number, simple
     textId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-
 // Helper function to check whether a word already exist in a given language
-const getWordInLanguage = async function(word: string, languageId: string): Promise<Word | null> {
+const getWordInLanguage = async function(word: string, languageId: string): Promise<Word> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
     SELECT * FROM words 
      WHERE language_id = %L 
@@ -94,21 +79,17 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
 
   const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
 };
 
 
-const addNew = async function(wordData: Word): Promise<Word | null> {
+const addNew = async function(wordData: Word): Promise<Word> {
   const {
     languageId,
     word,
   } = wordData;
 
-  const existingWord = await getWordInLanguage(languageId, word);
+  const existingWord = await getWordInLanguage(word, languageId);
   if (existingWord) {
     console.log('word already exists, returning original');
     return existingWord;
@@ -126,15 +107,11 @@ const addNew = async function(wordData: Word): Promise<Word | null> {
     languageId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
 };
 
 
-const remove = async function(wordId: number): Promise <Word | null> {
+const remove = async function(wordId: number): Promise <Word> {
   const DELETE_WORD: string = `
        DELETE FROM words
         WHERE id = %s
@@ -144,10 +121,6 @@ const remove = async function(wordId: number): Promise <Word | null> {
     DELETE_WORD,
     wordId,
   );
-
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem))[0];
 };
@@ -167,7 +140,7 @@ const getStatus = async function(userId: number, wordId: number): Promise<string
     wordId,
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if (result.rowCount === 0) {
     return null;
   }
 
@@ -188,13 +161,8 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
     wordStatus,
   );
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
   return result.rows[0].word_status;
 };
-
 
 const updateStatus = async function(wordId: number, userId: number, status: string): Promise<string | null> {
   const UPDATE_USER_WORD_STATUS: string = `
@@ -211,10 +179,6 @@ const updateStatus = async function(wordId: number, userId: number, status: stri
     userId,
     wordId,
   );
-
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
 
   return result.rows[0].word_status;
 };
