@@ -7,7 +7,13 @@ const getAllByUser = async function(userId: number): Promise<Array<Translation> 
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 
-const getOne = async function(translationId: number): Promise<Translation | null> {
+const getAll = async function() {
+  const FIND_TRANSLATIONS = 'SELECT * FROM translations';
+  const results = await dbQuery(FIND_TRANSLATIONS);
+  return results.rows;
+};
+
+const getOne = async function(translationId: number) {
   const FIND_TRANSLATION = 'SELECT * FROM translations WHERE id = %L';
   const result = await dbQuery(FIND_TRANSLATION, translationId);
   return convertTranslationTypes(result.rows[0]);
@@ -73,6 +79,7 @@ const remove = async function(
 
 export default {
   getAllByUser,
+  getAll,
   getOne,
   getByWord,
   getAllByWordByLang,
