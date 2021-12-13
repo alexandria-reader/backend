@@ -1,12 +1,12 @@
-DELETE FROM users;
-DELETE FROM admins;
-DELETE FROM languages;
-DELETE FROM words;
-DELETE FROM texts;
-DELETE FROM translations;
-DELETE FROM contexts;
-DELETE FROM languagepairs;
 DELETE FROM webdictionaries;
+DELETE FROM languagepairs;
+DELETE FROM contexts;
+DELETE FROM translations;
+DELETE FROM texts;
+DELETE FROM words;
+DELETE FROM languages;
+DELETE FROM admins;
+DELETE FROM users;
 
 
 INSERT INTO users (username, password_hash, email)

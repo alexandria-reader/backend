@@ -30,7 +30,7 @@ const addNew = async function(languageData: Language): Promise<Language> {
     isRightToLeft,
   );
 
-  return result.rows.map((dbItem: LanguageDB) => convertLanguageTypes(dbItem))[0];
+  return convertLanguageTypes(result.rows[0]);
 };
 
 
@@ -50,7 +50,7 @@ const getById = async function(languageId: string): Promise<Language> {
 
   const result = await dbQuery(LANGUAGE_BY_ID, languageId);
 
-  return result.rows.map((dbItem: LanguageDB) => convertLanguageTypes(dbItem))[0];
+  return convertLanguageTypes(result.rows[0]);
 };
 
 

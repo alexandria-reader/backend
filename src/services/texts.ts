@@ -1,5 +1,5 @@
+import boom from '@hapi/boom';
 import dbQuery from '../model/db-query';
-
 import { Text, TextDB, convertTextTypes } from '../types';
 
 
@@ -14,13 +14,15 @@ const getAll = async function(): Promise<Array<Text>> {
 
 
 const getById = async function(textId: number): Promise<Text> {
+  if (textId === 666) throw boom.notAcceptable("Can't use number of the beast as id");
+
   const TEXT_BY_ID: string = `
     SELECT * FROM texts 
      WHERE id = %L`;
 
   const result = await dbQuery(TEXT_BY_ID, textId);
 
-  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
+  return convertTextTypes(result.rows[0]);
 };
 
 
@@ -54,7 +56,7 @@ const addNew = async function(textData: Text): Promise<Text> {
     sourceType || null,
   );
 
-  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
+  return convertTextTypes(result.rows[0]);
 };
 
 
@@ -94,7 +96,7 @@ const update = async function(textData: Text): Promise<Text | null> {
     id,
   );
 
-  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
+  return convertTextTypes(result.rows[0]);
 };
 
 
