@@ -128,8 +128,6 @@ describe('Testing adding users', () => {
     const responseBody = JSON.parse(response.text);
     expect(responseBody).toHaveLength(0);
   });
-
-  // test changing password
 });
 
 afterAll(async () => {
