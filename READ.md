@@ -6,3 +6,8 @@ To run the app with access to the database,
 2. Add a `.env` file
 3. Add a DATABASE_URL and a STAGING_DATABASE_URL following the format found in /src/model/env
 4. Run npm run staging to start the app
+
+Before running local tests, to get the Postgres Docker container working, run the command:
+`docker-compose -f postgres.yaml up -d`
+Once the tests are finished, close the container by running:
+`docker-compose -f postgres.yaml down --volumes`
