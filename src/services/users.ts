@@ -1,6 +1,7 @@
+import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import dbQuery from '../model/db-query';
-import { User } from '../types';
+import { convertUserTypes, User } from '../types';
 
 const selectAllUsers = async function() {
   const SELECT_ALL_USERS = 'SELECT * FROM users';
@@ -8,28 +9,21 @@ const selectAllUsers = async function() {
   return result.rows;
 };
 
-const addNewUser = async function (user: User) {
-  const { username, passwordHash, email } = user;
+const addNewUser = async function (userData: User): Promise<User> {
+  const { username, passwordHash, email } = userData;
 
-  const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L)';
+  const CHECK_USERNAME = 'SELECT * FROM users WHERE username = %L';
+  let checkResult = await dbQuery(CHECK_USERNAME, username);
+  if (checkResult.rowCount > 0) throw boom.notAcceptable('Username already taken.');
 
-  try {
-    const result = await dbQuery(ADD_USER, username, passwordHash, email);
-    if (result.rowCount > 0) {
-      return { message: `User ${username} succesfully created` };
-    }
-    return result.rowCount > 0;
-  } catch (error: any) {
-    // need to figure out how to get a type for pg errors
-    if (error.code === '23505') {
-      if (/email/.test(error.detail)) {
-        return { message: 'Email already exists' };
-      } if (/username/.test(error.detail)) {
-        return { message: 'Name already exists' };
-      }
-    }
-    return { message: 'Something went wrong.' };
-  }
+  const CHECK_EMAIL = 'SELECT * FROM users WHERE email = %L';
+  checkResult = await dbQuery(CHECK_EMAIL, email);
+  if (checkResult.rowCount > 0) throw boom.notAcceptable('Email already in user by different user.');
+
+  const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L) RETURNING *';
+  const result = await dbQuery(ADD_USER, username, passwordHash, email);
+
+  return convertUserTypes(result.rows[0]);
 };
 
 const verifyPassword = async function(userId: string, password: string): Promise<boolean> {

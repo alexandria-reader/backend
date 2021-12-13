@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // generic database query function, takes SQL statement and parameters
 
 import { Client } from 'pg';
@@ -30,11 +31,13 @@ export default async function(statement: string, ...parameters: Array<unknown>) 
   const sql = format(statement, ...parameters);
 
   const client = new Client(CONNECTION);
-
   await client.connect();
-  logQuery(sql);
-  const result = await client.query(sql);
-  await client.end();
 
-  return result;
+  try {
+    if (config.NODE_ENV !== 'test') logQuery(sql);
+    const result = await client.query(sql);
+    return result;
+  } finally {
+    await client.end();
+  }
 }

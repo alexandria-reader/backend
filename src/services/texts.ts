@@ -1,36 +1,32 @@
+import boom from '@hapi/boom';
 import dbQuery from '../model/db-query';
-
 import { Text, TextDB, convertTextTypes } from '../types';
 
 
-const getAll = async function(): Promise<Array<Text> | null> {
+const getAll = async function(): Promise<Array<Text>> {
   const ALL_TEXTS: string = `
     SELECT * FROM texts`;
 
   const result = await dbQuery(ALL_TEXTS);
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
 
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
 };
 
 
-const getById = async function(textId: number): Promise<Text | null> {
+const getById = async function(textId: number): Promise<Text> {
+  if (textId === 666) throw boom.notAcceptable("Can't use number of the beast as id");
+
   const TEXT_BY_ID: string = `
     SELECT * FROM texts 
      WHERE id = %L`;
 
   const result = await dbQuery(TEXT_BY_ID, textId);
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
 
-  return result.rows[0];
+  return convertTextTypes(result.rows[0]);
 };
 
 
-const addNew = async function(textData: Text): Promise<Text | null> {
+const addNew = async function(textData: Text): Promise<Text> {
   const {
     userId,
     languageId,
@@ -45,7 +41,7 @@ const addNew = async function(textData: Text): Promise<Text | null> {
     INSERT INTO texts (user_id, language_id, title, author,
                        body, ts_config, source_url, source_type)
          VALUES (%s, %L, %L, %L, %L, 
-                 (SELECT FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)
+                 (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig, %L, %L)
       RETURNING *`;
 
   const result = await dbQuery(
@@ -60,11 +56,7 @@ const addNew = async function(textData: Text): Promise<Text | null> {
     sourceType || null,
   );
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
-  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
+  return convertTextTypes(result.rows[0]);
 };
 
 
@@ -104,11 +96,7 @@ const update = async function(textData: Text): Promise<Text | null> {
     id,
   );
 
-  if (!result.rows || result.rows.length === 0) {
-    return null;
-  }
-
-  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem))[0];
+  return convertTextTypes(result.rows[0]);
 };
 
 

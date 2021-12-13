@@ -26,12 +26,13 @@ describe('Testing adding users', () => {
       email: 'test@userRouter.com',
     };
 
-    await api
+    const response = await api
       .post('/api/users')
       .send(newUser)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect('{"message":"User test user succesfully created"}');
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.text).toContain('test user');
   });
 
   // this test keeps jest from exiting
@@ -42,12 +43,13 @@ describe('Testing adding users', () => {
       email: 'test@userRouter.com',
     };
 
-    await api
+    const response = await api
       .post('/api/users')
       .send(newUser)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect('{"message":"Name already exists"}');
+      .expect(406)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.text).toContain('Username already taken');
   });
 });
 
