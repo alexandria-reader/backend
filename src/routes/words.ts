@@ -6,7 +6,7 @@ import { Word } from '../types';
 const router = express.Router();
 
 router.get('/', async(_req, res): Promise<void> => {
-  const allWords = await words.getAll();
+  const allWords: Array<Word> = await words.getAll();
   res.send(allWords);
 });
 
@@ -14,7 +14,7 @@ router.get('/', async(_req, res): Promise<void> => {
 router.get('/:id', async(req, res): Promise<void> => {
   const id = Number(req.params.id);
 
-  const wordById: Word = await words.getById(id);
+  const wordById: Word | null = await words.getById(id);
   res.send(wordById);
 });
 
@@ -22,9 +22,10 @@ router.get('/:id', async(req, res): Promise<void> => {
 router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
   const { langId, userId } = req.params;
 
-  const wordsByLanguageAndUser: Array<Word> = await words.getByLanguageAndUser(langId, Number(userId));
+  const wordsByLanguageAndUser: Array<Word> | null = await words.getByLanguageAndUser(langId, Number(userId));
   res.send(wordsByLanguageAndUser);
 });
+
 
 router.post('/user/:userId', async(req, res): Promise<void> => {
   const wordData: Word = req.body;

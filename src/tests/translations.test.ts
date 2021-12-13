@@ -11,7 +11,7 @@ beforeAll(async () => {
   });
 });
 
-describe('Testing retrieving translations', () => {
+xdescribe('Testing retrieving translations', () => {
   test('retrieve all translations', async () => {
     await api
       .get('/api/translations')
