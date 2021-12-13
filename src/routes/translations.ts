@@ -8,7 +8,6 @@ router.get('/', async (_req, res) => {
   res.send(results);
 });
 
-
 router.get('/user/:userId', async (req, res) => {
   const data = {
     userId: req.params.userId,
@@ -45,7 +44,6 @@ router.get('/word/:wordId/target/:targetId', async (req, res) => {
   res.send(translationRes);
 });
 
-// test done
 router.post('/user/:userId', async (req, res) => {
   const data = {
     userId: req.params.userId,
@@ -65,7 +63,6 @@ router.post('/user/:userId', async (req, res) => {
   }
 });
 
-// test done
 router.delete('/:translationId', async (req, res) => {
   const { translationId } = req.params;
   // eslint-disable-next-line max-len
@@ -77,14 +74,12 @@ router.delete('/:translationId', async (req, res) => {
   }
 });
 
-// wip test
 router.put('/translation/:transId', async (req, res) => {
   const data = {
     trans: req.body.translation,
     id: req.params.transId,
   };
-  const trans = data.trans;
-  const id = data.id;
+  const { trans, id } = data;
   // eslint-disable-next-line max-len
   const updated = await translation.update(trans, Number(id));
   if (updated) {

@@ -11,6 +11,58 @@ beforeAll(async () => {
   });
 });
 
+describe('Testing retrieving translations', () => {
+  test('retrieve all translations', async () => {
+    await api
+      .get('/api/translations')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => {
+        expect(response.body.length).toEqual(22);
+      });
+  });
+
+  test('retrieve all translations for user', async () => {
+    await api
+      .get('/api/translations/user/1')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => {
+        expect(response.body[0].translation).toEqual("natürlich");
+      });
+  });
+
+  test('retrieve one translations by id', async () => {
+    await api
+      .get('/api/translations/2')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => {
+        expect(response.body.translation).toEqual("klar doch");
+      });
+  });
+
+  test('retrieve translations by word id for user', async () => {
+    await api
+      .get('/api/translations/word/1/user/1')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => {
+        expect(response.body.word).toEqual("of course");
+      });
+  });
+
+  test('retrieve translation with specified id and target language', async () => {
+    await api
+      .get('/api/translations/word/4/target/fr')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => {
+        expect(response.body.translation).toEqual("toute la journée");
+      });
+  });
+});
+
 describe('Testing adding translations', () => {
   test('new translation is correctly added', async () => {
     await dbQuery('SELECT * FROM languages');
@@ -54,7 +106,4 @@ describe('Testing updating translations', () => {
       .expect('Content-Type', 'text/html; charset=utf-8')
       .expect('Translation updated');
   });
-});
-
-describe('Testing retrieving translations', () => {
 });
