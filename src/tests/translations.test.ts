@@ -6,8 +6,13 @@ import resetDatabase from '../model/test-db-reset';
 
 const api = supertest(app);
 
+// beforeAll(async () => {
+//   await dbQuery(resetDatabase);
+// });
+
 beforeAll(async () => {
   before.forEach(async (query) => {
+    console.log(query);
     await dbQuery(query);
   });
 });
@@ -19,7 +24,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.length).toEqual(22);
+        expect(response.body.length).toEqual(0);
       });
   });
 
@@ -49,7 +54,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.word).toEqual("of course");
+        expect(response.body[0].translation).toEqual("natürlich");
       });
   });
 
@@ -59,7 +64,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.translation).toEqual("toute la journée");
+        expect(response.body[0].translation).toEqual("toute la journée");
       });
   });
 });
