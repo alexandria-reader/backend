@@ -137,16 +137,14 @@ export const convertKnownLanguageTypes = function(dbItem: KnownLanguageDB): Know
 
 export type Webdictionary = {
   id?: number,
-  languagePairId: number,
-  sourceLanguageId?: string,
-  targetLanguageId?: string,
+  sourceLanguageId: string,
+  targetLanguageId: string,
   name: string,
   url: string
 };
 
 export type WebdictionaryDB = {
-  id?: number,
-  language_pair_id: number,
+  id: number,
   source_language_id: string,
   target_language_id: string,
   name: string,
@@ -156,7 +154,6 @@ export type WebdictionaryDB = {
 export const convertWebdictionaryTypes = function(dbItem: WebdictionaryDB): Webdictionary {
   return {
     id: dbItem.id,
-    languagePairId: dbItem.language_pair_id,
     sourceLanguageId: dbItem.source_language_id,
     targetLanguageId: dbItem.target_language_id,
     name: dbItem.name,

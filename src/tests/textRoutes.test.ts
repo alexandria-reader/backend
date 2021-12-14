@@ -44,7 +44,7 @@ describe('Testing adding texts', () => {
     const response = await api
       .post('/api/texts')
       .send(text)
-      .expect(200)
+      .expect(201)
       .expect('Content-Type', /application\/json/);
 
     expect(response.text).toMatch(/The Little Match Girl/);

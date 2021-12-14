@@ -40,7 +40,7 @@ describe('Getting texts', () => {
     };
 
     const newText = await texts.addNew(textData);
-    expect(newText.title).toBe('Die Kuchengabel');
+    if (newText) expect(newText.title).toBe('Die Kuchengabel');
     expect(await texts.getAll()).toHaveLength(4);
   });
 

@@ -25,20 +25,18 @@ const getById = async function(textId: number): Promise<Text | null> {
 };
 
 
-const getByUser = async function(userId: number): Promise<Array<Text> | null> {
+const getByUser = async function(userId: number): Promise<Array<Text>> {
   const TEXTS_BY_USER: string = `
     SELECT * FROM texts
      WHERE user_id = %s`;
 
   const result = await dbQuery(TEXTS_BY_USER, userId);
 
-  if (result.rowCount === 0) return null;
-
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
 };
 
 
-const addNew = async function(textData: Text): Promise<Text> {
+const addNew = async function(textData: Text): Promise<Text | null> {
   const {
     userId,
     languageId,
@@ -67,6 +65,8 @@ const addNew = async function(textData: Text): Promise<Text> {
     sourceURL || null,
     sourceType || null,
   );
+
+  if (result.rowCount === 0) return null;
 
   return convertTextTypes(result.rows[0]);
 };
@@ -107,6 +107,8 @@ const update = async function(textData: Text): Promise<Text | null> {
     sourceType || null,
     id,
   );
+
+  if (result.rowCount === 0) return null;
 
   return convertTextTypes(result.rows[0]);
 };
