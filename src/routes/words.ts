@@ -29,9 +29,11 @@ router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
 router.post('/user/:userId', async(req, res): Promise<void> => {
   const wordData: Word = req.body;
   const userId: number = Number(req.params.userId);
+  console.log(wordData, userId);
 
   const newWord: Word = await words.addNew(wordData);
-
+  console.log(newWord);
+  // res.send(newWord);
   if (newWord.id) {
     await words.addStatus(newWord.id, userId, 'learning');
     res.send(newWord);
@@ -39,11 +41,10 @@ router.post('/user/:userId', async(req, res): Promise<void> => {
 });
 
 
-router.put('/:id/user/:userId', async(req, res): Promise<void> => {
+router.put('/word/:wordId/user/:userId', async(req, res): Promise<void> => {
   const { status } = req.body;
-  const { id, userId } = req.params;
-
-  const updatedStatus = await words.updateStatus(Number(id), Number(userId), status);
+  const { wordId, userId } = req.params;
+  const updatedStatus = await words.updateStatus(Number(wordId), Number(userId), status);
   res.send(updatedStatus);
 });
 

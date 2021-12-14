@@ -18,13 +18,17 @@ beforeAll(async () => {
 });
 
 describe('Testing retrieving translations', () => {
+  beforeAll(async () => {
+    await api.get('/api/translations');
+  });
+
   test('retrieve all translations', async () => {
     await api
       .get('/api/translations')
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.length).toEqual(0);
+        expect(response.body.length).toEqual(22);
       });
   });
 
