@@ -89,7 +89,7 @@ CREATE TABLE contexts (
 CREATE TABLE webdictionaries (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     source_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    target_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE
+    target_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
     "name" text NOT NULL,
     "url" text NOT NULL
 );
@@ -105,14 +105,14 @@ CREATE TABLE users_study_languages (
 CREATE TABLE users_know_languages (
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     known_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    is_native boolean DEFAULT false
+    is_native boolean DEFAULT false,
     PRIMARY KEY (user_id, known_language_id)
 );
 
 
 CREATE TABLE users_translations (
     user_id int REFERENCES users (id) ON DELETE CASCADE,
-    translation_id int REFERENCES translations (id) ON DELETE CASCADE
+    translation_id int REFERENCES translations (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, translation_id)
 );
 
@@ -120,16 +120,25 @@ CREATE TABLE users_translations (
 CREATE TABLE users_words (
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     word_id int REFERENCES words (id) ON DELETE CASCADE,
-    word_status varchar(32) NOT NULL
+    word_status varchar(32) NOT NULL,
     PRIMARY KEY (user_id, word_id)
 );
 
 
 CREATE TABLE webdictionary_preferences (
     user_id int REFERENCES users (id) ON DELETE CASCADE,
-    webdictionary_id int REFERENCES webdictionaries (id) ON DELETE CASCADE
+    webdictionary_id int REFERENCES webdictionaries (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, webdictionary_id)
 );
+
+DELETE FROM webdictionaries;
+DELETE FROM contexts;
+DELETE FROM translations;
+DELETE FROM texts;
+DELETE FROM words;
+DELETE FROM languages;
+DELETE FROM admins;
+DELETE FROM users;
 
 
 INSERT INTO users (username, password_hash, email)
@@ -200,7 +209,7 @@ VALUES
 (10, 'fr', 'Réveillon de Nouvel an');
 
 
-INSERT INTO contexts (text_id, translation_id, snippet) 
+INSERT INTO contexts (translation_id, snippet) 
 VALUES
 (9, 'poor little girl, bareheaded and barefoot, was'),
 (21, 'road, where two carriages had rattled by');
