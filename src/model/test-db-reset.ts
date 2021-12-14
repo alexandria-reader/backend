@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS users_translations;
 DROP TABLE IF EXISTS users_know_languages;
 DROP TABLE IF EXISTS users_study_languages;
 DROP TABLE IF EXISTS webdictionaries;
-DROP TABLE IF EXISTS languagepairs;
 DROP TABLE IF EXISTS contexts;
 DROP TABLE IF EXISTS translations;
 DROP TABLE IF EXISTS texts;
@@ -31,7 +30,6 @@ CREATE TABLE admins (
 CREATE TABLE languages (
     id varchar(4) PRIMARY KEY,
     "name" varchar(32) UNIQUE NOT NULL,
-    google_translate_url text,
     each_char_is_word boolean DEFAULT false,
     is_right_to_left boolean DEFAULT false
 );
@@ -82,61 +80,54 @@ CREATE TABLE translations (
 
 CREATE TABLE contexts (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    text_id int REFERENCES texts (id) ON DELETE CASCADE,
     translation_id int REFERENCES translations (id) ON DELETE CASCADE,
     snippet text NOT NULL
 );
 
 
-CREATE TABLE languagepairs (
+CREATE TABLE webdictionaries (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     source_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
     target_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE
-);
-
-
-CREATE TABLE webdictionaries (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    language_pair_id int REFERENCES languagepairs (id) ON DELETE CASCADE,
     "name" text NOT NULL,
     "url" text NOT NULL
 );
 
 
 CREATE TABLE users_study_languages (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
-    study_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE
+    study_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, study_language_id)
 );
 
 
 CREATE TABLE users_know_languages (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     known_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
     is_native boolean DEFAULT false
+    PRIMARY KEY (user_id, known_language_id)
 );
 
 
 CREATE TABLE users_translations (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     translation_id int REFERENCES translations (id) ON DELETE CASCADE
+    PRIMARY KEY (user_id, translation_id)
 );
 
 
 CREATE TABLE users_words (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     word_id int REFERENCES words (id) ON DELETE CASCADE,
     word_status varchar(32) NOT NULL
+    PRIMARY KEY (user_id, word_id)
 );
 
 
 CREATE TABLE webdictionary_preferences (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id) ON DELETE CASCADE,
     webdictionary_id int REFERENCES webdictionaries (id) ON DELETE CASCADE
+    PRIMARY KEY (user_id, webdictionary_id)
 );`;
 
 export default reset;

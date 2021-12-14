@@ -1,5 +1,4 @@
 DELETE FROM webdictionaries;
-DELETE FROM languagepairs;
 DELETE FROM contexts;
 DELETE FROM translations;
 DELETE FROM texts;
@@ -77,10 +76,10 @@ VALUES
 (10, 'fr', 'Réveillon de Nouvel an');
 
 
-INSERT INTO contexts (text_id, translation_id, snippet) 
+INSERT INTO contexts (translation_id, snippet) 
 VALUES
-(1, 9, 'poor little girl, bareheaded and barefoot, was'),
-(1, 21, 'road, where two carriages had rattled by');
+(9, 'poor little girl, bareheaded and barefoot, was'),
+(21, 'road, where two carriages had rattled by');
 
 
 INSERT INTO users_words (user_id, word_id, word_status)
@@ -113,4 +112,3 @@ VALUES
 (3, 8),
 (3, 9),
 (3, 10);
-
