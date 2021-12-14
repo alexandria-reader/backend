@@ -26,12 +26,6 @@ describe('Getting languages', () => {
     const languageById = await languages.getById('fdd');
     expect(languageById).toBe(null);
   });
-
-
-  test('getKnownByUser: gets all languages known by user 2', async () => {
-    const userLanguages = await languages.getKnownByUser(2);
-    expect(userLanguages).toHaveLength(2);
-  });
 });
 
 
