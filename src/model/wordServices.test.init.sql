@@ -132,7 +132,7 @@ CREATE TABLE webdictionary_preferences (
 );
 
 DELETE FROM webdictionaries;
-DELETE FROM languagepairs
+DELETE FROM languagepairs;
 DELETE FROM contexts;
 DELETE FROM translations;
 DELETE FROM texts;
