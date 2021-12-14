@@ -49,19 +49,19 @@ describe('Testing getting all words', () => {
 });
 
 // One more route to test
-// describe('Testing adding a word', () => {
-//   test('add a new word', async () => {
-//     const word = {
-//       languageId: 'en',
-//       word: 'hellotest',
-//     };
+describe('Testing adding a word', () => {
+  test('add a new word', async () => {
+    const word = {
+      languageId: 'en',
+      word: 'hellotest',
+    };
 
-//     await api
-//       .post('/api/words/user/1')
-//       .send(word)
-//       .expect(200);
-//   });
-// });
+    await api
+      .post('/api/words/user/1')
+      .send(word)
+      .expect(200);
+  });
+});
 
 describe('Testing updating a word', () => {
   test('modify an existing word', async () => {

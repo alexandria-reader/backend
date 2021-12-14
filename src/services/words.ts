@@ -14,21 +14,23 @@ const getAll = async function(): Promise<Array<Word>> {
 };
 
 
-const getById = async function(wordId: number): Promise<Word> {
+const getById = async function(wordId: number): Promise<Word | null> {
   const WORD_BY_ID: string = `
     SELECT * FROM words 
     WHERE id = %L`;
 
   const result = await dbQuery(WORD_BY_ID, wordId);
 
+  if (result.rowCount === 0) return null;
+
   return convertWordTypes(result.rows[0]);
 };
 
 
 // Finds all words in a given language that are connected to the user
-const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word>> {
+const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
-    SELECT * FROM words AS w 
+    SELECT w.id, w.language_id, w.word FROM words AS w 
       JOIN users_words AS uw 
         ON w.id = uw.word_id 
      WHERE w.language_id = %L 
@@ -41,14 +43,16 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
     userId,
   );
 
+  if (result.rowCount === 0) return null;
+
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-const getUserwordsInText = async function(userId: number, textId: number, simple: boolean): Promise<Array<Word>> {
+const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<Word> | null> {
   const tsvectorType = simple ? 'simple' : 'language';
 
   const USER_WORDS_IN_TEXT: string = `
-    SELECT w.word
+    SELECT w.id, w.word
       FROM words AS w
       JOIN users_words AS uw ON w.id = uw.word_id
      WHERE uw.user_id = %s 
@@ -66,11 +70,13 @@ const getUserwordsInText = async function(userId: number, textId: number, simple
     textId,
   );
 
+  if (result.rowCount === 0) return null;
+
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-// Helper function to check whether a word already exist in a given language
-const getWordInLanguage = async function(word: string, languageId: string): Promise<Word> {
+
+const getWordInLanguage = async function(word: string, languageId: string): Promise<Word | null> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
     SELECT * FROM words 
      WHERE language_id = %L 
@@ -78,6 +84,8 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
            word = %L`;
 
   const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
+
+  if (result.rowCount === 0) return null;
 
   return convertWordTypes(result.rows[0]);
 };
@@ -111,7 +119,7 @@ const addNew = async function(wordData: Word): Promise<Word> {
 };
 
 
-const remove = async function(wordId: number): Promise <Word> {
+const remove = async function(wordId: number): Promise <Word | null> {
   const DELETE_WORD: string = `
        DELETE FROM words
         WHERE id = %s
@@ -121,6 +129,8 @@ const remove = async function(wordId: number): Promise <Word> {
     DELETE_WORD,
     wordId,
   );
+
+  if (result.rowCount === 0) return null;
 
   return convertWordTypes(result.rows[0]);
 };
@@ -189,6 +199,7 @@ export default {
   getById,
   getByLanguageAndUser,
   getUserwordsInText,
+  getWordInLanguage,
   addNew,
   remove,
   getStatus,
