@@ -124,12 +124,13 @@ describe('Testing adding users', () => {
       password: 'password',
     };
 
-    await api
+    const response = await api
       .delete('/api/users/1')
       .send(password)
       .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect('{"message":"Your account has been deleted"}');
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.text).toMatch(/test user/);
   });
 
   test('After deletion, there are no users', async () => {

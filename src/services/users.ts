@@ -1,7 +1,7 @@
 import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import dbQuery from '../model/db-query';
-import { convertUserTypes, User } from '../types';
+import { convertUserTypes, SanitizedUser, User } from '../types';
 
 const selectAllUsers = async function() {
   const SELECT_ALL_USERS = 'SELECT * FROM users';
@@ -67,11 +67,19 @@ const removeUser = async function (userId: string, password: string) {
     //   return { message: 'Something went wrong.' };
     // }
 
-    const deleteUser = 'DELETE FROM users WHERE id = %L';
+    const deleteUser = 'DELETE FROM users WHERE id = %L RETURNING *';
     const result = await dbQuery(deleteUser, userId);
 
     if (result.rowCount > 0) {
-      return { message: 'Your account has been deleted' };
+      const deletedUser = result.rows[0];
+
+      const santizedDeleteUser: SanitizedUser = {
+        id: deletedUser.id,
+        username: deletedUser.username,
+        email: deletedUser.email,
+      };
+
+      return santizedDeleteUser;
     }
   }
 

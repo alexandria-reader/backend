@@ -17,6 +17,8 @@ export type UserDB = {
   email: string,
 };
 
+export type SanitizedUser = Omit<User, 'passwordHash'>;
+
 export const convertUserTypes = function(dbItem: UserDB): User {
   return {
     id: dbItem.id,

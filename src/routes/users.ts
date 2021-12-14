@@ -47,9 +47,11 @@ userRouter.delete('/:userId', async (req, res) => {
   const { userId } = req.params;
   const { password } = req.body;
 
-  const message = await userServices.removeUser(userId, password);
+  // add missing data check and test
 
-  res.json(message);
+  const deletedUser = await userServices.removeUser(userId, password);
+
+  res.json(deletedUser);
 });
 
 // // set known language
