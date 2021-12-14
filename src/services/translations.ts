@@ -32,7 +32,7 @@ const getAllByWordByLang = async function(wordId: number, langId: string): Promi
 };
 
 const getAllContextByLang = async function(wordId: number, langId: string): Promise<Array<Translation>> {
-  const FIND_CONTEXT = 'SELECT * FROM (SELECT * FROM translations WHERE word_id = %L AND target_language_id = %L) AS translations JOIN contexts ON translations.id = contexts.translation_id';
+  const FIND_CONTEXT = 'SELECT * FROM contexts AS c JOIN translations as t ON t.id = c.translation_id WHERE t.word_id = %L AND t.target_language_id = %L';
   const results = await dbQuery(FIND_CONTEXT, wordId, langId);
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
@@ -50,13 +50,14 @@ const add = async function(
   translation: string,
   targetLang: string,
 ) {
-  const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L)';
-  await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
+  const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L) RETURNING *';
+  const result = await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
+  console.log(result);
   const LAST_INSERTION = 'SELECT * FROM translations WHERE id=(SELECT max(id) FROM translations)';
   const resultLastInsertion = await dbQuery(LAST_INSERTION);
   const lastInsertionId = resultLastInsertion.rows[0].id;
   const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id) VALUES(%L, %L) RETURNING users_translations.*';
-  const result = await dbQuery(USER_TRANSLATION, userId, lastInsertionId);
+  await dbQuery(USER_TRANSLATION, userId, lastInsertionId);
   return result;
 };
 
@@ -72,8 +73,9 @@ const update = async function(
 const remove = async function(
   translationId: number,
 ) {
-  const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L';
+  const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L RETURNING *';
   const result = await dbQuery(REMOVE_USERS_TRANSLATIONS, translationId);
+  console.log(result);
   return result;
 };
 
