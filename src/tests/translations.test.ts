@@ -6,13 +6,8 @@ import resetDatabase from '../model/test-db-reset';
 
 const api = supertest(app);
 
-// beforeAll(async () => {
-//   await dbQuery(resetDatabase);
-// });
-
 beforeAll(async () => {
   before.forEach(async (query) => {
-    console.log(query);
     await dbQuery(query);
   });
 });

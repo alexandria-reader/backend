@@ -46,16 +46,15 @@ router.get('/word/:wordId/target/:targetId', async (req, res) => {
 
 router.post('/user/:userId', async (req, res) => {
   const data = {
-    userId: req.params.userId,
     wordId: req.body.wordId,
     tran: req.body.translation,
     targetLang: req.body.targetLang,
   };
   const {
-    userId, wordId, tran, targetLang,
+    wordId, tran, targetLang,
   } = data;
   // eslint-disable-next-line max-len
-  const added = await translation.add(Number(userId), Number(wordId), tran, targetLang);
+  const added = await translation.add(Number(wordId), tran, targetLang);
   if (added) {
     res.send('New translation added');
   } else {
