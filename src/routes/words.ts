@@ -55,4 +55,10 @@ router.put('/word/:wordId/user/:userId', async(req, res): Promise<void> => {
   res.send(updatedStatus);
 });
 
+router.delete('/word/:wordId', async(req, res): Promise<void> => {
+  const id = req.params.wordId;
+  const result = await words.remove(Number(id));
+  res.send(result);
+});
+
 export default router;

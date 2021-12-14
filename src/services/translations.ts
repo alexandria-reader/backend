@@ -10,7 +10,7 @@ const getAllByUser = async function(userId: number): Promise<Array<Translation> 
 const getAll = async function() {
   const FIND_TRANSLATIONS = 'SELECT * FROM translations';
   const results = await dbQuery(FIND_TRANSLATIONS);
-  return results.rows;
+  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 
 const getOne = async function(translationId: number) {
@@ -32,7 +32,7 @@ const getAllByWordByLang = async function(wordId: number, langId: string): Promi
 };
 
 const getAllContextByLang = async function(wordId: number, langId: string): Promise<Array<Translation>> {
-  const FIND_CONTEXT = 'SELECT * FROM (SELECT * FROM translations WHERE word_id = %L AND target_language_id = %L) AS translations JOIN contexts ON translations.id = contexts.translation_id';
+  const FIND_CONTEXT = 'SELECT * FROM contexts AS c JOIN translations as t ON t.id = c.translation_id WHERE t.word_id = %L AND t.target_language_id = %L';
   const results = await dbQuery(FIND_CONTEXT, wordId, langId);
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
@@ -43,20 +43,23 @@ const getContextByLangByUser = async function(userId: number, wordId: number, la
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 
-// Need to convert return (id, user_id, translation_id) to a translation type
+
 const add = async function(
-  userId: number,
   wordId: number,
   translation: string,
   targetLang: string,
 ) {
-  const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L)';
-  await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
-  const LAST_INSERTION = 'SELECT * FROM translations WHERE id=(SELECT max(id) FROM translations)';
-  const resultLastInsertion = await dbQuery(LAST_INSERTION);
-  const lastInsertionId = resultLastInsertion.rows[0].id;
+  const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L) RETURNING *';
+  const results = await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
+  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
+};
+
+const addToUsersTranslations = async function(
+  userId: number,
+  translationId: number,
+) {
   const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id) VALUES(%L, %L) RETURNING users_translations.*';
-  const result = await dbQuery(USER_TRANSLATION, userId, lastInsertionId);
+  const result = await dbQuery(USER_TRANSLATION, userId, translationId);
   return result;
 };
 
@@ -72,8 +75,9 @@ const update = async function(
 const remove = async function(
   translationId: number,
 ) {
-  const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L';
+  const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L RETURNING *';
   const result = await dbQuery(REMOVE_USERS_TRANSLATIONS, translationId);
+  console.log(result);
   return result;
 };
 
@@ -86,6 +90,7 @@ export default {
   getContextByLangByUser,
   getAllContextByLang,
   add,
+  addToUsersTranslations,
   update,
   remove,
 };
