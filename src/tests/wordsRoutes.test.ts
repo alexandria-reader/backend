@@ -33,7 +33,7 @@ describe('Testing getting all words', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.word).toEqual("of course");
+        expect(response.body.word).toEqual('of course');
       });
   });
 
@@ -43,7 +43,7 @@ describe('Testing getting all words', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body[0].word).toEqual("of course");
+        expect(response.body[0].word).toEqual('of course');
       });
   });
 });
@@ -58,7 +58,7 @@ describe('Testing adding a word', () => {
     await api
       .post('/api/words/user/1')
       .send(word)
-      .expect(200);
+      .expect(201);
   });
 });
 

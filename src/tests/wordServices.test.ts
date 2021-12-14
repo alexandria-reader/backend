@@ -58,7 +58,7 @@ describe('Getting words', () => {
     };
 
     const newWord = await words.addNew(wordData);
-    expect(newWord.word).toContain('Kuchengabel');
+    if (newWord) expect(newWord.word).toContain('Kuchengabel');
     expect(await words.getAll()).toHaveLength(11);
   });
 
@@ -72,8 +72,8 @@ describe('Getting words', () => {
     };
 
     const newWord = await words.addNew(wordData);
-    expect(newWord.word).toContain('Kuchengabel');
-    expect(newWord.id).toEqual(existingWord?.id);
+    if (newWord) expect(newWord.word).toContain('Kuchengabel');
+    if (newWord) expect(newWord.id).toEqual(existingWord?.id);
     expect(await words.getAll()).toHaveLength(11);
   });
 

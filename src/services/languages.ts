@@ -6,35 +6,7 @@ import {
 } from '../types';
 
 
-const addNew = async function(languageData: Language): Promise<Language> {
-  const {
-    id,
-    name,
-    googleTranslateURL,
-    eachCharIsWord,
-    isRightToLeft,
-  } = languageData;
-
-  const ADD_LANGUAGE: string = `
-    INSERT INTO languages (id, name, google_translate_url, 
-                           each_word_is_char, is_right_to_left)
-         VALUES (%L, %L, %L, %L, %L)
-      RETURNING *`;
-
-  const result = await dbQuery(
-    ADD_LANGUAGE,
-    id,
-    name,
-    googleTranslateURL || null,
-    eachCharIsWord,
-    isRightToLeft,
-  );
-
-  return convertLanguageTypes(result.rows[0]);
-};
-
-
-const getAll = async function(): Promise<Array<Language> | null> {
+const getAll = async function(): Promise<Array<Language>> {
   const ALL_LANGUAGES: string = `
     SELECT * FROM languages`;
 
@@ -44,11 +16,40 @@ const getAll = async function(): Promise<Array<Language> | null> {
 };
 
 
-const getById = async function(languageId: string): Promise<Language> {
+const getById = async function(languageId: string): Promise<Language | null> {
   const LANGUAGE_BY_ID: string = `
     SELECT * FROM languages WHERE id = %L`;
 
   const result = await dbQuery(LANGUAGE_BY_ID, languageId);
+
+  if (result.rowCount === 0) return null;
+
+  return convertLanguageTypes(result.rows[0]);
+};
+
+
+const addNew = async function(languageData: Language): Promise<Language | null> {
+  const {
+    id,
+    name,
+    eachCharIsWord,
+    isRightToLeft,
+  } = languageData;
+
+  const ADD_LANGUAGE: string = `
+    INSERT INTO languages (id, name, each_word_is_char, is_right_to_left)
+         VALUES (%L, %L, %L, %L, %L)
+      RETURNING *`;
+
+  const result = await dbQuery(
+    ADD_LANGUAGE,
+    id,
+    name,
+    eachCharIsWord,
+    isRightToLeft,
+  );
+
+  if (result.rowCount === 0) return null;
 
   return convertLanguageTypes(result.rows[0]);
 };
@@ -72,6 +73,28 @@ const getKnownByUser = async function(userId: number): Promise<Array<KnownLangua
 };
 
 
+const addKnownByUser = async function(languageId: string, userId: number, isNative: boolean): Promise<KnownLanguage | null> {
+  const ADD_KNOWN_BY_USER = `
+    INSERT INTO users_know_languages (language_id, user_id, is_native)
+         VALUES (%L, %s, %L)
+     RETURNNING *`;
+
+  const userLanguageResult = await dbQuery(
+    ADD_KNOWN_BY_USER,
+    languageId,
+    userId,
+    isNative,
+  );
+
+  if (userLanguageResult.rowCount === 0) return null;
+
+  const language = await getById(languageId);
+  if (!language) return null;
+
+  return { ...language, isNative };
+};
+
+
 const getStudiedByUser = async function(userId: number): Promise<Array<Language>> {
   const STUDIED_BY_USER: string = `
     SELECT l.id, 
@@ -89,27 +112,32 @@ const getStudiedByUser = async function(userId: number): Promise<Array<Language>
 };
 
 
-const addPair = async function(sourceLanguageId: string, targetLanguageId: string) {
-  const ADD_LANGUAGE_PAIR: string = `
-    INSERT INTO languagepairs (source_language_id, target_language_id)
-         VALUES (%L, %L)
-      RETURNING *`;
+const addStudiedByUser = async function(languageId: string, userId: number): Promise<Language | null> {
+  const ADD_STUDIED_BY_USER = `
+    INSERT INTO users_study_languages (language_id, user_id)
+         VALUES (%L, %s, %L)
+     RETURNNING *`;
 
-  const result = await dbQuery(
-    ADD_LANGUAGE_PAIR,
-    sourceLanguageId,
-    targetLanguageId,
+  const studyLanguageResult = await dbQuery(
+    ADD_STUDIED_BY_USER,
+    languageId,
+    userId,
   );
 
-  return result.rows[0];
+  if (!studyLanguageResult) return null;
+
+  const studyLanguage = await getById(languageId);
+
+  return studyLanguage;
 };
 
 
 export default {
-  addNew,
   getAll,
   getById,
+  addNew,
   getKnownByUser,
+  addKnownByUser,
   getStudiedByUser,
-  addPair,
+  addStudiedByUser,
 };

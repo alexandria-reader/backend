@@ -28,7 +28,7 @@ const getById = async function(wordId: number): Promise<Word | null> {
 
 
 // Finds all words in a given language that are connected to the user
-const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word> | null> {
+const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word>> {
   const WORDS_BY_LANGUAGE_AND_USER: string = `
     SELECT w.id, w.language_id, w.word FROM words AS w 
       JOIN users_words AS uw 
@@ -43,12 +43,10 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
     userId,
   );
 
-  if (result.rowCount === 0) return null;
-
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<Word> | null> {
+const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<Word>> {
   const tsvectorType = simple ? 'simple' : 'language';
 
   const USER_WORDS_IN_TEXT: string = `
@@ -70,8 +68,6 @@ const getUserwordsInText = async function(userId: number, textId: number, simple
     textId,
   );
 
-  if (result.rowCount === 0) return null;
-
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
@@ -91,7 +87,7 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
 };
 
 
-const addNew = async function(wordData: Word): Promise<Word> {
+const addNew = async function(wordData: Word): Promise<Word | null> {
   const {
     languageId,
     word,
@@ -99,7 +95,6 @@ const addNew = async function(wordData: Word): Promise<Word> {
 
   const existingWord = await getWordInLanguage(word, languageId);
   if (existingWord) {
-    console.log('word already exists, returning original');
     return existingWord;
   }
 
@@ -114,6 +109,8 @@ const addNew = async function(wordData: Word): Promise<Word> {
     word,
     languageId,
   );
+
+  if (result.rowCount === 0) return null;
 
   return convertWordTypes(result.rows[0]);
 };
@@ -150,9 +147,7 @@ const getStatus = async function(wordId: number, userId: number): Promise<string
     wordId,
   );
 
-  if (result.rowCount === 0) {
-    return null;
-  }
+  if (result.rowCount === 0) return null;
 
   return result.rows[0].word_status;
 };
@@ -170,6 +165,8 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
     wordId,
     wordStatus,
   );
+
+  if (result.rowCount === 0) return null;
 
   return result.rows[0].word_status;
 };
@@ -189,6 +186,8 @@ const updateStatus = async function(wordId: number, userId: number, status: stri
     userId,
     wordId,
   );
+
+  if (result.rowCount === 0) return null;
 
   return result.rows[0].word_status;
 };

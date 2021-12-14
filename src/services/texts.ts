@@ -1,4 +1,3 @@
-import boom from '@hapi/boom';
 import dbQuery from '../model/db-query';
 import { Text, TextDB, convertTextTypes } from '../types';
 
@@ -13,20 +12,31 @@ const getAll = async function(): Promise<Array<Text>> {
 };
 
 
-const getById = async function(textId: number): Promise<Text> {
-  if (textId === 666) throw boom.notAcceptable("Can't use number of the beast as id");
-
+const getById = async function(textId: number): Promise<Text | null> {
   const TEXT_BY_ID: string = `
     SELECT * FROM texts 
-     WHERE id = %L`;
+     WHERE id = %s`;
 
   const result = await dbQuery(TEXT_BY_ID, textId);
+
+  if (result.rowCount === 0) return null;
 
   return convertTextTypes(result.rows[0]);
 };
 
 
-const addNew = async function(textData: Text): Promise<Text> {
+const getByUser = async function(userId: number): Promise<Array<Text>> {
+  const TEXTS_BY_USER: string = `
+    SELECT * FROM texts
+     WHERE user_id = %s`;
+
+  const result = await dbQuery(TEXTS_BY_USER, userId);
+
+  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
+};
+
+
+const addNew = async function(textData: Text): Promise<Text | null> {
   const {
     userId,
     languageId,
@@ -55,6 +65,8 @@ const addNew = async function(textData: Text): Promise<Text> {
     sourceURL || null,
     sourceType || null,
   );
+
+  if (result.rowCount === 0) return null;
 
   return convertTextTypes(result.rows[0]);
 };
@@ -96,6 +108,22 @@ const update = async function(textData: Text): Promise<Text | null> {
     id,
   );
 
+  if (result.rowCount === 0) return null;
+
+  return convertTextTypes(result.rows[0]);
+};
+
+
+const remove = async function(textId: number): Promise<Text | null> {
+  const REMOVE_TEXT: string = `
+  DELETE FROM texts 
+        WHERE id = %s
+    RETURNING *`;
+
+  const result = await dbQuery(REMOVE_TEXT, textId);
+
+  if (result.rowCount === 0) return null;
+
   return convertTextTypes(result.rows[0]);
 };
 
@@ -103,6 +131,8 @@ const update = async function(textData: Text): Promise<Text | null> {
 export default {
   getAll,
   getById,
+  getByUser,
   addNew,
   update,
+  remove,
 };

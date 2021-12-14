@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import dbQuery from '../model/db-query';
 import before from '../model/test-db-before';
 import translations from '../services/translations';
@@ -90,11 +91,13 @@ describe('Testing adding translations', () => {
     const targetLanguageId = 'de';
 
     const resultTrans = await translations.add(wordId, translation, targetLanguageId);
-    const lastTransId = resultTrans[0].id;
-    const result = await translations.addToUsersTranslations(1, lastTransId);
-    if (result) {
-      expect(result.rows[0].user_id).toBe(1);
-      expect(result.rows[0].translation_id).toBe(lastTransId);
+    if (resultTrans[0].id) {
+      const lastTransId = resultTrans[0].id;
+      const result = await translations.addToUsersTranslations(1, lastTransId);
+      if (result) {
+        expect(result.rows[0].user_id).toBe(1);
+        expect(result.rows[0].translation_id).toBe(lastTransId);
+      }
     }
   });
 });
