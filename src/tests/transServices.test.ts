@@ -2,7 +2,6 @@ import dbQuery from '../model/db-query';
 import before from '../model/test-db-before';
 import translations from '../services/translations';
 import resetDatabase from '../model/test-db-reset';
-import { Translation } from '../types';
 
 beforeAll(async () => {
   before.forEach(async (query) => {
@@ -74,15 +73,28 @@ describe('Testing retrieving translations', () => {
 
 describe('Testing adding translations', () => {
   test('add: new translation is correctly added', async () => {
-    const id = 1;
     const wordId = 9;
     const translation = 'voitures';
     const targetLanguageId = 'fr';
 
-    const result = await translations.add(id, wordId, translation, targetLanguageId);
+    const result = await translations.add(wordId, translation, targetLanguageId);
     if (result) {
-      expect(result.rows[0].translation).toContain('voitures');
-      expect(result.rows[0].target_language_id).toContain('fr');
+      expect(result[0].translation).toContain('voitures');
+      expect(result[0].targetLanguageId).toContain('fr');
+    }
+  });
+
+  test('aaddToUsersTranslationsdd: test a new translation is also added to the users_translations table', async () => {
+    const wordId = 9;
+    const translation = 'auto';
+    const targetLanguageId = 'de';
+
+    const resultTrans = await translations.add(wordId, translation, targetLanguageId);
+    const lastTransId = resultTrans[0].id;
+    const result = await translations.addToUsersTranslations(1, lastTransId);
+    if (result) {
+      expect(result.rows[0].user_id).toBe(1);
+      expect(result.rows[0].translation_id).toBe(lastTransId);
     }
   });
 });
@@ -93,7 +105,7 @@ describe('Testing deleting translations', () => {
     const result = await translations.remove(id);
     if (result) {
       const getAll = await translations.getAll();
-      expect(getAll.length).toBe(23);
+      expect(getAll.length).toBe(24);
     }
   });
 });

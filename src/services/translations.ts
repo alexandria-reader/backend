@@ -10,7 +10,7 @@ const getAllByUser = async function(userId: number): Promise<Array<Translation> 
 const getAll = async function() {
   const FIND_TRANSLATIONS = 'SELECT * FROM translations';
   const results = await dbQuery(FIND_TRANSLATIONS);
-  return results.rows;
+  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 
 const getOne = async function(translationId: number) {
@@ -43,21 +43,23 @@ const getContextByLangByUser = async function(userId: number, wordId: number, la
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 
-// Need to convert return (id, user_id, translation_id) to a translation type
+
 const add = async function(
-  userId: number,
   wordId: number,
   translation: string,
   targetLang: string,
 ) {
   const INSERT_TRANSLATION = 'INSERT INTO translations (word_id, translation, target_language_id) VALUES (%L, %L, %L) RETURNING *';
-  const result = await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
-  console.log(result);
-  const LAST_INSERTION = 'SELECT * FROM translations WHERE id=(SELECT max(id) FROM translations)';
-  const resultLastInsertion = await dbQuery(LAST_INSERTION);
-  const lastInsertionId = resultLastInsertion.rows[0].id;
+  const results = await dbQuery(INSERT_TRANSLATION, wordId, translation, targetLang);
+  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
+};
+
+const addToUsersTranslations = async function(
+  userId: number,
+  translationId: number,
+) {
   const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id) VALUES(%L, %L) RETURNING users_translations.*';
-  await dbQuery(USER_TRANSLATION, userId, lastInsertionId);
+  const result = await dbQuery(USER_TRANSLATION, userId, translationId);
   return result;
 };
 
@@ -88,6 +90,7 @@ export default {
   getContextByLangByUser,
   getAllContextByLang,
   add,
+  addToUsersTranslations,
   update,
   remove,
 };
