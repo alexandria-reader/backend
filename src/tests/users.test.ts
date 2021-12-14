@@ -106,6 +106,19 @@ describe('Testing adding users', () => {
       .expect('{"message":"Incorrect password"}');
   });
 
+  test('users cannot delete account unless correct password is supplied', async () => {
+    const password = {
+      password: 'wrong',
+    };
+
+    await api
+      .delete('/api/users/1')
+      .send(password)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect('{"message":"Passwords do not match"}');
+  });
+
   test('users are successfully deleted', async () => {
     const password = {
       password: 'password',

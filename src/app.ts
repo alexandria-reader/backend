@@ -13,11 +13,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/ping', (_req, res) => {
-  console.log('someone pinged here');
-  res.send('pong');
-});
-
 app.use('/api/texts', textsRouter);
 app.use('/api/translations', translationsRouter);
 app.use('/api/users', usersRouter);
