@@ -1,38 +1,27 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 import express from 'express';
-import User from '../services/users';
+import userServices from '../services/users';
 
 const loginRouter = express.Router();
 
-loginRouter.post('/', async function(request, response) => {
-  const { body } = request;
-
-  // User needs to be implemented
-  // const user = await User.findOne({ username: body.username }) 
-  const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(body.password, user.passwordHash)
-
-  if (!(user && passwordCorrect)) {
-    return response.status(401).json({
-      error: 'invalid username or password';
-    })
-  }
+export default loginRouter.post('/', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await userServices.getUserByUsername(email, password);
 
   const userForToken = {
+    email: user.email,
+    id: user.id,
     username: user.username,
-    id: user._id,
-  }
+  };
 
-  // token expires in 60*60 seconds, that is, in one hour
+  // token expires in one week
   const token = jwt.sign(
     userForToken,
-    process.env.SECRET,
-    // { expiresIn: 60*60*24 }
+    String(process.env.SECRET),
+    { expiresIn: 60 * 60 * 24 * 7 },
   );
 
-  response
+  return res
     .status(200)
-    .send({ token, username: user.username, name: user.name });
+    .send({ token, username: user.username, email: user.email });
 });

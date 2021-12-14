@@ -56,19 +56,44 @@ const removeUser = async function (userId: string, password: string) {
 
   if (passwordsMatch) {
     // add email check once login is implemented
-    try {
-      const deleteUser = 'DELETE FROM users WHERE id = %L';
-      const result = await dbQuery(deleteUser, userId);
+    // try {
+    //   const deleteUser = 'DELETE FROM users WHERE id = %L';
+    //   const result = await dbQuery(deleteUser, userId);
 
-      if (result.rowCount > 0) {
-        return { message: 'Your account has been deleted' };
-      }
-    } catch (error) {
-      return { message: 'Something went wrong.' };
+    //   if (result.rowCount > 0) {
+    //     return { message: 'Your account has been deleted' };
+    //   }
+    // } catch (error) {
+    //   return { message: 'Something went wrong.' };
+    // }
+
+    const deleteUser = 'DELETE FROM users WHERE id = %L';
+    const result = await dbQuery(deleteUser, userId);
+
+    if (result.rowCount > 0) {
+      return { message: 'Your account has been deleted' };
     }
   }
 
   return { message: 'Passwords do not match' };
+};
+
+const getUserByUsername = async function (email: string, password: string): Promise<User> {
+  const SELECT_USER = 'SELECT * FROM users WHERE email = %L';
+  const result = await dbQuery(SELECT_USER, email);
+
+  if (result.rowCount > 0) {
+    const user = result.rows[0];
+    const passwordsMatch = await verifyPassword(user.id, password);
+
+    if (passwordsMatch) {
+      return user;
+    }
+
+    throw boom.notAcceptable('Passwords do not match');
+  }
+
+  throw boom.notAcceptable('Email not found');
 };
 
 export default {
@@ -76,6 +101,7 @@ export default {
   addNewUser,
   updateUserPassword,
   removeUser,
+  getUserByUsername,
 };
 
 // add update password / email routes

@@ -52,14 +52,14 @@ userRouter.delete('/:userId', async (req, res) => {
   res.json(message);
 });
 
-// set known language
-userRouter.put('/:userId', async (_req, _res) => {
+// // set known language
+// userRouter.put('/:userId', async (_req, _res) => {
 
-});
+// });
 
-// add target language
-userRouter.put('/:userId', async (_req, _res) => {
+// // add target language
+// userRouter.put('/:userId', async (_req, _res) => {
 
-});
+// });
 
 export default userRouter;
