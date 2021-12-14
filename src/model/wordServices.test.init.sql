@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS users_translations;
 DROP TABLE IF EXISTS users_know_languages;
 DROP TABLE IF EXISTS users_study_languages;
 DROP TABLE IF EXISTS webdictionaries;
+DROP TABLE IF EXISTS languagepairs;
 DROP TABLE IF EXISTS contexts;
 DROP TABLE IF EXISTS translations;
 DROP TABLE IF EXISTS texts;
@@ -131,6 +132,7 @@ CREATE TABLE webdictionary_preferences (
 );
 
 DELETE FROM webdictionaries;
+DELETE FROM languagepairs
 DELETE FROM contexts;
 DELETE FROM translations;
 DELETE FROM texts;
