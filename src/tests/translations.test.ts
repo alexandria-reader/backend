@@ -12,7 +12,6 @@ const api = supertest(app);
 
 beforeAll(async () => {
   before.forEach(async (query) => {
-    console.log(query);
     await dbQuery(query);
   });
 });
@@ -38,7 +37,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body[0].translation).toEqual("natürlich");
+        expect(response.body[0].translation).toEqual('natürlich');
       });
   });
 
@@ -48,7 +47,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.translation).toEqual("klar doch");
+        expect(response.body.translation).toEqual('klar doch');
       });
   });
 
@@ -58,7 +57,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body[0].translation).toEqual("natürlich");
+        expect(response.body[0].translation).toEqual('natürlich');
       });
   });
 
@@ -68,7 +67,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body[0].translation).toEqual("toute la journée");
+        expect(response.body[0].translation).toEqual('toute la journée');
       });
   });
 });

@@ -158,7 +158,7 @@ const getStatus = async function(wordId: number, userId: number): Promise<string
 };
 
 
-const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string | null> {
+const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string> {
   const ADD_USER_WORD_STATUS: string = `
     INSERT INTO users_words (user_id, word_id, word_status)
          VALUES (%s, %s, %L)
@@ -189,6 +189,8 @@ const updateStatus = async function(wordId: number, userId: number, status: stri
     userId,
     wordId,
   );
+
+  if (result.rowCount === 0) return null;
 
   return result.rows[0].word_status;
 };

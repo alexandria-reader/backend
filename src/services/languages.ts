@@ -6,18 +6,40 @@ import {
 } from '../types';
 
 
+const getAll = async function(): Promise<Array<Language> | null> {
+  const ALL_LANGUAGES: string = `
+    SELECT * FROM languages`;
+
+  const result = await dbQuery(ALL_LANGUAGES);
+
+  if (result.rowCount === 0) return null;
+
+  return result.rows.map((dbItem: LanguageDB) => convertLanguageTypes(dbItem));
+};
+
+
+const getById = async function(languageId: string): Promise<Language | null> {
+  const LANGUAGE_BY_ID: string = `
+    SELECT * FROM languages WHERE id = %L`;
+
+  const result = await dbQuery(LANGUAGE_BY_ID, languageId);
+
+  if (result.rowCount === 0) return null;
+
+  return convertLanguageTypes(result.rows[0]);
+};
+
+
 const addNew = async function(languageData: Language): Promise<Language> {
   const {
     id,
     name,
-    googleTranslateURL,
     eachCharIsWord,
     isRightToLeft,
   } = languageData;
 
   const ADD_LANGUAGE: string = `
-    INSERT INTO languages (id, name, google_translate_url, 
-                           each_word_is_char, is_right_to_left)
+    INSERT INTO languages (id, name, each_word_is_char, is_right_to_left)
          VALUES (%L, %L, %L, %L, %L)
       RETURNING *`;
 
@@ -25,7 +47,6 @@ const addNew = async function(languageData: Language): Promise<Language> {
     ADD_LANGUAGE,
     id,
     name,
-    googleTranslateURL || null,
     eachCharIsWord,
     isRightToLeft,
   );
@@ -34,27 +55,7 @@ const addNew = async function(languageData: Language): Promise<Language> {
 };
 
 
-const getAll = async function(): Promise<Array<Language> | null> {
-  const ALL_LANGUAGES: string = `
-    SELECT * FROM languages`;
-
-  const result = await dbQuery(ALL_LANGUAGES);
-
-  return result.rows.map((dbItem: LanguageDB) => convertLanguageTypes(dbItem));
-};
-
-
-const getById = async function(languageId: string): Promise<Language> {
-  const LANGUAGE_BY_ID: string = `
-    SELECT * FROM languages WHERE id = %L`;
-
-  const result = await dbQuery(LANGUAGE_BY_ID, languageId);
-
-  return convertLanguageTypes(result.rows[0]);
-};
-
-
-const getKnownByUser = async function(userId: number): Promise<Array<KnownLanguage>> {
+const getKnownByUser = async function(userId: number): Promise<Array<KnownLanguage> | null> {
   const KNOWN_BY_USER: string = `
     SELECT id, 
            name, 
@@ -68,11 +69,28 @@ const getKnownByUser = async function(userId: number): Promise<Array<KnownLangua
 
   const result = await dbQuery(KNOWN_BY_USER, userId);
 
+  if (result.rowCount === 0) return null;
+
   return result.rows.map((dbItem: KnownLanguageDB): KnownLanguage => convertKnownLanguageTypes(dbItem));
 };
 
 
-const getStudiedByUser = async function(userId: number): Promise<Array<Language>> {
+const addKnownByUser = async function(languageId: string, userId: number, isNative: boolean): Promise<void> {
+  const ADD_KNOWN_BY_USER = `
+    INSERT INTO users_know_languages (language_id, user_id, is_native)
+         VALUES (%L, %s, %L)
+     RETURNNING *`;
+
+  await dbQuery(
+    ADD_KNOWN_BY_USER,
+    languageId,
+    userId,
+    isNative,
+  );
+};
+
+
+const getStudiedByUser = async function(userId: number): Promise<Array<Language> | null> {
   const STUDIED_BY_USER: string = `
     SELECT l.id, 
            name, 
@@ -85,31 +103,32 @@ const getStudiedByUser = async function(userId: number): Promise<Array<Language>
 
   const result = await dbQuery(STUDIED_BY_USER, userId);
 
+  if (result.rowCount === 0) return null;
+
   return result.rows.map((dbItem: LanguageDB): Language => convertLanguageTypes(dbItem));
 };
 
 
-const addPair = async function(sourceLanguageId: string, targetLanguageId: string) {
-  const ADD_LANGUAGE_PAIR: string = `
-    INSERT INTO languagepairs (source_language_id, target_language_id)
-         VALUES (%L, %L)
-      RETURNING *`;
+const addStudiedByUser = async function(languageId: string, userId: number): Promise<void> {
+  const ADD_STUDIED_BY_USER = `
+    INSERT INTO users_study_languages (language_id, user_id)
+         VALUES (%L, %s, %L)
+     RETURNNING *`;
 
-  const result = await dbQuery(
-    ADD_LANGUAGE_PAIR,
-    sourceLanguageId,
-    targetLanguageId,
+  await dbQuery(
+    ADD_STUDIED_BY_USER,
+    languageId,
+    userId,
   );
-
-  return result.rows[0];
 };
 
 
 export default {
-  addNew,
   getAll,
   getById,
+  addNew,
   getKnownByUser,
+  addKnownByUser,
   getStudiedByUser,
-  addPair,
+  addStudiedByUser,
 };
