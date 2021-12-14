@@ -137,7 +137,7 @@ const remove = async function(wordId: number): Promise <Word | null> {
 
 
 // Retrieves word status string for given user
-const getStatus = async function(userId: number, wordId: number): Promise<string | null> {
+const getStatus = async function(wordId: number, userId: number): Promise<string | null> {
   const USER_WORD_STATUS: string = `
     SELECT word_status FROM users_words 
      WHERE user_id = %s 

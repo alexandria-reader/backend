@@ -77,6 +77,7 @@ describe('Getting words', () => {
     expect(await words.getAll()).toHaveLength(11);
   });
 
+
   test('remove: removing an existing word', async () => {
     const existingWord = await words.getWordInLanguage('Kuchengabel', 'de');
 
@@ -85,6 +86,30 @@ describe('Getting words', () => {
       expect(removedWord?.word).toContain('Kuchengabel');
       expect(await words.getAll()).toHaveLength(10);
     }
+  });
+
+
+  test('getStatus: status of word 5 for user 3 in "learning"', async () => {
+    const status = await words.getStatus(5, 3);
+    expect(status).toBe('learning');
+  });
+
+
+  test('updateStatus: change previous status to "testing"', async() => {
+    const updatedStatus = await words.updateStatus(5, 3, 'testing');
+    expect(updatedStatus).toBe('testing');
+
+    const status = await words.getStatus(5, 3);
+    expect(status).toBe('testing');
+  });
+
+
+  test('addStatus: add status "testing" to word 4 for user 1', async () => {
+    const addedStatus = await words.addStatus(4, 1, 'testing');
+    expect(addedStatus).toBe('testing');
+
+    const status = await words.getStatus(4, 1);
+    expect(status).toBe('testing');
   });
 });
 
