@@ -1,5 +1,7 @@
 import dbQuery from '../model/db-query';
-import { Translation, TranslationDB, convertTranslationTypes } from '../types';
+import {
+  Translation, TranslationDB, convertTranslationTypes,
+} from '../types';
 
 const getAllByUser = async function(userId: number): Promise<Array<Translation> | null> {
   const FIND_TRANSLATIONS = 'SELECT * FROM translations AS t JOIN users_translations AS ut ON t.id = ut.translation_id AND user_id = %L';
@@ -30,19 +32,6 @@ const getAllByWordByLang = async function(wordId: number, langId: string): Promi
   const results = await dbQuery(FIND_TRANSLATIONS, wordId, langId);
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
-
-const getAllContextByLang = async function(wordId: number, langId: string): Promise<Array<Translation>> {
-  const FIND_CONTEXT = 'SELECT * FROM contexts AS c JOIN translations as t ON t.id = c.translation_id WHERE t.word_id = %L AND t.target_language_id = %L';
-  const results = await dbQuery(FIND_CONTEXT, wordId, langId);
-  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
-};
-
-const getContextByLangByUser = async function(userId: number, wordId: number, langId: string): Promise<Array<Translation>> {
-  const FIND_CONTEXT_BY_USER = 'SELECT * FROM contexts JOIN (SELECT * FROM translations JOIN users_translations ON translations.id = users_translations.translation_id WHERE users_translations.user_id = %L AND translations.word_id = %L AND translations.target_language_id = %L) as translations ON contexts.translation_id = translations.translation_id';
-  const results = await dbQuery(FIND_CONTEXT_BY_USER, userId, wordId, langId);
-  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
-};
-
 
 const add = async function(
   wordId: number,
@@ -77,7 +66,6 @@ const remove = async function(
 ) {
   const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L RETURNING *';
   const result = await dbQuery(REMOVE_USERS_TRANSLATIONS, translationId);
-  console.log(result);
   return result;
 };
 
@@ -87,8 +75,6 @@ export default {
   getOne,
   getByWord,
   getAllByWordByLang,
-  getContextByLangByUser,
-  getAllContextByLang,
   add,
   addToUsersTranslations,
   update,

@@ -186,3 +186,23 @@ export const convertTranslationTypes = function(dbItem: TranslationDB): Translat
     targetLanguageId: dbItem.target_language_id,
   };
 };
+
+export type Context = {
+  id?: number,
+  snippet: string,
+  translationId: number
+};
+
+export type ContextDB = {
+  id: number,
+  snippet: string,
+  translation_id: number
+};
+
+export const convertContextTypes = function(dbItem: ContextDB): Context {
+  return {
+    id: dbItem.id,
+    snippet: dbItem.snippet,
+    translationId: dbItem.translation_id,
+  };
+};

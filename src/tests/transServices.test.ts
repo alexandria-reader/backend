@@ -2,6 +2,7 @@
 import dbQuery from '../model/db-query';
 import before from '../model/test-db-before';
 import translations from '../services/translations';
+import contexts from '../services/contexts';
 import resetDatabase from '../model/test-db-reset';
 
 beforeAll(async () => {
@@ -50,26 +51,32 @@ describe('Testing retrieving translations', () => {
       expect(result[1].translation).toBe('klar doch');
     }
   });
+});
 
-  // Missing context
-  // test('getAllContextByLang: retrieve context and translation context by language and word id', async () => {
-  //   const result = await translations.getAllContextByLang(9, 'fr');
-  //   if (result) {
-  //     expect(result.length).toBe(1);
-  //     expect(result[0].translation).toBe('chariots');
-  //     expect(result[0].targetLanguageId).toBe('fr');
-  //   }
-  // });
+describe('Testing retrieving contexts', () => {
+  test('getAllContextByLang: retrieve contexts by translation id', async () => {
+    const result = await contexts.getAllContextByLang(9);
+    if (result) {
+      expect(result[0].translationId).toBe(9);
+    }
+  });
 
-  // Missing context, need to implement context first
-  // test('getContextByLangByUser: retrieve context and translation for user, given word id and target language id', async () => {
-  //   const result = await translations.getContextByLangByUser(1, 9, 'fr');
-  //   if (result) {
-  //     expect(result.length).toBe(1);
-  //     expect(result[0].translation).toBe('voitures');
-  //     expect(result[0].targetLanguageId).toBe('fr');
-  //   }
-  // });
+  test('getContextByLangByUser: retrieve context and translation for user, given word id and target language id', async () => {
+    await translations.addToUsersTranslations(3, 21);
+    const result = await contexts.getContextByLangByUser(3, 9, 'fr');
+    if (result) {
+      expect(result[0].snippet).toBe('road, where two carriages had rattled by');
+    }
+  });
+});
+
+describe('Testing adding contexts', () => {
+  test('add: new context is correctly added', async () => {
+    const result = await contexts.addContext('où deux voitures avaient claqué par', 21);
+    if (result) {
+      expect(result[0].snippet).toContain('où deux voitures avaient claqué par');
+    }
+  });
 });
 
 describe('Testing adding translations', () => {

@@ -77,7 +77,7 @@ describe('Testing deleting a word', () => {
   test('delete an existing word', async () => {
     await api
       .delete('/api/words/word/1')
-      .expect(200);
+      .expect(204);
   });
 });
 

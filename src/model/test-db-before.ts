@@ -132,16 +132,6 @@ CREATE TABLE webdictionary_preferences (
     PRIMARY KEY (user_id, webdictionary_id)
 );
 
-DELETE FROM webdictionaries;
-DELETE FROM contexts;
-DELETE FROM translations;
-DELETE FROM texts;
-DELETE FROM words;
-DELETE FROM languages;
-DELETE FROM admins;
-DELETE FROM users;
-
-
 INSERT INTO users (username, password_hash, email)
 VALUES
 ('eamon', 'eamonpwhash', 'eamon@example.com'),
