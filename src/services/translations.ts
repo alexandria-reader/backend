@@ -19,14 +19,14 @@ const getOne = async function(translationId: number) {
 };
 
 const getByWord = async function
-(wordId: number, userId: number): Promise<Array<Translation> | null> {
-  const results = await translations.getByWord(userId, wordId);
+(word: string, userId: number): Promise<Array<Translation> | null> {
+  const results = await translations.getByWord(word, userId);
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 
 const getAllByWordByLang = async function
-(wordId: number, langId: string): Promise<Array<Translation>> {
-  const results = await translations.getAllByWordByLang(wordId, langId);
+(word: string, langId: string): Promise<Array<Translation>> {
+  const results = await translations.getAllByWordByLang(word, langId);
   return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
 };
 

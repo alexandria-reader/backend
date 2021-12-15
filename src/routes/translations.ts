@@ -23,27 +23,29 @@ router.get('/:id', async (req, res) => {
   res.send(result);
 });
 
-router.get('/word/:wordId/user/:userId', async (req, res) => {
+router.get('/word/:word/user/:userId', async (req, res) => {
   const data = {
-    wordId: req.params.wordId,
+    word: req.params.word,
     userId: req.params.userId,
   };
-  const wordId = Number(data.wordId);
+  const word = decodeURIComponent(data.word);
   const userId = Number(data.userId);
-  const result = await translation.getByWord(wordId, userId);
+  const result = await translation.getByWord(word, userId);
   res.send(result);
 });
 
-router.get('/word/:wordId/target/:targetId', async (req, res) => {
+router.get('/word/:word/target/:targetId', async (req, res) => {
   const data = {
-    wordId: req.params.wordId,
+    word: req.params.word,
     targetId: req.params.targetId,
   };
-  const { wordId, targetId } = data;
-  const translationRes = await translation.getAllByWordByLang(Number(wordId), targetId);
+  const word = decodeURIComponent(data.word);
+  const targetId = data.targetId;
+
+  const translationRes = await translation.getAllByWordByLang(word, targetId);
   res.send(translationRes);
 });
-
+// TODO: need to fix the add route here
 router.post('/user/:userId', async (req, res) => {
   const data = {
     wordId: req.body.wordId,

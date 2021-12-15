@@ -47,9 +47,9 @@ describe('Testing retrieving translations', () => {
       });
   });
 
-  test('retrieve translations by word id for user', async () => {
+  test('retrieve translations by word for user', async () => {
     await api
-      .get('/api/translations/word/1/user/1')
+      .get('/api/translations/word/of%20course/user/1')
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
@@ -59,7 +59,7 @@ describe('Testing retrieving translations', () => {
 
   test('retrieve translation with specified id and target language', async () => {
     await api
-      .get('/api/translations/word/4/target/fr')
+      .get('/api/translations/word/all%20day%20long/target/fr')
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {

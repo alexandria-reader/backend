@@ -18,15 +18,24 @@ const getOne = async function(translationId: number) {
   return result;
 };
 
-const getByWord = async function(wordId: number, userId: number) {
-  const FIND_WORD_TRAN = 'SELECT * FROM translations AS t JOIN users_translations AS ut ON t.id = ut.translation_id WHERE ut.user_id = %L AND t.word_id = %L;';
-  const results = await dbQuery(FIND_WORD_TRAN, userId, wordId);
+const getByWord = async function(word: string, userId: number) {
+  const FIND_WORD_ID = `
+          SELECT * FROM words WHERE word = %L`;
+  const wordId = await dbQuery(FIND_WORD_ID, word);
+  const FIND_WORD_TRAN = `SELECT * FROM translations AS t 
+            JOIN users_translations AS ut 
+            ON t.id = ut.translation_id 
+            WHERE ut.user_id = %L AND t.word_id = %L;`;
+  const results = await dbQuery(FIND_WORD_TRAN, userId, wordId.rows[0].id);
   return results;
 };
 
-const getAllByWordByLang = async function(wordId: number, langId: string) {
+const getAllByWordByLang = async function(word: string, langId: string) {
+  const FIND_WORD_ID = `
+          SELECT * FROM words WHERE word = %L`;
+  const wordId = await dbQuery(FIND_WORD_ID, word);
   const FIND_TRANSLATIONS = 'SELECT * FROM translations WHERE word_id = %L AND target_language_id = %L';
-  const results = await dbQuery(FIND_TRANSLATIONS, wordId, langId);
+  const results = await dbQuery(FIND_TRANSLATIONS, wordId.rows[0].id, langId);
   return results;
 };
 
