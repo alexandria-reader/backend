@@ -37,7 +37,7 @@ describe('Testing retrieving translations', () => {
   });
 
   test('getByWord: retrieve translations by word id for user', async () => {
-    const result = await translations.getByWord(6, 3);
+    const result = await translations.getByWord(3, 6);
     if (result) {
       expect(result[0].translation).toBe('Gänsebraten');
     }
