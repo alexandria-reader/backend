@@ -1,6 +1,7 @@
 import fs from 'fs';
 import dbQuery from '../model/db-query';
 import languages from '../services/languages';
+import { Language } from '../types';
 
 const init = fs.readFileSync('./src/model/wordServices.test.init.sql', 'utf-8');
 const reset = fs.readFileSync('./src/model/wordServices.test.reset.sql', 'utf-8');
@@ -22,10 +23,23 @@ describe('Getting languages', () => {
   });
 
 
-  test('getById: get language with non-existent id "fdd" returns null', async () => {
-    const languageById = await languages.getById('fdd');
-    expect(languageById).toBe(null);
+  test('addNew: add a new language', async () => {
+    const languageObject: Language = {
+      id: 'jp',
+      name: 'japanese',
+      eachCharIsWord: false,
+      isRightToLeft: false,
+    };
+
+    const newLanguage = await languages.addNew(languageObject);
+    if (newLanguage) expect(newLanguage.name).toBe('japanese');
+    expect(await languages.getAll()).toHaveLength(4);
   });
+
+  // test('getById: get language with non-existent id "fdd" returns null', async () => {
+  //   const languageById = await languages.getById('fdd');
+  //   expect(languageById).toBe(null);
+  // });
 });
 
 
