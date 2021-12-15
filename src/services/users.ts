@@ -1,35 +1,46 @@
 import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import dbQuery from '../model/db-query';
-import { convertUserTypes, SanitizedUser, User } from '../types';
+import userData from '../data-access/users';
+import { SanitizedUser, User } from '../types';
 
-const selectAllUsers = async function() {
-  const SELECT_ALL_USERS = 'SELECT * FROM users';
-  const result = await dbQuery(SELECT_ALL_USERS);
-  return result.rows;
+const sanitizeUser = function (user: User): SanitizedUser {
+  const santizedUser: SanitizedUser = {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+  };
+
+  return santizedUser;
 };
 
-const addNewUser = async function (userData: User): Promise<User> {
-  const { username, passwordHash, email } = userData;
+const selectAllUsers = async function() {
+  const result = await userData.selectAllUsers();
+  const users = result.rows;
+  return users;
+};
 
-  const CHECK_USERNAME = 'SELECT * FROM users WHERE username = %L';
-  let checkResult = await dbQuery(CHECK_USERNAME, username);
-  if (checkResult.rowCount > 0) throw boom.notAcceptable('Username already in use.');
+// eslint-disable-next-line max-len
+const addNewUser = async function (username: string, password: string, email: string): Promise<SanitizedUser> {
+  const userExists = await userData.getUserByUsername(username);
+  if (userExists.rowCount > 0) throw boom.notAcceptable('Username already in use.');
 
-  const CHECK_EMAIL = 'SELECT * FROM users WHERE email = %L';
-  checkResult = await dbQuery(CHECK_EMAIL, email);
-  if (checkResult.rowCount > 0) throw boom.notAcceptable('Email already in use.');
+  const emailExists = await userData.getUserByEmail(email);
+  if (emailExists.rowCount > 0) throw boom.notAcceptable('Email already in use.');
 
-  const ADD_USER = 'INSERT INTO users (username, password_hash, email) Values (%L, %L, %L) RETURNING *';
-  const result = await dbQuery(ADD_USER, username, passwordHash, email);
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  return convertUserTypes(result.rows[0]);
+  const result = await userData.addNewUser(username, passwordHash, email);
+  const newUser: User = result.rows[0];
+  const santizedNewUser: SanitizedUser = sanitizeUser(newUser);
+  return santizedNewUser;
 };
 
 const verifyPassword = async function(userId: string, password: string): Promise<boolean> {
-  const findUserById = 'SELECT * FROM users WHERE id = %L';
-  const user = await dbQuery(findUserById, userId);
-  const passwordsMatch = await bcrypt.compare(password, user.rows[0].password_hash);
+  const result = await userData.getUserById(userId);
+  const user = result.rows[0];
+  const passwordsMatch = await bcrypt.compare(password, user.password_hash);
   return passwordsMatch;
 };
 
@@ -37,7 +48,7 @@ const updateUserPassword = async function (
   userId: string,
   currentPassword: string,
   newPassword: string,
-): Promise<boolean> {
+): Promise<{ message: string; }> {
   const passwordsMatch = await verifyPassword(userId, currentPassword);
 
   if (passwordsMatch) {
@@ -45,63 +56,32 @@ const updateUserPassword = async function (
     const passwordHash = await bcrypt.hash(newPassword, saltRounds);
     const updatePassword = 'UPDATE users SET password_hash = %L WHERE id = %L';
     const result = await dbQuery(updatePassword, passwordHash, userId);
-    return result.rowCount === 1;
+    if (result.rowCount === 1) {
+      return { message: 'Your password has been updated' };
+    }
+
+    // throw boom.notAcceptable('Something went wrong.');
   }
 
-  return false;
+  throw boom.notAcceptable('Incorrect password.');
 };
 
 const removeUser = async function (userId: string, password: string) {
   const passwordsMatch = await verifyPassword(userId, password);
 
   if (passwordsMatch) {
-    // add email check once login is implemented
-    // try {
-    //   const deleteUser = 'DELETE FROM users WHERE id = %L';
-    //   const result = await dbQuery(deleteUser, userId);
-
-    //   if (result.rowCount > 0) {
-    //     return { message: 'Your account has been deleted' };
-    //   }
-    // } catch (error) {
-    //   return { message: 'Something went wrong.' };
-    // }
-
-    const deleteUser = 'DELETE FROM users WHERE id = %L RETURNING *';
-    const result = await dbQuery(deleteUser, userId);
+    const result = await userData.removeUser(userId);
 
     if (result.rowCount > 0) {
-      const deletedUser = result.rows[0];
-
-      const santizedDeleteUser: SanitizedUser = {
-        id: deletedUser.id,
-        username: deletedUser.username,
-        email: deletedUser.email,
-      };
-
+      const deletedUser: User = result.rows[0];
+      const santizedDeleteUser: SanitizedUser = sanitizeUser(deletedUser);
       return santizedDeleteUser;
     }
+
+    // throw boom.notAcceptable('Something went wrong.');
   }
 
   return { message: 'Passwords do not match' };
-};
-
-const getUserByUsername = async function (email: string, password: string): Promise<User> {
-  const SELECT_USER = 'SELECT * FROM users WHERE email = %L';
-  const result = await dbQuery(SELECT_USER, email);
-
-  if (result.rowCount > 0) {
-    const user = result.rows[0];
-    const passwordsMatch = await verifyPassword(user.id, password);
-
-    if (passwordsMatch) {
-      return user;
-    }
-
-    throw boom.notAcceptable('Passwords do not match');
-  }
-
-  throw boom.notAcceptable('Email not found');
 };
 
 export default {
@@ -109,9 +89,5 @@ export default {
   addNewUser,
   updateUserPassword,
   removeUser,
-  getUserByUsername,
+  verifyPassword,
 };
-
-// add update password / email routes
-// set user source/known language
-// set language to be learned

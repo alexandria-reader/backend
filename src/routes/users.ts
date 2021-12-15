@@ -1,23 +1,11 @@
-import bcrypt from 'bcrypt';
 import express from 'express';
 import userServices from '../services/users';
-import { User } from '../types';
 
 const userRouter = express.Router();
 
 userRouter.post('/', async (req, res) => {
   const { username, password, email } = req.body;
-
-  const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-
-  const userData: User = {
-    username,
-    passwordHash,
-    email,
-  };
-
-  const newUser = await userServices.addNewUser(userData);
+  const newUser = await userServices.addNewUser(username, password, email);
 
   res.status(201).json(newUser);
 });
@@ -32,14 +20,16 @@ userRouter.put('/:userId', async (req, res) => {
   // check user is logged in first
   const { userId } = req.params;
   const { password: currentPassword, newPassword } = req.body;
+  // will add paramater checking later
+  // if (!currentPassword) {
+  //   throw boom.notAcceptable('You must submit your current password.');
+  // } else if (!newPassword) {
+  //   throw boom.notAcceptable('You must submit a new password.');
+  // }
 
-  const updated = await userServices.updateUserPassword(userId, currentPassword, newPassword);
+  const response = await userServices.updateUserPassword(userId, currentPassword, newPassword);
 
-  if (updated) {
-    res.json({ message: 'Your password has been updated' });
-  } else {
-    res.send({ message: 'Incorrect password' });
-  }
+  res.json(response);
 });
 
 userRouter.delete('/:userId', async (req, res) => {
