@@ -1,85 +1,42 @@
 /* eslint-disable max-len */
-import dbQuery from '../model/db-query';
-import { Word, WordDB, convertWordTypes } from '../types';
+import boom from '@hapi/boom';
+import { QueryResult } from 'pg';
+import wordData from '../data-access/words';
+import { WordDB, Word, convertWordTypes } from '../types';
 
 
-// Returning all words in the database is most likely not needed
 const getAll = async function(): Promise<Array<Word>> {
-  const ALL_WORDS: string = `
-    SELECT * FROM words`;
-
-  const result = await dbQuery(ALL_WORDS);
+  const result: QueryResult = await wordData.getAll();
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
 
-const getById = async function(wordId: number): Promise<Word | null> {
-  const WORD_BY_ID: string = `
-    SELECT * FROM words 
-    WHERE id = %L`;
+const getById = async function(wordId: number): Promise<Word> {
+  const result: QueryResult = await wordData.getById(wordId);
 
-  const result = await dbQuery(WORD_BY_ID, wordId);
-
-  if (result.rowCount === 0) return null;
+  if (result.rowCount === 0) throw boom.notFound('Could not find word with this id.');
 
   return convertWordTypes(result.rows[0]);
 };
 
 
-// Finds all words in a given language that are connected to the user
 const getByLanguageAndUser = async function(languageId: string, userId: number): Promise<Array<Word>> {
-  const WORDS_BY_LANGUAGE_AND_USER: string = `
-    SELECT w.id, w.language_id, w.word FROM words AS w 
-      JOIN users_words AS uw 
-        ON w.id = uw.word_id 
-     WHERE w.language_id = %L 
-           AND 
-           uw.user_id = %L`;
-
-  const result = await dbQuery(
-    WORDS_BY_LANGUAGE_AND_USER,
-    languageId,
-    userId,
-  );
+  const result: QueryResult = await wordData.getByLanguageAndUser(languageId, userId);
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
+
 
 const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<Word>> {
-  const tsvectorType = simple ? 'simple' : 'language';
-
-  const USER_WORDS_IN_TEXT: string = `
-    SELECT w.id, w.word
-      FROM words AS w
-      JOIN users_words AS uw ON w.id = uw.word_id
-     WHERE uw.user_id = %s 
-           AND
-           w.language_id = (SELECT t.language_id FROM texts AS t 
-                             WHERE t.id = %s)
-           AND
-           w.tsquery_${tsvectorType} @@ (SELECT t.tsvector_${tsvectorType} FROM texts AS t 
-                                          WHERE t.id = %s)`;
-
-  const result = await dbQuery(
-    USER_WORDS_IN_TEXT,
-    userId,
-    textId,
-    textId,
-  );
+  const result: QueryResult = await wordData.getUserwordsInText(userId, textId, simple);
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
 
-const getWordInLanguage = async function(word: string, languageId: string): Promise<Word | null> {
-  const WORD_BY_LANGUAGE_AND_WORD: string = `
-    SELECT * FROM words 
-     WHERE language_id = %L 
-           AND 
-           word = %L`;
-
-  const result = await dbQuery(WORD_BY_LANGUAGE_AND_WORD, languageId, word);
+const getWordInLanguage = async function (word: string, languageId: string): Promise<Word | null> {
+  const result: QueryResult = await wordData.getWordInLanguage(word, languageId);
 
   if (result.rowCount === 0) return null;
 
@@ -87,107 +44,46 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
 };
 
 
-const addNew = async function(wordData: Word): Promise<Word | null> {
-  const {
-    languageId,
-    word,
-  } = wordData;
+const addNew = async function(wordObject: Word): Promise<Word> {
+  const result: QueryResult = await wordData.addNew(wordObject);
 
-  const existingWord = await getWordInLanguage(word, languageId);
-  if (existingWord) {
-    return existingWord;
-  }
-
-  const ADD_WORD: string = `
-    INSERT INTO words (language_id, word, ts_config)
-         VALUES (%L, %L, (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig)
-      RETURNING *`;
-
-  const result = await dbQuery(
-    ADD_WORD,
-    languageId,
-    word,
-    languageId,
-  );
-
-  if (result.rowCount === 0) return null;
+  if (result.rowCount === 0) throw boom.badRequest('Could not add new word.');
 
   return convertWordTypes(result.rows[0]);
 };
 
 
-const remove = async function(wordId: number): Promise <Word | null> {
-  const DELETE_WORD: string = `
-       DELETE FROM words
-        WHERE id = %s
-    RETURNING *`;
+const remove = async function(wordId: number): Promise<Word> {
+  const result: QueryResult = await wordData.remove(wordId);
 
-  const result = await dbQuery(
-    DELETE_WORD,
-    wordId,
-  );
-
-  if (result.rowCount === 0) return null;
+  if (result.rowCount === 0) throw boom.badRequest('Could not remove word.');
 
   return convertWordTypes(result.rows[0]);
 };
 
 
-// Retrieves word status string for given user
-const getStatus = async function(wordId: number, userId: number): Promise<string | null> {
-  const USER_WORD_STATUS: string = `
-    SELECT word_status FROM users_words 
-     WHERE user_id = %s 
-           AND
-           word_id = %s`;
+const getStatus = async function(wordId: number, userId: number): Promise<string> {
+  const result: QueryResult = await wordData.getStatus(wordId, userId);
 
-  const result = await dbQuery(
-    USER_WORD_STATUS,
-    userId,
-    wordId,
-  );
-
-  if (result.rowCount === 0) return null;
+  if (result.rowCount === 0) throw boom.badRequest('Could not get word status.');
 
   return result.rows[0].word_status;
 };
 
 
-const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string | null> {
-  const ADD_USER_WORD_STATUS: string = `
-    INSERT INTO users_words (user_id, word_id, word_status)
-         VALUES (%s, %s, %L)
-      RETURNING *`;
+const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string> {
+  const result: QueryResult = await wordData.addStatus(wordId, userId, wordStatus);
 
-  const result = await dbQuery(
-    ADD_USER_WORD_STATUS,
-    userId,
-    wordId,
-    wordStatus,
-  );
-
-  if (result.rowCount === 0) return null;
+  if (result.rowCount === 0) throw boom.badRequest('Could not add status to word.');
 
   return result.rows[0].word_status;
 };
 
-const updateStatus = async function(wordId: number, userId: number, status: string): Promise<string | null> {
-  const UPDATE_USER_WORD_STATUS: string = `
-       UPDATE users_words 
-          SET word_status = %L 
-        WHERE user_id = %L 
-              AND
-              word_id = %L
-    RETURNING *`;
 
-  const result = await dbQuery(
-    UPDATE_USER_WORD_STATUS,
-    status,
-    userId,
-    wordId,
-  );
+const updateStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string> {
+  const result: QueryResult = await wordData.updateStatus(wordId, userId, wordStatus);
 
-  if (result.rowCount === 0) return null;
+  if (result.rowCount === 0) throw boom.badRequest('Could not update word status.');
 
   return result.rows[0].word_status;
 };
