@@ -98,12 +98,13 @@ describe('Testing adding users', () => {
       newPassword: 'password',
     };
 
-    await api
+    const response = await api
       .put('/api/users/1')
       .send(password)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect('{"message":"Incorrect password"}');
+      .expect(406)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.text).toContain('Incorrect password');
   });
 
   test('users cannot delete account unless correct password is supplied', async () => {

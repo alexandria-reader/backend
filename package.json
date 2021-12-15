@@ -11,7 +11,7 @@
     "start": "node build/server.js",
     "start-docker-postgres": "docker-compose -f postgres.yaml up -d",
     "stop-docker-postgres": "docker-compose -f postgres.yaml down --volumes",
-    "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles --collectCoverage",
+    "test": "NODE_ENV=test jest --verbose --runInBand --collectCoverage",
     "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres"
   },
   "repository": {

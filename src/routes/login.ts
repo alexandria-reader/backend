@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import express from 'express';
-import userServices from '../services/users';
+import loginServices from '../services/login';
 
 const loginRouter = express.Router();
 
 export default loginRouter.post('/', async (req, res) => {
   const { email, password } = req.body;
-  const user = await userServices.getUserByUsername(email, password);
+  const user = await loginServices.verifyLoginDetails(email, password);
 
   const userForToken = {
     email: user.email,
