@@ -9,15 +9,21 @@ const addContext = async function(
   return results;
 };
 
-const getAllContextByLang = async function(translationId: number) {
+const getAllContextByWordByLang = async function
+(word: string, sourceLanguage: string, targetLanguage: string) {
+  const FIND_WORD_ID = 'SELECT * FROM words WHERE word = %L AND language_id = %L';
+  const foundWord = await dbQuery(FIND_WORD_ID, word, sourceLanguage);
+  const foundWordId = await foundWord.rows[0].id;
+  const FIND_TRANS_ID = 'SELECT * FROM translations WHERE word_id = %L AND target_language_id = %L';
+  const foundTrans = await dbQuery(FIND_TRANS_ID, foundWordId, targetLanguage);
+  const foundTransId = await foundTrans.rows[0].id;
   const FIND_CONTEXT = 'SELECT * FROM contexts WHERE translation_id = %L';
-  const results = await dbQuery(FIND_CONTEXT, translationId);
+  const results = await dbQuery(FIND_CONTEXT, foundTransId);
   return results;
 };
 
-const getContextByLangByUser = async function (
-  userId: number, wordId: number, targetLanguageId: string,
-) {
+const getContextByLangByUser = async function
+(userId: number, wordId: number, targetLanguageId: string) {
   const FIND_CONTEXT = `SELECT * FROM contexts 
         JOIN (SELECT * FROM translations JOIN users_translations 
           ON translations.id = users_translations.translation_id 
@@ -31,6 +37,6 @@ const getContextByLangByUser = async function (
 
 export default {
   addContext,
-  getAllContextByLang,
+  getAllContextByWordByLang,
   getContextByLangByUser,
 };

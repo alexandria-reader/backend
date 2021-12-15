@@ -54,10 +54,10 @@ describe('Testing retrieving translations', () => {
 });
 
 describe('Testing retrieving contexts', () => {
-  test('getAllContextByLang: retrieve contexts by translation id', async () => {
-    const result = await contexts.getAllContextByLang(9);
+  test('getAllContextByWordByLang: retrieve contexts by word and language', async () => {
+    const result = await contexts.getAllContextByWordByLang('carriages', 'en', 'fr');
     if (result) {
-      expect(result[0].translationId).toBe(9);
+      expect(result[0].snippet).toBe('road, where two carriages had rattled by');
     }
   });
 

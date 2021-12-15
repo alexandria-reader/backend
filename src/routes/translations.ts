@@ -31,6 +31,7 @@ router.get('/word/:word/user/:userId', async (req, res) => {
   const word = decodeURIComponent(data.word);
   const userId = Number(data.userId);
   const result = await translation.getByWord(word, userId);
+  console.log(result);
   res.send(result);
 });
 
@@ -45,7 +46,7 @@ router.get('/word/:word/target/:targetId', async (req, res) => {
   const translationRes = await translation.getAllByWordByLang(word, targetId);
   res.send(translationRes);
 });
-// TODO: need to fix the add route here
+
 router.post('/user/:userId', async (req, res) => {
   const data = {
     wordId: req.body.wordId,
@@ -57,22 +58,24 @@ router.post('/user/:userId', async (req, res) => {
   } = data;
   // eslint-disable-next-line max-len
   const added = await translation.add(Number(wordId), tran, targetLang);
-  if (added) {
-    res.send('New translation added');
-  } else {
-    res.send('There is a problem with adding the translation');
-  }
+  // if (added) {
+  //   res.send('New translation added');
+  // } else {
+  //   res.send('There is a problem with adding the translation');
+  // }
+  res.send(added);
 });
 
 router.delete('/:translationId', async (req, res) => {
   const { translationId } = req.params;
   // eslint-disable-next-line max-len
   const deleted = await translation.remove(Number(translationId));
-  if (deleted) {
-    res.send('Translation deleted');
-  } else {
-    res.send('There is a problem with deleting the translation');
-  }
+  // if (deleted) {
+  //   res.send('Translation deleted');
+  // } else {
+  //   res.send('There is a problem with deleting the translation');
+  // }
+  res.send(deleted);
 });
 
 router.put('/translation/:transId', async (req, res) => {
@@ -83,11 +86,12 @@ router.put('/translation/:transId', async (req, res) => {
   const { trans, id } = data;
   // eslint-disable-next-line max-len
   const updated = await translation.update(trans, Number(id));
-  if (updated) {
-    res.send('Translation updated');
-  } else {
-    res.send('There is a problem with updated the translation');
-  }
+  // if (updated) {
+  //   res.send('Translation updated');
+  // } else {
+  //   res.send('There is a problem with updated the translation');
+  // }
+  res.send(updated);
 });
 
 export default router;

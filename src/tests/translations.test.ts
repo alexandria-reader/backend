@@ -84,8 +84,7 @@ describe('Testing adding translations', () => {
       .post('/api/translations/user/1')
       .send(newTranslation)
       .expect(200)
-      .expect('Content-Type', 'text/html; charset=utf-8')
-      .expect('New translation added');
+      .expect('Content-Type', 'application/json; charset=utf-8');
   });
 });
 
@@ -94,8 +93,7 @@ describe('Testing deleting translations', () => {
     await api
       .delete('/api/translations/23')
       .expect(200)
-      .expect('Content-Type', 'text/html; charset=utf-8')
-      .expect('Translation deleted');
+      .expect('Content-Type', 'application/json; charset=utf-8');
   });
 });
 
@@ -108,8 +106,7 @@ describe('Testing updating translations', () => {
       .put('/api/translations/translation/14')
       .send(updatedTranslation)
       .expect(200)
-      .expect('Content-Type', 'text/html; charset=utf-8')
-      .expect('Translation updated');
+      .expect('Content-Type', 'application/json; charset=utf-8');
   });
 });
 
