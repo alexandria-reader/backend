@@ -26,8 +26,9 @@ const getById = async function(textId: number): Promise<QueryResult> {
 
 const getByUser = async function(userId: number): Promise<QueryResult> {
   const TEXTS_BY_USER: string = `
-    SELECT * FROM texts
-     WHERE user_id = %s`;
+      SELECT * FROM texts
+       WHERE user_id = %s
+    ORDER BY last_opened DESC NULLS LAST`;
 
   const result = await dbQuery(TEXTS_BY_USER, userId);
 
