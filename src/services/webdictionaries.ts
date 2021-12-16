@@ -11,6 +11,15 @@ const getAll = async function(): Promise<Array<Webdictionary>> {
 };
 
 
+const getById = async function(webdictionaryId: number): Promise<Webdictionary> {
+  const result: QueryResult = await webdictionaryData.getById(webdictionaryId);
+
+  if (result.rowCount === 0) throw boom.notFound('Could not find webdictionary with this id.');
+
+  return convertWebdictionaryTypes(result.rows[0]);
+};
+
+
 const getBySource = async function(sourceLanguageId: string): Promise<Array<Webdictionary>> {
   const result: QueryResult = await webdictionaryData.getBySource(sourceLanguageId);
 
@@ -43,6 +52,7 @@ const addNew = async function(webdictionaryObject: Webdictionary): Promise<Webdi
 
 export default {
   getAll,
+  getById,
   getBySource,
   getByTarget,
   addNew,

@@ -122,21 +122,6 @@ export const convertLanguageTypes = function(dbItem: LanguageDB): Language {
 };
 
 
-export type KnownLanguage = Language & { isNative: boolean };
-
-export type KnownLanguageDB = LanguageDB & { is_native: boolean };
-
-export const convertKnownLanguageTypes = function(dbItem: KnownLanguageDB): KnownLanguage {
-  return {
-    id: dbItem.id,
-    name: dbItem.name,
-    eachCharIsWord: dbItem.each_char_is_word,
-    isRightToLeft: dbItem.is_right_to_left,
-    isNative: dbItem.is_native,
-  };
-};
-
-
 export type Webdictionary = {
   id?: number,
   sourceLanguageId: string,
@@ -186,6 +171,7 @@ export const convertTranslationTypes = function(dbItem: TranslationDB): Translat
     targetLanguageId: dbItem.target_language_id,
   };
 };
+
 
 export type Context = {
   id?: number,

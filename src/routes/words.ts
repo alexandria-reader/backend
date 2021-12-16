@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async(_req, res): Promise<void> => {
   const allWords: Array<Word> = await words.getAll();
 
-  res.send(allWords);
+  res.json(allWords);
 });
 
 
@@ -16,7 +16,7 @@ router.get('/:id', async(req, res): Promise<void> => {
   const id = Number(req.params.id);
   const wordById: Word = await words.getById(id);
 
-  res.send(wordById);
+  res.json(wordById);
 });
 
 
@@ -24,7 +24,7 @@ router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
   const { langId, userId } = req.params;
   const wordsByLanguageAndUser: Array<Word> = await words.getByLanguageAndUser(langId, Number(userId));
 
-  res.send(wordsByLanguageAndUser);
+  res.json(wordsByLanguageAndUser);
 });
 
 
@@ -36,7 +36,7 @@ router.post('/user/:userId', async(req, res): Promise<void> => {
   if (newWord.id) {
     const newStatus = await words.addStatus(newWord.id, userId, 'learning');
 
-    res.status(201).send({ ...newWord, status: newStatus });
+    res.status(201).json({ ...newWord, status: newStatus });
   }
 });
 
@@ -53,7 +53,7 @@ router.delete('/word/:wordId', async(req, res): Promise<void> => {
   const id = req.params.wordId;
   const result = await words.remove(Number(id));
 
-  if (result) res.sendStatus(204);
+  res.status(204).json(result);
 });
 
 export default router;
