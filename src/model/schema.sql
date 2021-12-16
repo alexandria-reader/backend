@@ -9,12 +9,11 @@ DROP TABLE IF EXISTS contexts;
 DROP TABLE IF EXISTS translations;
 DROP TABLE IF EXISTS texts;
 DROP TABLE IF EXISTS words;
-DROP TABLE IF EXISTS languages;
 DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS languages;
 
 
-/* language name must same as associated postgres dictionary name*/
 CREATE TABLE languages (
     id varchar(4) PRIMARY KEY,
     "name" varchar(32) UNIQUE NOT NULL,
