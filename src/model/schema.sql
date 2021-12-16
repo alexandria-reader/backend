@@ -14,25 +14,27 @@ DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS users;
 
 
-CREATE TABLE users (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    username text UNIQUE NOT NULL,
-    password_hash text NOT NULL,
-    email text UNIQUE NOT NULL
-);
-
-
-CREATE TABLE admins (
-    user_id int PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE
-);
-
-
 /* language name must same as associated postgres dictionary name*/
 CREATE TABLE languages (
     id varchar(4) PRIMARY KEY,
     "name" varchar(32) UNIQUE NOT NULL,
     each_char_is_word boolean DEFAULT false,
     is_right_to_left boolean DEFAULT false
+);
+
+
+CREATE TABLE users (
+    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
+    username text UNIQUE NOT NULL,
+    password_hash text NOT NULL,
+    email text UNIQUE NOT NULL,
+    current_known_language_id varchar(4) REFERENCES languages (id),
+    current_learn_language_id varchar(4) REFERENCES languages (id),
+);
+
+
+CREATE TABLE admins (
+    user_id int PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE
 );
 
 
@@ -92,21 +94,6 @@ CREATE TABLE webdictionaries (
     target_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
     "name" text NOT NULL,
     "url" text NOT NULL
-);
-
-
-CREATE TABLE users_study_languages (
-    user_id int REFERENCES users (id) ON DELETE CASCADE,
-    study_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, study_language_id)
-);
-
-
-CREATE TABLE users_know_languages (
-    user_id int REFERENCES users (id) ON DELETE CASCADE,
-    known_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    is_native boolean DEFAULT false,
-    PRIMARY KEY (user_id, known_language_id)
 );
 
 
