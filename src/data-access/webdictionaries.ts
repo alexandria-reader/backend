@@ -4,7 +4,7 @@ import dbQuery from '../model/db-query';
 import { Webdictionary } from '../types';
 
 
-const getAll = async function (): Promise<QueryResult> {
+const getAll = async function(): Promise<QueryResult> {
   const ALL_DICTIONARIES: string = `
     SELECT * FROM webdictionaries`;
 
@@ -14,7 +14,18 @@ const getAll = async function (): Promise<QueryResult> {
 };
 
 
-const getBySource = async function (sourceLanguageId: string): Promise<QueryResult> {
+const getById = async function(webdictionaryId: number): Promise<QueryResult> {
+  const WEBDICTIONARY_BY_ID: string = `
+    SELECT * FROM webdictionaries
+     WHERE id = %s`;
+
+  const result = await dbQuery(WEBDICTIONARY_BY_ID, webdictionaryId);
+
+  return result;
+};
+
+
+const getBySource = async function getBySourceLanguage(sourceLanguageId: string): Promise<QueryResult> {
   const DICTIONARIES_BY_SOURCE: string = `
     SELECT * FROM webdictionaries
      WHERE source_language_id = %L`;
@@ -25,7 +36,7 @@ const getBySource = async function (sourceLanguageId: string): Promise<QueryResu
 };
 
 
-const getByTarget = async function (targetLanguageId: string): Promise<QueryResult> {
+const getByTarget = async function getByTargetLanguage(targetLanguageId: string): Promise<QueryResult> {
   const DICTIONARIES_BY_TARGET: string = `
     SELECT * FROM webdictionaries
      WHERE target_language_id = %L`;
@@ -79,6 +90,7 @@ const addNew = async function(webdictionaryObject: Webdictionary): Promise<Query
 
 export default {
   getAll,
+  getById,
   getBySource,
   getByTarget,
   addNew,
