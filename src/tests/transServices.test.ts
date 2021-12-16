@@ -36,15 +36,15 @@ describe('Testing retrieving translations', () => {
     }
   });
 
-  test('getByWord: retrieve translations by word id for user', async () => {
-    const result = await translations.getByWord(6, 3);
+  test('getByWord: retrieve translations by word string and user id', async () => {
+    const result = await translations.getByWord('roast goose', 2);
     if (result) {
-      expect(result[0].translation).toBe('Gänsebraten');
+      expect(result[0].translation).toBe('oie rôtie');
     }
   });
 
   test('getAllByWordByLang: retrieve translation with word id and target language', async () => {
-    const result = await translations.getAllByWordByLang(1, 'de');
+    const result = await translations.getAllByWordByLang('of course', 'de');
     if (result) {
       expect(result.length).toBe(2);
       expect(result[0].translation).toBe('natürlich');
@@ -54,10 +54,10 @@ describe('Testing retrieving translations', () => {
 });
 
 describe('Testing retrieving contexts', () => {
-  test('getAllContextByLang: retrieve contexts by translation id', async () => {
-    const result = await contexts.getAllContextByLang(9);
+  test('getAllContextByWordByLang: retrieve contexts by word and language', async () => {
+    const result = await contexts.getAllContextByWordByLang('carriages', 'en', 'fr');
     if (result) {
-      expect(result[0].translationId).toBe(9);
+      expect(result[0].snippet).toBe('road, where two carriages had rattled by');
     }
   });
 
