@@ -29,7 +29,7 @@ CREATE TABLE users (
     password_hash text NOT NULL,
     email text UNIQUE NOT NULL,
     current_known_language_id varchar(4) REFERENCES languages (id),
-    current_learn_language_id varchar(4) REFERENCES languages (id),
+    current_learn_language_id varchar(4) REFERENCES languages (id)
 );
 
 
@@ -40,7 +40,7 @@ CREATE TABLE admins (
 
 CREATE TABLE words (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
+    language_id varchar(4) NOT NULL REFERENCES languages (id) ON DELETE CASCADE,
     word text NOT NULL,
     ts_config regconfig NOT NULL,
     tsquery_simple tsquery
@@ -53,7 +53,7 @@ CREATE TABLE words (
 CREATE TABLE texts (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     user_id int REFERENCES users (id),
-    language_id varchar(4) REFERENCES languages (id),
+    language_id varchar(4) NOT NULL REFERENCES languages (id),
     title text NOT NULL,
     author text,
     body text NOT NULL,
@@ -75,45 +75,45 @@ CREATE INDEX ts_language_idx ON texts USING GIN (tsvector_language);
 
 CREATE TABLE translations (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    word_id int REFERENCES words (id) ON DELETE CASCADE,
-    target_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
+    word_id int NOT NULL REFERENCES words (id) ON DELETE CASCADE,
+    target_language_id varchar(4) NOT NULL REFERENCES languages (id) ON DELETE CASCADE,
     translation text NOT NULL
 );
 
 
 CREATE TABLE contexts (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    translation_id int REFERENCES translations (id) ON DELETE CASCADE,
+    translation_id int NOT NULL REFERENCES translations (id) ON DELETE CASCADE,
     snippet text NOT NULL
 );
 
 
 CREATE TABLE webdictionaries (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    source_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
-    target_language_id varchar(4) REFERENCES languages (id) ON DELETE CASCADE,
+    source_language_id varchar(4) NOT NULL REFERENCES languages (id) ON DELETE CASCADE,
+    target_language_id varchar(4) NOT NULL REFERENCES languages (id) ON DELETE CASCADE,
     "name" text NOT NULL,
     "url" text NOT NULL
 );
 
 
 CREATE TABLE users_translations (
-    user_id int REFERENCES users (id) ON DELETE CASCADE,
-    translation_id int REFERENCES translations (id) ON DELETE CASCADE,
+    user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    translation_id int NOT NULL REFERENCES translations (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, translation_id)
 );
 
 
 CREATE TABLE users_words (
-    user_id int REFERENCES users (id) ON DELETE CASCADE,
-    word_id int REFERENCES words (id) ON DELETE CASCADE,
+    user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    word_id int NOT NULL REFERENCES words (id) ON DELETE CASCADE,
     word_status varchar(32) NOT NULL,
     PRIMARY KEY (user_id, word_id)
 );
 
 
 CREATE TABLE webdictionary_preferences (
-    user_id int REFERENCES users (id) ON DELETE CASCADE,
-    webdictionary_id int REFERENCES webdictionaries (id) ON DELETE CASCADE,
+    user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    webdictionary_id int NOT NULL REFERENCES webdictionaries (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, webdictionary_id)
 );

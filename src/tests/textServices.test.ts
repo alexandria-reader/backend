@@ -3,11 +3,12 @@ import dbQuery from '../model/db-query';
 import texts from '../services/texts';
 import { Text } from '../types';
 
-const init = fs.readFileSync('./src/model/wordServices.test.init.sql', 'utf-8');
-const reset = fs.readFileSync('./src/model/wordServices.test.reset.sql', 'utf-8');
+const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
+const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
-  await dbQuery(init);
+  await dbQuery(schema);
+  await dbQuery(seed);
 });
 
 
@@ -67,5 +68,5 @@ describe('Getting texts', () => {
 
 
 afterAll(async () => {
-  await dbQuery(reset);
+  await dbQuery(schema);
 });
