@@ -75,19 +75,19 @@ VALUES
 INSERT INTO users_words (user_id, word_id, word_status)
 VALUES
 (1, 1, 'learning'),
-(1, 3, 'recognized'),
-(1, 5, 'learnt'),
-(1, 7, 'recognized'),
+(1, 3, 'familiar'),
+(1, 5, 'learned'),
+(1, 7, 'familiar'),
 (1, 9, 'learning'),
 (2, 2, 'learning'),
-(2, 4, 'learnt'),
+(2, 4, 'learned'),
 (2, 6, 'learning'),
-(2, 8, 'recognized'),
+(2, 8, 'familiar'),
 (2, 10, 'learning'),
 (3, 1, 'learning'),
-(3, 2, 'learnt'),
+(3, 2, 'learned'),
 (3, 5, 'learning'),
-(3, 6, 'learnt'),
+(3, 6, 'learned'),
 (3, 7, 'learning');
 
 

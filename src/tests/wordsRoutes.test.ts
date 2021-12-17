@@ -65,12 +65,12 @@ describe('Testing adding a word', () => {
 
 describe('Testing updating a word', () => {
   test('modify an existing word', async () => {
-    const data = { status: 'learnt' };
+    const data = { status: 'learned' };
     await api
       .put('/api/words/word/1/user/1')
       .send(data)
       .expect(200)
-      .expect('learnt');
+      .expect('learned');
   });
 });
 
