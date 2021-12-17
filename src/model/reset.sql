@@ -1,5 +1,3 @@
-CREATE TYPE wordstatus AS ENUM ('learning', 'recognized', 'learnt');
-
 DROP TABLE IF EXISTS webdictionary_preferences;
 DROP TABLE IF EXISTS users_words;
 DROP TABLE IF EXISTS users_translations;

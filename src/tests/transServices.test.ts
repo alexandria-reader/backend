@@ -4,11 +4,11 @@ import dbQuery from '../model/db-query';
 import translations from '../services/translations';
 import contexts from '../services/contexts';
 
-const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
   await dbQuery(seed);
 });
 
@@ -134,5 +134,5 @@ describe('Testing updating translations', () => {
 });
 
 afterAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
 });

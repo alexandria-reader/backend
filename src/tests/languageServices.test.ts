@@ -3,11 +3,11 @@ import dbQuery from '../model/db-query';
 import languages from '../services/languages';
 import { Language } from '../types';
 
-const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
   await dbQuery(seed);
 });
 
@@ -45,5 +45,5 @@ describe('Getting languages', () => {
 
 
 afterAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
 });

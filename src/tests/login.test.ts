@@ -5,10 +5,10 @@ import dbQuery from '../model/db-query';
 
 const api = supertest(app);
 
-const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 
 beforeAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
 
   const newUser = {
     username: 'test user',
@@ -175,5 +175,5 @@ describe('Testing user login', () => {
 });
 
 afterAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
 });
