@@ -99,21 +99,21 @@ describe('Getting words', () => {
   });
 
 
-  test('updateStatus: change previous status to "recognized"', async() => {
-    const updatedStatus = await words.updateStatus(5, 3, 'recognized');
-    expect(updatedStatus).toBe('recognized');
+  test('updateStatus: change previous status to "familiar"', async() => {
+    const updatedStatus = await words.updateStatus(5, 3, 'familiar');
+    expect(updatedStatus).toBe('familiar');
 
     const status = await words.getStatus(5, 3);
-    expect(status).toBe('recognized');
+    expect(status).toBe('familiar');
   });
 
 
-  test('addStatus: add status "recognized" to word 4 for user 1', async () => {
-    const addedStatus = await words.addStatus(4, 1, 'recognized');
-    expect(addedStatus).toBe('recognized');
+  test('addStatus: add status "familiar" to word 4 for user 1', async () => {
+    const addedStatus = await words.addStatus(4, 1, 'familiar');
+    expect(addedStatus).toBe('familiar');
 
     const status = await words.getStatus(4, 1);
-    expect(status).toBe('recognized');
+    expect(status).toBe('familiar');
   });
 });
 
