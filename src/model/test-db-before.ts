@@ -65,6 +65,7 @@ CREATE TABLE texts (
     source_url text,
     source_type text,
     upload_time timestamptz DEFAULT now(),
+    last_opened timestamptz,
     is_public boolean DEFAULT false
 );
 
