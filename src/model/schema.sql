@@ -105,7 +105,6 @@ CREATE TABLE users_translations (
     PRIMARY KEY (user_id, translation_id)
 );
 
-CREATE TYPE wordstatus AS ENUM ('learning', 'recognized', 'learnt');
 
 CREATE TABLE users_words (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
