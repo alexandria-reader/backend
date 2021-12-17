@@ -1,12 +1,14 @@
+import fs from 'fs';
 import supertest from 'supertest';
 import app from '../app';
 import dbQuery from '../model/db-query';
-import resetDatabase from '../model/test-db-reset';
 
 const api = supertest(app);
 
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
+
 beforeAll(async () => {
-  await dbQuery(resetDatabase);
+  await dbQuery(reset);
 });
 
 describe('Testing adding users', () => {
@@ -146,5 +148,5 @@ describe('Testing adding users', () => {
 });
 
 afterAll(async () => {
-  await dbQuery(resetDatabase);
+  await dbQuery(reset);
 });

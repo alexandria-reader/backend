@@ -3,12 +3,11 @@ import dbQuery from '../model/db-query';
 import words from '../services/words';
 import { Word } from '../types';
 
-const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
-
 beforeAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
   await dbQuery(seed);
 });
 
@@ -100,25 +99,25 @@ describe('Getting words', () => {
   });
 
 
-  test('updateStatus: change previous status to "testing"', async() => {
-    const updatedStatus = await words.updateStatus(5, 3, 'testing');
-    expect(updatedStatus).toBe('testing');
+  test('updateStatus: change previous status to "recognized"', async() => {
+    const updatedStatus = await words.updateStatus(5, 3, 'recognized');
+    expect(updatedStatus).toBe('recognized');
 
     const status = await words.getStatus(5, 3);
-    expect(status).toBe('testing');
+    expect(status).toBe('recognized');
   });
 
 
-  test('addStatus: add status "testing" to word 4 for user 1', async () => {
-    const addedStatus = await words.addStatus(4, 1, 'testing');
-    expect(addedStatus).toBe('testing');
+  test('addStatus: add status "recognized" to word 4 for user 1', async () => {
+    const addedStatus = await words.addStatus(4, 1, 'recognized');
+    expect(addedStatus).toBe('recognized');
 
     const status = await words.getStatus(4, 1);
-    expect(status).toBe('testing');
+    expect(status).toBe('recognized');
   });
 });
 
 
 afterAll(async () => {
-  await dbQuery(schema);
+  await dbQuery(reset);
 });

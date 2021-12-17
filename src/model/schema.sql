@@ -1,3 +1,5 @@
+CREATE TYPE wordstatus AS ENUM ('learning', 'recognized', 'learnt');
+
 DROP TABLE IF EXISTS webdictionary_preferences;
 DROP TABLE IF EXISTS users_words;
 DROP TABLE IF EXISTS users_translations;
@@ -107,7 +109,7 @@ CREATE TABLE users_translations (
 CREATE TABLE users_words (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     word_id int NOT NULL REFERENCES words (id) ON DELETE CASCADE,
-    word_status varchar(32) NOT NULL,
+    word_status wordstatus NOT NULL,
     PRIMARY KEY (user_id, word_id)
 );
 

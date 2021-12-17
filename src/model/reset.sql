@@ -1,4 +1,4 @@
-const reset = `DROP TABLE IF EXISTS webdictionary_preferences;
+DROP TABLE IF EXISTS webdictionary_preferences;
 DROP TABLE IF EXISTS users_words;
 DROP TABLE IF EXISTS users_translations;
 DROP TABLE IF EXISTS users_know_languages;
@@ -103,11 +103,10 @@ CREATE TABLE users_translations (
     PRIMARY KEY (user_id, translation_id)
 );
 
-
 CREATE TABLE users_words (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     word_id int NOT NULL REFERENCES words (id) ON DELETE CASCADE,
-    word_status varchar(32) NOT NULL,
+    word_status wordstatus NOT NULL,
     PRIMARY KEY (user_id, word_id)
 );
 
@@ -116,6 +115,4 @@ CREATE TABLE webdictionary_preferences (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     webdictionary_id int NOT NULL REFERENCES webdictionaries (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, webdictionary_id)
-);`;
-
-export default reset;
+);

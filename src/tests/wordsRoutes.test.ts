@@ -1,15 +1,16 @@
+import fs from 'fs';
 import supertest from 'supertest';
 import app from '../app';
 import dbQuery from '../model/db-query';
-import before from '../model/test-db-before';
-import resetDatabase from '../model/test-db-reset';
 
 const api = supertest(app);
 
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
+const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
+
 beforeAll(async () => {
-  before.forEach(async (query) => {
-    await dbQuery(query);
-  });
+  await dbQuery(reset);
+  await dbQuery(seed);
 });
 
 describe('Testing getting all words', () => {
@@ -64,12 +65,12 @@ describe('Testing adding a word', () => {
 
 describe('Testing updating a word', () => {
   test('modify an existing word', async () => {
-    const data = { status: 'known' };
+    const data = { status: 'learnt' };
     await api
       .put('/api/words/word/1/user/1')
       .send(data)
       .expect(200)
-      .expect('known');
+      .expect('learnt');
   });
 });
 
@@ -83,7 +84,7 @@ describe('Testing deleting a word', () => {
 
 
 afterAll(async () => {
-  await dbQuery(resetDatabase);
+  await dbQuery(reset);
 });
 
 

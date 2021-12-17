@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
+import fs from 'fs';
 import dbQuery from '../model/db-query';
-import before from '../model/test-db-before';
 import translations from '../services/translations';
 import contexts from '../services/contexts';
-import resetDatabase from '../model/test-db-reset';
+
+const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
+const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
-  before.forEach(async (query) => {
-    await dbQuery(query);
-  });
+  await dbQuery(reset);
+  await dbQuery(seed);
 });
 
 describe('Testing retrieving translations', () => {
@@ -133,5 +134,5 @@ describe('Testing updating translations', () => {
 });
 
 afterAll(async () => {
-  await dbQuery(resetDatabase);
+  await dbQuery(reset);
 });
