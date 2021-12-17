@@ -6,7 +6,6 @@ import { Word } from '../types';
 const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
-
 beforeAll(async () => {
   await dbQuery(schema);
   await dbQuery(seed);

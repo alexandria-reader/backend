@@ -1,12 +1,15 @@
+import fs from 'fs';
 import supertest from 'supertest';
 import app from '../app';
 import dbQuery from '../model/db-query';
-import resetDatabase from '../model/test-db-reset';
+
 
 const api = supertest(app);
 
+const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
+
 beforeAll(async () => {
-  await dbQuery(resetDatabase);
+  await dbQuery(schema);
 
   await dbQuery(`INSERT INTO users (username, password_hash, email)
   VALUES
@@ -78,5 +81,5 @@ describe('Testing adding texts', () => {
 });
 
 afterAll(async () => {
-  await dbQuery(resetDatabase);
+  await dbQuery(schema);
 });
