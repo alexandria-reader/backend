@@ -27,6 +27,16 @@ router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
   res.json(wordsByLanguageAndUser);
 });
 
+router.get('/text/:textId/user/:userId/', async(req, res): Promise<void> => {
+  const data = {
+    textId: req.params.textId,
+    userId: req.params.userId,
+  };
+  const textId: number = Number(data.textId);
+  const userId: number = Number(data.userId);
+  const wordListByUserText: Array<Word> = await words.getUserwordsInText(userId, textId, true);
+  res.json(wordListByUserText);
+});
 
 router.post('/user/:userId', async(req, res): Promise<void> => {
   const wordData: Word = req.body;
