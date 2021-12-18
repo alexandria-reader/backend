@@ -1,6 +1,8 @@
 import express from 'express';
 import texts from '../services/texts';
-import { Text } from '../types';
+import words from '../data-access/words';
+import { Text, Word } from '../types';
+
 
 const router: express.Router = express.Router();
 
@@ -9,20 +11,17 @@ router.get('/', async(_req, res): Promise<void> => {
   res.json(allTexts);
 });
 
-
 router.get('/:id', async(req, res): Promise<void> => {
   const id: number = Number(req.params.id);
   const textById: Text = await texts.getById(id);
   res.json(textById);
 });
 
-
 router.post('/', async(req, res): Promise<void> => {
   const textData: Text = req.body;
   const newText: Text = await texts.addNew(textData);
   res.status(201).json(newText);
 });
-
 
 router.put('/:id', async(req, res): Promise<void> => {
   const id: number = Number(req.params.id);
