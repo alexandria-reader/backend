@@ -83,13 +83,6 @@ CREATE TABLE translations (
 );
 
 
-CREATE TABLE contexts (
-    id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    translation_id int NOT NULL REFERENCES translations (id) ON DELETE CASCADE,
-    snippet text NOT NULL
-);
-
-
 CREATE TABLE webdictionaries (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
     source_language_id varchar(4) NOT NULL REFERENCES languages (id) ON DELETE CASCADE,
@@ -102,6 +95,7 @@ CREATE TABLE webdictionaries (
 CREATE TABLE users_translations (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     translation_id int NOT NULL REFERENCES translations (id) ON DELETE CASCADE,
+    context text,
     PRIMARY KEY (user_id, translation_id)
 );
 

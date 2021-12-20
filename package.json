@@ -1,7 +1,7 @@
 {
-  "name": "vocabulous",
+  "name": "Alexandria",
   "version": "0.1.0",
-  "description": "Team Capstone Europe Project",
+  "description": "Learn languages by reading texts.",
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",

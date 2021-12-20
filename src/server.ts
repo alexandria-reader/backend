@@ -7,5 +7,5 @@ const server = http.createServer(app);
 const { PORT, HOST } = config;
 
 server.listen(Number(PORT), String(HOST), () => {
-  console.log(`That word-learn app is listening on port ${PORT} of ${HOST}.`);
+  console.log(`Alexandria is listening on port ${PORT} of ${HOST}.`);
 });

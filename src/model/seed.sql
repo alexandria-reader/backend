@@ -66,12 +66,6 @@ VALUES
 (10, 'fr', 'Réveillon de Nouvel an');
 
 
-INSERT INTO contexts (translation_id, snippet) 
-VALUES
-(9, 'poor little girl, bareheaded and barefoot, was'),
-(21, 'road, where two carriages had rattled by');
-
-
 INSERT INTO users_words (user_id, word_id, word_status)
 VALUES
 (1, 1, 'learning'),
@@ -91,14 +85,14 @@ VALUES
 (3, 7, 'learning');
 
 
-INSERT INTO users_translations (user_id, translation_id)
+INSERT INTO users_translations (user_id, translation_id, context)
 VALUES
-(1, 1),
-(1, 5),
-(1, 16),
-(2, 5),
-(2, 18),
-(2, 10),
-(3, 8),
-(3, 9),
-(3, 10);
+(1, 1, 'the streets. Of course when she had left'),
+(1, 5, 'lost them running across the road, where two carriages'),
+(1, 16, 'any from her all day long, and no one had'),
+(2, 5, 'lost them running across the road, where two carriages'),
+(2, 18, ''),
+(2, 10, 'two carriages had rattled by terribly fast.'),
+(3, 8, ''),
+(3, 9, 'a poor little girl, bareheaded and barefoot, was'),
+(3, 10, 'two carriages had rattled by terribly fast.');

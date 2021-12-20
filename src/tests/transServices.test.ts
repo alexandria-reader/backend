@@ -54,7 +54,7 @@ describe('Testing retrieving translations', () => {
   });
 });
 
-describe('Testing retrieving contexts', () => {
+xdescribe('Testing retrieving contexts', () => {
   test('getAllContextByWordByLang: retrieve contexts by word and language', async () => {
     const result = await contexts.getAllContextByWordByLang('carriages', 'en', 'fr');
     if (result) {
@@ -71,7 +71,7 @@ describe('Testing retrieving contexts', () => {
   });
 });
 
-describe('Testing adding contexts', () => {
+xdescribe('Testing adding contexts', () => {
   test('add: new context is correctly added', async () => {
     const result = await contexts.addContext('où deux voitures avaient claqué par', 21);
     if (result) {
