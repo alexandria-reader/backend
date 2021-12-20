@@ -2,7 +2,10 @@
 import boom from '@hapi/boom';
 import { QueryResult } from 'pg';
 import wordData from '../data-access/words';
-import { WordDB, Word, convertWordTypes } from '../types';
+import translationData from '../data-access/translations';
+import {
+  WordDB, Word, convertWordTypes, WordWithTransContextStatusTypes,
+} from '../types';
 
 
 const getAll = async function(): Promise<Array<Word>> {
@@ -27,13 +30,27 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
+const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<WordWithTransContextStatusTypes>> {
+  const wordsResult: QueryResult = await wordData.getUserwordsInText(userId, textId, simple);
+  const newWordsResult = wordsResult.rows;
 
-const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<Word>> {
-  const result: QueryResult = await wordData.getUserwordsInText(userId, textId, simple);
+  console.log(newWordsResult);
 
-  return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
+  await Promise.all(newWordsResult.map(async (item) => {
+    const translations = await translationData.getByWord(item.word, userId);
+    const status = await translationData.getStatusByWordByUser(item.id, userId);
+    // eslint-disable-next-line no-param-reassign
+    item.translations = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const translation of translations.rows) {
+      console.log(translation);
+      item.translations.push(translation.translation);
+      item.status = status.rows[0].word_status;
+    }
+  }));
+
+  return newWordsResult;
 };
-
 
 const getWordInLanguage = async function (word: string, languageId: string): Promise<Word | null> {
   const result: QueryResult = await wordData.getWordInLanguage(word, languageId);

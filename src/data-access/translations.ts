@@ -18,6 +18,13 @@ const getOne = async function(translationId: number) {
   return result;
 };
 
+const getStatusByWordByUser = async function(wordId: number, userId: number) {
+  const FIND_WORD_STATUS = `
+      SELECT * FROM users_words WHERE user_id = %L AND word_id = %L`;
+  const results = await dbQuery(FIND_WORD_STATUS, userId, wordId);
+  return results;
+};
+
 const getByWord = async function(word: string, userId: number) {
   const FIND_WORD_ID = `
           SELECT * FROM words WHERE word = %L`;
@@ -79,6 +86,7 @@ export default {
   getAllByUser,
   getAll,
   getOne,
+  getStatusByWordByUser,
   getByWord,
   getAllByWordByLang,
   add,

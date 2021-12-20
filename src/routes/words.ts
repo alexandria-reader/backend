@@ -34,7 +34,7 @@ router.get('/text/:textId/user/:userId/', async(req, res): Promise<void> => {
   };
   const textId: number = Number(data.textId);
   const userId: number = Number(data.userId);
-  const wordListByUserText: Array<Word> = await words.getUserwordsInText(userId, textId, true);
+  const wordListByUserText = await words.getUserwordsInText(userId, textId, true);
   res.json(wordListByUserText);
 });
 

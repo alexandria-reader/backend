@@ -54,31 +54,31 @@ describe('Testing retrieving translations', () => {
   });
 });
 
-describe('Testing retrieving contexts', () => {
-  test('getAllContextByWordByLang: retrieve contexts by word and language', async () => {
-    const result = await contexts.getAllContextByWordByLang('carriages', 'en', 'fr');
-    if (result) {
-      expect(result[0].snippet).toBe('road, where two carriages had rattled by');
-    }
-  });
+// describe('Testing retrieving contexts', () => {
+//   test('getAllContextByWordByLang: retrieve contexts by word and language', async () => {
+//     const result = await contexts.getAllContextByWordByLang('carriages', 'en', 'fr');
+//     if (result) {
+//       expect(result[0].snippet).toBe('road, where two carriages had rattled by');
+//     }
+//   });
 
-  test('getContextByLangByUser: retrieve context and translation for user, given word id and target language id', async () => {
-    await translations.addToUsersTranslations(3, 21);
-    const result = await contexts.getContextByLangByUser(3, 9, 'fr');
-    if (result) {
-      expect(result[0].snippet).toBe('road, where two carriages had rattled by');
-    }
-  });
-});
+//   test('getContextByLangByUser: retrieve context and translation for user, given word id and target language id', async () => {
+//     await translations.addToUsersTranslations(3, 21);
+//     const result = await contexts.getContextByLangByUser(3, 9, 'fr');
+//     if (result) {
+//       expect(result[0].snippet).toBe('road, where two carriages had rattled by');
+//     }
+//   });
+// });
 
-describe('Testing adding contexts', () => {
-  test('add: new context is correctly added', async () => {
-    const result = await contexts.addContext('où deux voitures avaient claqué par', 21);
-    if (result) {
-      expect(result[0].snippet).toContain('où deux voitures avaient claqué par');
-    }
-  });
-});
+// describe('Testing adding contexts', () => {
+//   test('add: new context is correctly added', async () => {
+//     const result = await contexts.addContext('où deux voitures avaient claqué par', 21);
+//     if (result) {
+//       expect(result[0].snippet).toContain('où deux voitures avaient claqué par');
+//     }
+//   });
+// });
 
 describe('Testing adding translations', () => {
   test('add: new translation is correctly added', async () => {
