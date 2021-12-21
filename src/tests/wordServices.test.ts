@@ -25,13 +25,13 @@ describe('Getting words', () => {
   });
 
 
-  // test('getById: get word with non-existent id 999 is null', async () => {
-  //   async function getNonExisting() {
-  //     await words.getById(999);
-  //   }
+  xtest('getById: get word with non-existent id 999 is null', async () => {
+    async function getNonExisting() {
+      await words.getById(999);
+    }
 
-  //   expect(getNonExisting).toThrow();
-  // });
+    expect(getNonExisting).toThrow();
+  });
 
 
   test('getByLanguageAndUser: find all words for user 2 in English', async () => {
@@ -45,9 +45,9 @@ describe('Getting words', () => {
   });
 
 
-  test('getUserwordsInText: find all words that user 1 marked in text 1', async () => {
-    const userWords = await words.getUserwordsInText(1, 1);
-    expect(userWords).toHaveLength(4);
+  test('getByUser: find all words that user 1 marked in text 1', async () => {
+    const userWords = await words.getUserwordsInText(1, 1, 'de');
+    expect(userWords).toHaveLength(3);
   });
 
 
