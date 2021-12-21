@@ -48,10 +48,6 @@ describe('Getting words', () => {
   test('getUserwordsInText: find all words that user 1 marked in text 1', async () => {
     const userWords = await words.getUserwordsInText(1, 1);
     expect(userWords).toHaveLength(4);
-    expect(userWords).toContainEqual({
-      id: 9,
-      word: 'carriages',
-    });
   });
 
 
