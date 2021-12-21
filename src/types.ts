@@ -193,7 +193,7 @@ export const convertContextTypes = function(dbItem: ContextDB): Context {
   };
 };
 
-export type WordWithTransContextStatusTypes = {
+export type UserWord = {
   id?: number,
   word: string,
   translations: Array<string>,
