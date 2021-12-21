@@ -193,9 +193,11 @@ export const convertContextTypes = function(dbItem: ContextDB): Context {
   };
 };
 
+
 export type UserWord = {
-  id?: number,
+  id: number,
   word: string,
-  translations: Array<string>,
   status: string,
+  translations: Array<string>,
+  contexts: Array<string>
 };

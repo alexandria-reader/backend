@@ -63,7 +63,9 @@ VALUES
 (7, 'fr', 'tête nue'),
 (8, 'fr', 'ébranlé par'),
 (9, 'fr', 'chariots'),
-(10, 'fr', 'Réveillon de Nouvel an');
+(10, 'fr', 'Réveillon de Nouvel an'),
+(8, 'de', 'vorbeigescheppert'),
+(8, 'de', 'vorbeigaloppiert');
 
 
 INSERT INTO users_words (user_id, word_id, word_status)
@@ -71,7 +73,9 @@ VALUES
 (1, 1, 'learning'),
 (1, 3, 'familiar'),
 (1, 5, 'learned'),
+(1, 6, 'familiar'),
 (1, 7, 'familiar'),
+(1, 8, 'learned'),
 (1, 9, 'learning'),
 (2, 2, 'learning'),
 (2, 4, 'learned'),
@@ -89,7 +93,11 @@ INSERT INTO users_translations (user_id, translation_id, context)
 VALUES
 (1, 1, 'the streets. Of course when she had left'),
 (1, 5, 'lost them running across the road, where two carriages'),
+(1, 8, 'context from another text'),
 (1, 16, 'any from her all day long, and no one had'),
+(1, 10, 'two carriages had rattled by terribly fast.'),
+(1, 23, 'two brass bands had rattled by terribly fast.'),
+(1, 24, 'two horses had rattled by terribly fast.'),
 (2, 5, 'lost them running across the road, where two carriages'),
 (2, 18, ''),
 (2, 10, 'two carriages had rattled by terribly fast.'),

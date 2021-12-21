@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import express from 'express';
 import words from '../services/words';
-import { Word } from '../types';
+import { Word, UserWord } from '../types';
 
 const router = express.Router();
 
@@ -27,16 +27,14 @@ router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
   res.json(wordsByLanguageAndUser);
 });
 
-router.get('/text/:textId/user/:userId/', async(req, res): Promise<void> => {
-  const data = {
-    textId: req.params.textId,
-    userId: req.params.userId,
-  };
-  const textId: number = Number(data.textId);
-  const userId: number = Number(data.userId);
-  const wordListByUserText = await words.getUserwordsInText(userId, textId, true);
-  res.json(wordListByUserText);
+
+router.get('/text/:textId/:langId/user/:userId', async(req, res): Promise<void> => {
+  const { textId, langId, userId } = req.params;
+
+  const userwordsInText: Array<UserWord> = await words.getUserwordsInText(Number(userId), Number(textId), langId, true);
+  res.json(userwordsInText);
 });
+
 
 router.post('/user/:userId', async(req, res): Promise<void> => {
   const wordData: Word = req.body;
@@ -51,7 +49,7 @@ router.post('/user/:userId', async(req, res): Promise<void> => {
 });
 
 
-router.put('/word/:wordId/user/:userId', async(req, res): Promise<void> => {
+router.put('/:wordId/user/:userId', async(req, res): Promise<void> => {
   const { status } = req.body;
   const { wordId, userId } = req.params;
   const updatedStatus: string | null = await words.updateStatus(Number(wordId), Number(userId), status);
@@ -59,7 +57,7 @@ router.put('/word/:wordId/user/:userId', async(req, res): Promise<void> => {
   res.send(updatedStatus);
 });
 
-router.delete('/word/:wordId', async(req, res): Promise<void> => {
+router.delete('/:wordId', async(req, res): Promise<void> => {
   const id = req.params.wordId;
   const result = await words.remove(Number(id));
 

@@ -2,7 +2,6 @@
 import boom from '@hapi/boom';
 import { QueryResult } from 'pg';
 import wordData from '../data-access/words';
-import translationData from '../data-access/translations';
 import {
   WordDB, Word, convertWordTypes, UserWord,
 } from '../types';
@@ -30,24 +29,13 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<Array<UserWord>> {
-  const wordsResult: QueryResult = await wordData.getUserwordsInText(userId, textId, simple);
-  const newWordsResult = wordsResult.rows;
 
-  await Promise.all(newWordsResult.map(async (item) => {
-    const translations = await translationData.getByWord(item.word, userId);
-    const status = await wordData.getStatus(item.id, userId);
-    // eslint-disable-next-line no-param-reassign
-    item.translations = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const translation of translations.rows) {
-      item.translations.push(translation.translation);
-      item.status = status.rows[0].word_status;
-    }
-  }));
+const getUserwordsInText = async function(userId: number, textId: number, targetLanguageId: string, simple: boolean = true): Promise<Array<UserWord>> {
+  const wordsResult: QueryResult = await wordData.getUserwordsInText(userId, textId, targetLanguageId, simple);
 
-  return newWordsResult;
+  return wordsResult.rows;
 };
+
 
 const getWordInLanguage = async function (word: string, languageId: string): Promise<Word | null> {
   const result: QueryResult = await wordData.getWordInLanguage(word, languageId);

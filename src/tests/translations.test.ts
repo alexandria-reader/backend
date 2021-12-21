@@ -24,7 +24,7 @@ describe('Testing retrieving translations', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.length).toEqual(22);
+        expect(response.body.length).toEqual(24);
       });
   });
 

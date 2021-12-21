@@ -67,7 +67,7 @@ describe('Testing updating a word', () => {
   test('modify an existing word', async () => {
     const data = { status: 'learned' };
     await api
-      .put('/api/words/word/1/user/1')
+      .put('/api/words/1/user/1')
       .send(data)
       .expect(200)
       .expect('learned');
@@ -77,7 +77,7 @@ describe('Testing updating a word', () => {
 describe('Testing deleting a word', () => {
   test('delete an existing word', async () => {
     await api
-      .delete('/api/words/word/1')
+      .delete('/api/words/1')
       .expect(204);
   });
 });

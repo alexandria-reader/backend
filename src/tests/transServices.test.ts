@@ -2,7 +2,6 @@
 import fs from 'fs';
 import dbQuery from '../model/db-query';
 import translations from '../services/translations';
-import contexts from '../services/contexts';
 
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
@@ -19,13 +18,13 @@ describe('Testing retrieving translations', () => {
 
   test('getAll: retrieve all translations', async () => {
     const result = await translations.getAll();
-    expect(result).toHaveLength(22);
+    expect(result).toHaveLength(24);
   });
 
   test('getAllByUser: retrieve all translations for user', async () => {
     const result = await translations.getAllByUser(1);
     if (result) {
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(7);
       expect(result[0].translation).toBe('natürlich');
     }
   });
@@ -90,7 +89,7 @@ describe('Testing deleting translations', () => {
     const result = await translations.remove(id);
     if (result) {
       const getAll = await translations.getAll();
-      expect(getAll.length).toBe(24);
+      expect(getAll.length).toBe(26);
     }
   });
 });

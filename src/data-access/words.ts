@@ -45,11 +45,40 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
   return result;
 };
 
+// Finds all words a user has marked in a given language and returns translations and contexts as well
+const getUserwordsByLanguage = async function(languageId: string, userId: number): Promise<QueryResult> {
+  const WORDS_BY_LANGUAGE_AND_USER: string = `
+      SELECT DISTINCT w.id AS word_id, 
+                      w.word, 
+                      array_agg(t.translation) AS translations, 
+                      array_agg(ut.context) AS contexts, 
+                      uw.word_status
+        FROM words AS w 
+        JOIN translations AS t ON w.id = t.word_id 
+        JOIN users_translations AS ut ON t.id = ut.translation_id 
+        JOIN users_words AS uw ON w.id = uw.word_id 
+       WHERE uw.user_id = %s 
+             AND 
+             ut.user_id = %s 
+             AND
+             t.target_language_id = %L 
+    GROUP BY w.id, w.word, uw.word_status`;
 
-const getUserwordsInText = async function(userId: number, textId: number, simple: boolean = true): Promise<QueryResult> {
+  const result = await dbQuery(
+    WORDS_BY_LANGUAGE_AND_USER,
+    userId,
+    userId,
+    languageId,
+  );
+
+  return result;
+};
+
+// Finds all words in a given text that are connected to the user
+const getByUserInText = async function(userId: number, textId: number, simple: boolean = true): Promise<QueryResult> {
   const tsvectorType = simple ? 'simple' : 'language';
 
-  const USER_WORDS_IN_TEXT: string = `
+  const WORDS_BY_USER_IN_TEXT: string = `
     SELECT w.id, w.word
       FROM words AS w
       JOIN users_words AS uw ON w.id = uw.word_id
@@ -62,8 +91,47 @@ const getUserwordsInText = async function(userId: number, textId: number, simple
                                           WHERE t.id = %s)`;
 
   const result = await dbQuery(
+    WORDS_BY_USER_IN_TEXT,
+    userId,
+    textId,
+    textId,
+  );
+
+  return result;
+};
+
+// Finds all words in a text that a user has previously marked and returns translations and contexts as well
+const getUserwordsInText = async function(userId: number, textId: number, targetLanguageId: string, simple: boolean = true): Promise<QueryResult> {
+  const tsvectorType = simple ? 'simple' : 'language';
+
+  const USER_WORDS_IN_TEXT: string = `
+      SELECT DISTINCT w.id AS word_id, 
+                      w.word, 
+                      array_agg(t.translation) AS translations, 
+                      array_agg(ut.context) AS contexts, 
+                      uw.word_status
+        FROM words AS w 
+        JOIN translations AS t ON w.id = t.word_id 
+        JOIN users_translations AS ut ON t.id = ut.translation_id 
+        JOIN users_words AS uw ON w.id = uw.word_id 
+       WHERE uw.user_id = %s 
+             AND 
+             ut.user_id = %s 
+             AND
+             t.target_language_id = %L 
+             AND
+             w.language_id = (SELECT t.language_id FROM texts AS t 
+                               WHERE t.id = %s)
+             AND
+             w.tsquery_${tsvectorType} @@ (SELECT t.tsvector_${tsvectorType} FROM texts AS t 
+                                            WHERE t.id = %s)        
+    GROUP BY w.id, w.word, uw.word_status`;
+
+  const result = await dbQuery(
     USER_WORDS_IN_TEXT,
     userId,
+    userId,
+    targetLanguageId,
     textId,
     textId,
   );
@@ -194,6 +262,8 @@ export default {
   getAll,
   getById,
   getByLanguageAndUser,
+  getUserwordsByLanguage,
+  getByUserAndText: getByUserInText,
   getUserwordsInText,
   getWordInLanguage,
   addNew,
