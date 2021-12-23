@@ -109,7 +109,7 @@ const getUserwordsInText = async function(userId: number, textId: number, target
                       w.word, 
                       array_agg(t.translation) AS translations, 
                       array_agg(ut.context) AS contexts, 
-                      uw.word_status
+                      uw.word_status AS status
         FROM words AS w 
         JOIN translations AS t ON w.id = t.word_id 
         JOIN users_translations AS ut ON t.id = ut.translation_id 
