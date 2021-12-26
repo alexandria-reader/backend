@@ -66,6 +66,11 @@ const updateUserPassword = async function (
   throw boom.notAcceptable('Incorrect password.');
 };
 
+const getUserById = async function(userId: string) {
+  const user = await userData.getUserById(userId);
+  return user;
+};
+
 const removeUser = async function (userId: string, password: string) {
   const passwordsMatch = await verifyPassword(userId, password);
 
@@ -89,5 +94,6 @@ export default {
   addNewUser,
   updateUserPassword,
   removeUser,
+  getUserById,
   verifyPassword,
 };
