@@ -9,8 +9,10 @@ function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
 }
 
 userRouter.post('/', async (req, res) => {
-  const { username, password, email } = req.body;
-  const newUser = await userServices.addNewUser(username, password, email);
+  const {
+    username, password, email, sourceLang, targetLang,
+  } = req.body;
+  const newUser = await userServices.addNewUser(username, password, email, sourceLang, targetLang);
 
   res.status(201).json(newUser);
 });

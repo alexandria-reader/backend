@@ -8,6 +8,8 @@ export type User = {
   username: string,
   passwordHash: string,
   email: string,
+  sourceLang?: string,
+  targetLang?: string,
 };
 
 export type UserDB = {
@@ -27,6 +29,8 @@ export const convertUserTypes = function(dbItem: UserDB): User {
     username: dbItem.username,
     passwordHash: dbItem.password_hash,
     email: dbItem.email,
+    sourceLang: dbItem.current_known_language_id,
+    targetLang: dbItem.current_learn_language_id,
   };
 };
 
