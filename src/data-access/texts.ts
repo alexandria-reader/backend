@@ -12,6 +12,17 @@ const getAll = async function(): Promise<QueryResult> {
   return result;
 };
 
+const getAllByLanguage = async function(userId: number, languageId: string): Promise<QueryResult> {
+  const TEXTS_BY_USER: string = `
+      SELECT * FROM texts
+       WHERE user_id = %L AND language_id = %L
+    ORDER BY last_opened DESC NULLS LAST`;
+
+  const result = await dbQuery(TEXTS_BY_USER, userId, languageId);
+
+  return result;
+};
+
 
 const getById = async function(textId: number): Promise<QueryResult> {
   const TEXT_BY_ID: string = `
@@ -124,6 +135,7 @@ const remove = async function(textId: number): Promise<QueryResult> {
 
 export default {
   getAll,
+  getAllByLanguage,
   getById,
   getByUser,
   addNew,
