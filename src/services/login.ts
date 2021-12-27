@@ -23,7 +23,7 @@ const verifyLoginDetails = async function (email: string, password: string): Pro
 
 
 const login = async function (email: string, password: string): Promise<LoggedInUser> {
-  const verifiedUser = await verifyLoginDetails(email, password);
+  const verifiedUser: UserDB = await verifyLoginDetails(email, password);
 
   const userForToken = {
     email: verifiedUser.email,
@@ -36,7 +36,12 @@ const login = async function (email: string, password: string): Promise<LoggedIn
     { expiresIn: 60 * 60 * 24 * 7 }, // token expires in one week
   );
 
-  return Object.assign(verifiedUser, { token });
+  return {
+    id: verifiedUser.id,
+    email: verifiedUser.email,
+    username: verifiedUser.username,
+    token,
+  };
 };
 
 export default {
