@@ -27,7 +27,7 @@ const getByUser = async function(userId: number): Promise<Array<Text>> {
 
 const getByUserAndLanguage = async function(userId: number, languageId: string)
   : Promise<Array<Text>> {
-  const result: QueryResult = await textData.getAllByLanguage(userId, languageId);
+  const result: QueryResult = await textData.getByUserAndLanguage(userId, languageId);
 
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
 };

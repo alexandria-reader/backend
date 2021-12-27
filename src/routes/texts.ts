@@ -7,6 +7,15 @@ import { getUserFromToken } from '../utils/middleware';
 const router: express.Router = express.Router();
 
 
+router.get('/:langId/user', getUserFromToken, async(req, res): Promise<unknown> => {
+  const { user } = res.locals;
+  const languageId = req.params.langId;
+
+  const allTexts: Array<Text> = await texts.getByUserAndLanguage(Number(user.id), languageId);
+  return res.json(allTexts);
+});
+
+
 router.get('/', getUserFromToken, async(_req, res): Promise<unknown> => {
   const { user } = res.locals;
 

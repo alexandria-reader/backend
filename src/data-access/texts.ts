@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 import { Text } from '../types';
@@ -8,17 +9,6 @@ const getAll = async function(): Promise<QueryResult> {
     SELECT * FROM texts`;
 
   const result = await dbQuery(ALL_TEXTS);
-
-  return result;
-};
-
-const getAllByLanguage = async function(userId: number, languageId: string): Promise<QueryResult> {
-  const TEXTS_BY_USER: string = `
-      SELECT * FROM texts
-       WHERE user_id = %L AND language_id = %L
-    ORDER BY last_opened DESC NULLS LAST`;
-
-  const result = await dbQuery(TEXTS_BY_USER, userId, languageId);
 
   return result;
 };
@@ -42,6 +32,18 @@ const getByUser = async function(userId: number): Promise<QueryResult> {
     ORDER BY last_opened DESC NULLS LAST`;
 
   const result = await dbQuery(TEXTS_BY_USER, userId);
+
+  return result;
+};
+
+
+const getByUserAndLanguage = async function(userId: number, languageId: string): Promise<QueryResult> {
+  const TEXTS_BY_USER: string = `
+      SELECT * FROM texts
+       WHERE user_id = %L AND language_id = %L
+    ORDER BY last_opened DESC NULLS LAST`;
+
+  const result = await dbQuery(TEXTS_BY_USER, userId, languageId);
 
   return result;
 };
@@ -135,7 +137,7 @@ const remove = async function(textId: number): Promise<QueryResult> {
 
 export default {
   getAll,
-  getAllByLanguage,
+  getByUserAndLanguage,
   getById,
   getByUser,
   addNew,
