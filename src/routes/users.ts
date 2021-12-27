@@ -1,27 +1,32 @@
 import express from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import userServices from '../services/users';
+import users from '../services/users';
+
 
 const userRouter = express.Router();
+
 
 function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
   return (value as JwtPayload).id !== undefined;
 }
+
 
 userRouter.post('/', async (req, res) => {
   const {
     username, password, email, knownLanguageId, learnLanguageId,
   } = req.body;
   // eslint-disable-next-line max-len
-  const newUser = await userServices.addNewUser(username, password, email, knownLanguageId, learnLanguageId);
+  const newUser = await users.addNew(username, password, email, knownLanguageId, learnLanguageId);
 
   res.status(201).json(newUser);
 });
 
+
 userRouter.get('/', async (_req, res) => {
-  const users = await userServices.selectAllUsers();
-  res.send(users);
+  const allUsers = await users.getAll();
+  res.json(allUsers);
 });
+
 
 // reset password
 userRouter.put('/:userId', async (req, res) => {
@@ -35,10 +40,11 @@ userRouter.put('/:userId', async (req, res) => {
   //   throw boom.notAcceptable('You must submit a new password.');
   // }
 
-  const response = await userServices.updateUserPassword(userId, currentPassword, newPassword);
+  const response = await users.updatePassword(userId, currentPassword, newPassword);
 
   res.json(response);
 });
+
 
 userRouter.delete('/:userId', async (req, res) => {
   // check user is logged in first
@@ -47,12 +53,13 @@ userRouter.delete('/:userId', async (req, res) => {
 
   // add missing data check and test
 
-  const deletedUser = await userServices.removeUser(userId, password);
+  const deletedUser = await users.remove(userId, password);
 
-  res.json(deletedUser);
+  res.status(204).json(deletedUser);
 });
 
-// // set user languages
+
+// set user languages
 userRouter.put('/', async (req, res) => {
   const authorization = req.get('authorization');
 
@@ -72,14 +79,15 @@ userRouter.put('/', async (req, res) => {
       return res.status(401).json({ error: 'token missing or invalid' });
     }
 
-    const { currentKnownId, currentLearnId } = req.body;
-    const updatedUser = await userServices
-      .setUserLanguages(currentKnownId, currentLearnId, decodedToken.id);
+    const { currentKnownLanguageId, currentLearnLanguageId } = req.body;
+    const updatedUser = await users
+      .setUserLanguages(currentKnownLanguageId, currentLearnLanguageId, decodedToken.id);
 
     return res.json(updatedUser);
   }
 
   return res.status(401).json({ error: 'token missing or invalid' });
 });
+
 
 export default userRouter;

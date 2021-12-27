@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 export type ConnectionOptions = {
   connectionString: string | undefined,
   ssl: boolean | Object,
@@ -37,11 +35,6 @@ export const convertUserTypes = function(dbItem: UserDB): User {
     currentLearnLanguageId: dbItem.current_learn_language_id,
   };
 };
-
-export interface RequestWithUserAuth extends Request {
-  user: SanitizedUser,
-  token: string
-}
 
 
 export type Text = {

@@ -9,12 +9,15 @@ import wordsRouter from './routes/words';
 import loginRouter from './routes/login';
 import languageRouter from './routes/languages';
 
+import { extractToken } from './utils/middleware';
 
 import { notFoundHandler, generalErrorHandler } from './utils/errorHandlers';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use(extractToken);
 
 app.use('/api/texts', textsRouter);
 app.use('/api/translations', translationsRouter);
