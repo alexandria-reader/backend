@@ -23,5 +23,11 @@ export default loginRouter.post('/', async (req, res) => {
 
   res
     .status(200)
-    .send({ token, username: user.username, email: user.email });
+    .send({
+      token,
+      username: user.username,
+      email: user.email,
+      current_known_language_id: user.current_known_language_id,
+      current_learn_language_id: user.current_learn_language_id,
+    });
 });
