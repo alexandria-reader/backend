@@ -1,14 +1,38 @@
 import express from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import texts from '../services/texts';
-import words from '../data-access/words';
-import { Text, Word } from '../types';
-
+import { Text } from '../types';
 
 const router: express.Router = express.Router();
 
-router.get('/', async(_req, res): Promise<void> => {
-  const allTexts: Array<Text> = await texts.getAll();
-  res.json(allTexts);
+function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
+  return (value as JwtPayload).id !== undefined;
+}
+
+router.get('/', async(req, res): Promise<unknown> => {
+  const authorization = req.get('authorization');
+
+  let token = '';
+  if (authorization) {
+    token = authorization.substring(7);
+  }
+
+  if (!token) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET || 'secret');
+
+  if (isJWTPayload(decodedToken)) {
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' });
+    }
+
+    const allTexts: Array<Text> = await texts.getByUser(Number(decodedToken.id));
+    return res.json(allTexts);
+  }
+
+  return res.status(401).json({ error: 'token missing or invalid' });
 });
 
 router.get('/:id', async(req, res): Promise<void> => {
@@ -17,10 +41,32 @@ router.get('/:id', async(req, res): Promise<void> => {
   res.json(textById);
 });
 
-router.post('/', async(req, res): Promise<void> => {
-  const textData: Text = req.body;
-  const newText: Text = await texts.addNew(textData);
-  res.status(201).json(newText);
+router.post('/', async(req, res): Promise<unknown> => {
+  const authorization = req.get('authorization');
+
+  let token = '';
+  if (authorization) {
+    token = authorization.substring(7);
+  }
+
+  if (!token) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET || 'secret');
+
+  if (isJWTPayload(decodedToken)) {
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' });
+    }
+    const textData: Text = req.body;
+    textData.userId = decodedToken.id;
+
+    const text: Text = await texts.addNew(textData);
+    return res.json(text);
+  }
+
+  return res.status(401).json({ error: 'token missing or invalid' });
 });
 
 router.put('/:id', async(req, res): Promise<void> => {
