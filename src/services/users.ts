@@ -24,7 +24,7 @@ const selectAllUsers = async function() {
 };
 
 // eslint-disable-next-line max-len
-const addNewUser = async function (username: string, password: string, email: string): Promise<SanitizedUser> {
+const addNewUser = async function (username: string, password: string, email: string, knownLanguageId: string, learnLanguageId: string): Promise<SanitizedUser> {
   const userExists = await userData.getUserByUsername(username);
   if (userExists.rowCount > 0) throw boom.notAcceptable('Username already in use.');
 
@@ -34,7 +34,8 @@ const addNewUser = async function (username: string, password: string, email: st
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  const result = await userData.addNewUser(username, passwordHash, email);
+  // eslint-disable-next-line max-len
+  const result = await userData.addNewUser(username, passwordHash, email, knownLanguageId, learnLanguageId);
   const newUser: User = result.rows[0];
   const santizedNewUser: SanitizedUser = sanitizeUser(newUser);
   return santizedNewUser;
