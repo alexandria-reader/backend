@@ -20,9 +20,10 @@ const getUserByEmail = async function (email: string): Promise<QueryResult> {
 };
 
 // eslint-disable-next-line max-len
-const addNewUser = async function (username: string, passwordHash: string, email: string, sourceLang: string, targetLang: string): Promise<QueryResult> {
+const addNewUser = async function (username: string, passwordHash: string, email: string, knownLanguageId: string, learnLanguageId: string): Promise<QueryResult> {
   const ADD_USER = 'INSERT INTO users (username, password_hash, email, current_known_language_id, current_learn_language_id) Values (%L, %L, %L, %L, %L) RETURNING *';
-  const result = await dbQuery(ADD_USER, username, passwordHash, email, sourceLang, targetLang);
+  // eslint-disable-next-line max-len
+  const result = await dbQuery(ADD_USER, username, passwordHash, email, knownLanguageId, learnLanguageId);
   return result;
 };
 
