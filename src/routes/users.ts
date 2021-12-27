@@ -1,14 +1,10 @@
+/* eslint-disable max-len */
 import express from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import users from '../services/users';
+import { getUserFromToken } from '../utils/middleware';
 
 
 const userRouter = express.Router();
-
-
-function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
-  return (value as JwtPayload).id !== undefined;
-}
 
 
 userRouter.post('/', async (req, res) => {
@@ -60,33 +56,17 @@ userRouter.delete('/:userId', async (req, res) => {
 
 
 // set user languages
-userRouter.put('/', async (req, res) => {
-  const authorization = req.get('authorization');
+userRouter.put('/', getUserFromToken, async (req, res) => {
+  const { user } = res.locals;
 
-  let token = '';
-  if (authorization) {
-    token = authorization.substring(7);
-  }
+  const { currentKnownLanguageId, currentLearnLanguageId } = req.body;
+  const updatedUser = await users.setUserLanguages(
+    currentKnownLanguageId,
+    currentLearnLanguageId,
+    user.id,
+  );
 
-  if (!token) {
-    return res.status(401).json({ error: 'token missing or invalid' });
-  }
-
-  const decodedToken = jwt.verify(token, process.env.SECRET || 'secret');
-
-  if (isJWTPayload(decodedToken)) {
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token missing or invalid' });
-    }
-
-    const { currentKnownLanguageId, currentLearnLanguageId } = req.body;
-    const updatedUser = await users
-      .setUserLanguages(currentKnownLanguageId, currentLearnLanguageId, decodedToken.id);
-
-    return res.json(updatedUser);
-  }
-
-  return res.status(401).json({ error: 'token missing or invalid' });
+  return res.json(updatedUser);
 });
 
 

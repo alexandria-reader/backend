@@ -1,40 +1,18 @@
 import express from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import texts from '../services/texts';
 import { Text } from '../types';
+import { getUserFromToken } from '../utils/middleware';
+
 
 const router: express.Router = express.Router();
 
 
-function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
-  return (value as JwtPayload).id !== undefined;
-}
+router.get('/', getUserFromToken, async(_req, res): Promise<unknown> => {
+  const { user } = res.locals;
 
+  const allTexts: Array<Text> = await texts.getByUser(Number(user.id));
 
-router.get('/', async(req, res): Promise<unknown> => {
-  const authorization = req.get('authorization');
-
-  let token = '';
-  if (authorization) {
-    token = authorization.substring(7);
-  }
-
-  if (!token) {
-    return res.status(401).json({ error: 'token missing or invalid' });
-  }
-
-  const decodedToken = jwt.verify(token, process.env.SECRET || 'secret');
-
-  if (isJWTPayload(decodedToken)) {
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token missing or invalid' });
-    }
-
-    const allTexts: Array<Text> = await texts.getByUser(Number(decodedToken.id));
-    return res.json(allTexts);
-  }
-
-  return res.status(401).json({ error: 'token missing or invalid' });
+  return res.json(allTexts);
 });
 
 
@@ -45,32 +23,15 @@ router.get('/:id', async(req, res): Promise<void> => {
 });
 
 
-router.post('/', async(req, res): Promise<unknown> => {
-  const authorization = req.get('authorization');
+router.post('/', getUserFromToken, async(req, res): Promise<unknown> => {
+  const { user } = res.locals;
 
-  let token = '';
-  if (authorization) {
-    token = authorization.substring(7);
-  }
+  const textData: Text = req.body;
+  textData.userId = user.id;
 
-  if (!token) {
-    return res.status(401).json({ error: 'token missing or invalid' });
-  }
+  const text: Text = await texts.addNew(textData);
 
-  const decodedToken = jwt.verify(token, process.env.SECRET || 'secret');
-
-  if (isJWTPayload(decodedToken)) {
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token missing or invalid' });
-    }
-    const textData: Text = req.body;
-    textData.userId = decodedToken.id;
-
-    const text: Text = await texts.addNew(textData);
-    return res.json(text);
-  }
-
-  return res.status(401).json({ error: 'token missing or invalid' });
+  return res.json(text);
 });
 
 
