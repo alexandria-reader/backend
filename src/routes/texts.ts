@@ -9,7 +9,7 @@ function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
   return (value as JwtPayload).id !== undefined;
 }
 
-router.get('/', async(req, res): Promise<unknown> => {
+router.get('/language/:id', async(req, res): Promise<unknown> => {
   const authorization = req.get('authorization');
 
   let token = '';
@@ -27,8 +27,9 @@ router.get('/', async(req, res): Promise<unknown> => {
     if (!decodedToken.id) {
       return res.status(401).json({ error: 'token missing or invalid' });
     }
-
-    const allTexts: Array<Text> = await texts.getByUser(Number(decodedToken.id));
+    const languageId = req.params.id;
+    const allTexts: Array<Text> = await texts
+      .getByUserAndLanguage(Number(decodedToken.id), languageId);
     return res.json(allTexts);
   }
 
