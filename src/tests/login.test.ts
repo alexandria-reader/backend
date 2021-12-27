@@ -46,10 +46,10 @@ describe('Testing user login', () => {
     const response = await api
       .post('/api/login')
       .send(loginDetails)
-      .expect(406)
+      .expect(401)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.text).toContain('Email not found');
+    expect(response.text).toContain('invalid email or password');
   });
 
   test('users cant login if password is incorrect', async () => {
@@ -61,10 +61,10 @@ describe('Testing user login', () => {
     const response = await api
       .post('/api/login')
       .send(loginDetails)
-      .expect(406)
+      .expect(401)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.text).toContain('Passwords do not match');
+    expect(response.text).toContain('invalid email or password');
   });
 
   // test('There is one user', async () => {
