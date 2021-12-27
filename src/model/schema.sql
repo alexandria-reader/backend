@@ -26,7 +26,7 @@ CREATE TABLE languages (
 
 CREATE TABLE users (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    username text UNIQUE NOT NULL,
+    username text NOT NULL,
     password_hash text NOT NULL,
     email text UNIQUE NOT NULL,
     current_known_language_id varchar(4) REFERENCES languages (id),
