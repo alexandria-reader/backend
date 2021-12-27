@@ -9,6 +9,7 @@ const getAll = async function(): Promise<Array<Text>> {
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
 };
 
+
 const getById = async function(textId: number): Promise<Text> {
   const result: QueryResult = await textData.getById(textId);
 

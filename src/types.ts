@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export type ConnectionOptions = {
   connectionString: string | undefined,
   ssl: boolean | Object,
@@ -8,6 +10,8 @@ export type User = {
   username: string,
   passwordHash: string,
   email: string,
+  currentKnownLanguageId?: string,
+  currentLearnLanguageId?: string,
 };
 
 export type UserDB = {
@@ -15,6 +19,8 @@ export type UserDB = {
   username: string,
   password_hash: string,
   email: string,
+  current_known_language_id?: string,
+  current_learn_language_id?: string,
 };
 
 export type SanitizedUser = Omit<User, 'passwordHash'>;
@@ -27,8 +33,15 @@ export const convertUserTypes = function(dbItem: UserDB): User {
     username: dbItem.username,
     passwordHash: dbItem.password_hash,
     email: dbItem.email,
+    currentKnownLanguageId: dbItem.current_known_language_id,
+    currentLearnLanguageId: dbItem.current_learn_language_id,
   };
 };
+
+export interface RequestWithUserAuth extends Request {
+  user: LoggedInUser,
+  token: string
+}
 
 
 export type Text = {

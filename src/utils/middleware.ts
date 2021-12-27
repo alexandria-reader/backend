@@ -1,30 +1,31 @@
-// // helpful functions for later, not yet implemented
+/* eslint-disable max-len */
+import jwt, { Secret } from 'jsonwebtoken';
+import boom from '@hapi/boom';
+import type { Response, NextFunction } from 'express';
+import type { RequestWithUserAuth } from '../types';
 
-// export const unknownEndpoint = function(request, response) => {
-//   response.status(404).send({ error: 'unknown endpoint ' });
-// };
 
-// export const tokenExtractor = function(request, response, next) => {
-//   const authorization = request.get('authorization');
-//   request.token = null;
+export function extractToken(req: RequestWithUserAuth, _res: Response, next: NextFunction) {
+  const authorization = req.get('authorization');
 
-//   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-//     request.token = authorization.substring(7);
-//   }
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    req.token = authorization.substring(7);
+  }
 
-//   next();
-// };
+  next();
+}
 
-// export const userExtractor = async function(request, response, next) => {
-//   const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
-//   if (!request.token || !decodedToken.id) {
-//     return response.status(401).json({ error: 'token missing or invalid' });
-//   }
+export async function getUserFromToken(req: RequestWithUserAuth, res: Response, next: NextFunction) {
+  if (!req.token) throw boom.unauthorized('token missing');
 
-//   // const user = await User.findById(decodedToken.id);
+  const decodedToken = jwt.verify(req.token, process.env.SECRET as Secret);
 
-//   request.user = user;
+  if (typeof decodedToken !== 'string') {
+    if (!decodedToken.id) throw boom.unauthorized('token invalid');
 
-//   next();
-// };
+    req.user = await User.findById(decodedToken.id);
+  }
+
+  next();
+}

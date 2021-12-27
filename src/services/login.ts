@@ -40,9 +40,12 @@ const login = async function (email: string, password: string): Promise<LoggedIn
     id: verifiedUser.id,
     email: verifiedUser.email,
     username: verifiedUser.username,
+    currentKnownLanguageId: verifiedUser.current_known_language_id,
+    currentLearnLanguageId: verifiedUser.current_learn_language_id,
     token,
   };
 };
+
 
 export default {
   login,

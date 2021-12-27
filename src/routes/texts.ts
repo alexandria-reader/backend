@@ -5,9 +5,11 @@ import { Text } from '../types';
 
 const router: express.Router = express.Router();
 
+
 function isJWTPayload(value: JwtPayload | String): value is JwtPayload {
   return (value as JwtPayload).id !== undefined;
 }
+
 
 router.get('/', async(req, res): Promise<unknown> => {
   const authorization = req.get('authorization');
@@ -35,11 +37,13 @@ router.get('/', async(req, res): Promise<unknown> => {
   return res.status(401).json({ error: 'token missing or invalid' });
 });
 
+
 router.get('/:id', async(req, res): Promise<void> => {
   const id: number = Number(req.params.id);
   const textById: Text = await texts.getById(id);
   res.json(textById);
 });
+
 
 router.post('/', async(req, res): Promise<unknown> => {
   const authorization = req.get('authorization');
@@ -68,6 +72,7 @@ router.post('/', async(req, res): Promise<unknown> => {
 
   return res.status(401).json({ error: 'token missing or invalid' });
 });
+
 
 router.put('/:id', async(req, res): Promise<void> => {
   const id: number = Number(req.params.id);
