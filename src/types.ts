@@ -15,6 +15,8 @@ export type UserDB = {
   username: string,
   password_hash: string,
   email: string,
+  current_known_language_id?: string,
+  current_learn_language_id?: string,
 };
 
 export type SanitizedUser = Omit<User, 'passwordHash'>;

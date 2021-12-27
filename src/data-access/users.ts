@@ -38,6 +38,13 @@ const removeUser = async function (userId: string): Promise<QueryResult> {
   return result;
 };
 
+// eslint-disable-next-line max-len
+const setUserLanguages = async function(currentKnownId: string, currentLearnId: string, userId: string) {
+  const setKnownLanguage = 'UPDATE users SET current_known_language_id = %L, current_learn_language_id = %L WHERE id = %L RETURNING *';
+  const result = await dbQuery(setKnownLanguage, currentKnownId, currentLearnId, userId);
+  return result.rows;
+};
+
 export default {
   getUserByUsername,
   getUserByEmail,
@@ -45,4 +52,5 @@ export default {
   selectAllUsers,
   getUserById,
   removeUser,
+  setUserLanguages,
 };
