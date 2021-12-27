@@ -25,6 +25,13 @@ const getByUser = async function(userId: number): Promise<Array<Text>> {
   return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
 };
 
+const getByUserAndLanguage = async function(userId: number, languageId: string)
+  : Promise<Array<Text>> {
+  const result: QueryResult = await textData.getAllByLanguage(userId, languageId);
+
+  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
+};
+
 
 const addNew = async function(textObject: Text): Promise<Text> {
   const result: QueryResult = await textData.addNew(textObject);
@@ -46,7 +53,6 @@ const update = async function(textObject: Text): Promise<Text> {
 
 const remove = async function(textId: number): Promise<Text> {
   const result: QueryResult = await textData.remove(textId);
-
   if (result.rowCount === 0) throw boom.badRequest('Could not remove text.');
 
   return convertTextTypes(result.rows[0]);
@@ -56,6 +62,7 @@ const remove = async function(textId: number): Promise<Text> {
 export default {
   getAll,
   getById,
+  getByUserAndLanguage,
   getByUser,
   addNew,
   update,
