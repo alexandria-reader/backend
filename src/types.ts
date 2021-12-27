@@ -39,7 +39,7 @@ export const convertUserTypes = function(dbItem: UserDB): User {
 };
 
 export interface RequestWithUserAuth extends Request {
-  user: LoggedInUser,
+  user: SanitizedUser,
   token: string
 }
 

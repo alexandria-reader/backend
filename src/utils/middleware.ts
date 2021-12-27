@@ -3,6 +3,7 @@ import jwt, { Secret } from 'jsonwebtoken';
 import boom from '@hapi/boom';
 import type { Response, NextFunction } from 'express';
 import type { RequestWithUserAuth } from '../types';
+import users from '../services/users';
 
 
 export function extractToken(req: RequestWithUserAuth, _res: Response, next: NextFunction) {
@@ -16,7 +17,7 @@ export function extractToken(req: RequestWithUserAuth, _res: Response, next: Nex
 }
 
 
-export async function getUserFromToken(req: RequestWithUserAuth, res: Response, next: NextFunction) {
+export async function getUserFromToken(req: RequestWithUserAuth, _res: Response, next: NextFunction) {
   if (!req.token) throw boom.unauthorized('token missing');
 
   const decodedToken = jwt.verify(req.token, process.env.SECRET as Secret);
@@ -24,7 +25,8 @@ export async function getUserFromToken(req: RequestWithUserAuth, res: Response, 
   if (typeof decodedToken !== 'string') {
     if (!decodedToken.id) throw boom.unauthorized('token invalid');
 
-    req.user = await User.findById(decodedToken.id);
+    const userById = await users.getUserById(decodedToken.id);
+    req.user = userById;
   }
 
   next();

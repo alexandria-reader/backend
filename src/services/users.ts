@@ -1,14 +1,17 @@
 import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
+import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 import userData from '../data-access/users';
-import { SanitizedUser, User } from '../types';
+import { SanitizedUser, User, convertUserTypes } from '../types';
 
 const sanitizeUser = function (user: User): SanitizedUser {
   const santizedUser: SanitizedUser = {
     id: user.id,
     username: user.username,
     email: user.email,
+    currentKnownLanguageId: user.currentKnownLanguageId,
+    currentLearnLanguageId: user.currentLearnLanguageId,
   };
 
   return santizedUser;
@@ -66,10 +69,15 @@ const updateUserPassword = async function (
   throw boom.notAcceptable('Incorrect password.');
 };
 
-const getUserById = async function(userId: string) {
-  const user = await userData.getUserById(userId);
-  return user;
+
+const getUserById = async function(userId: string): Promise<SanitizedUser> {
+  const result: QueryResult = await userData.getUserById(userId);
+
+  if (result.rowCount === 0) throw boom.notFound('cannot find user with this id');
+
+  return sanitizeUser(convertUserTypes(result.rows[0]));
 };
+
 
 const removeUser = async function (userId: string, password: string) {
   const passwordsMatch = await verifyPassword(userId, password);
@@ -90,6 +98,7 @@ const removeUser = async function (userId: string, password: string) {
 };
 
 export default {
+  sanitizeUser,
   selectAllUsers,
   addNewUser,
   updateUserPassword,
