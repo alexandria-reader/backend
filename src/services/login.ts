@@ -6,7 +6,7 @@ import { UserDB, LoggedInUser } from '../types';
 
 
 const verifyLoginDetails = async function (email: string, password: string): Promise<UserDB> {
-  const result = await userData.getUserByEmail(email);
+  const result = await userData.getByEmail(email);
 
   const user: UserDB | null = result.rowCount > 0 ? result.rows[0] : null;
 
