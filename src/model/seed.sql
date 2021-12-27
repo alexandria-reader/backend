@@ -1,8 +1,8 @@
 INSERT INTO users (username, password_hash, email)
 VALUES
-('eamon', 'eamonpwhash', 'eamon@example.com'),
-('dana', 'danapwhash', 'dana@example.com'),
-('marc', 'marcpwhash', 'marc@example.com');
+('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com'),
+('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com'),
+('Marc', 'marcpwhash', 'marc@example.com');
 
 
 INSERT INTO languages (id, "name") 

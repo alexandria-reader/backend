@@ -97,6 +97,12 @@ const removeUser = async function (userId: string, password: string) {
   return { message: 'Passwords do not match' };
 };
 
+// eslint-disable-next-line max-len
+const setUserLanguages = async function(currentKnownId: string, currentLearnId: string, userId: string) {
+  const result = await userData.setUserLanguages(currentKnownId, currentLearnId, userId);
+  return result;
+};
+
 export default {
   sanitizeUser,
   selectAllUsers,
@@ -105,4 +111,5 @@ export default {
   removeUser,
   getUserById,
   verifyPassword,
+  setUserLanguages,
 };
