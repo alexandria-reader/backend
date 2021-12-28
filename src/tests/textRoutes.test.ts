@@ -25,7 +25,7 @@ beforeAll(async () => {
   `);
 });
 
-describe('Testing adding texts', () => {
+xdescribe('Testing adding texts', () => {
   test('Texts are returned as json, there are no users', async () => {
     const response = await api
       .get('/api/texts')

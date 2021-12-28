@@ -13,7 +13,7 @@ beforeAll(async () => {
   await dbQuery(seed);
 });
 
-describe('Testing retrieving translations', () => {
+xdescribe('Testing retrieving translations', () => {
   beforeAll(async () => {
     await api.get('/api/translations');
   });
@@ -69,7 +69,7 @@ describe('Testing retrieving translations', () => {
   });
 });
 
-describe('Testing adding translations', () => {
+xdescribe('Testing adding translations', () => {
   test('new translation is correctly added', async () => {
     await dbQuery('SELECT * FROM languages');
     const ADD_WORD = 'INSERT INTO words (language_id, word, ts_config) VALUES(%L, %L, %L) RETURNING *';
@@ -89,7 +89,7 @@ describe('Testing adding translations', () => {
   });
 });
 
-describe('Testing deleting translations', () => {
+xdescribe('Testing deleting translations', () => {
   test('translation with specified id is deleted', async () => {
     await api
       .delete('/api/translations/23')
@@ -98,7 +98,7 @@ describe('Testing deleting translations', () => {
   });
 });
 
-describe('Testing updating translations', () => {
+xdescribe('Testing updating translations', () => {
   test('update translation with specified id', async () => {
     const updatedTranslation = {
       translation: 'affamé',
