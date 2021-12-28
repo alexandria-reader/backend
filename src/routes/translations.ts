@@ -46,12 +46,13 @@ router.get('/word/:word/target/:targetId', async (req, res) => {
   res.send(translationRes);
 });
 
-router.post('/user/:userId', async (req, res) => {
+router.post('/', async (req, res) => {
   const data = {
     wordId: req.body.wordId,
     tran: req.body.translation,
     targetLang: req.body.targetLang,
   };
+
   const {
     wordId, tran, targetLang,
   } = data;
