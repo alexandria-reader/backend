@@ -39,7 +39,7 @@ const getUserwordsInText = async function(userId: number, textId: number, target
   const userWords = rawUserWords.map((rawWord) => ({
     id: rawWord.word_id,
     word: rawWord.word,
-    status: rawWord.word_status,
+    status: rawWord.status,
     translations: rawWord.translation_ids.map((id: number, index: number) => ({
       id,
       wordId: rawWord.word_id,

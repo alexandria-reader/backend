@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
   const data = {
     wordId: req.body.wordId,
     tran: req.body.translation,
-    targetLang: req.body.targetLang,
+    targetLang: req.body.targetLanguageId,
   };
 
   const {
