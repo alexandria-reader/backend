@@ -174,7 +174,7 @@ export const convertTranslationTypes = function(dbItem: TranslationDB): Translat
   };
 };
 
-export type UserTranslation = Translation & { context: string };
+export type UserTranslation = Translation & { context?: string };
 
 
 // export type Context = {
@@ -199,7 +199,7 @@ export type UserTranslation = Translation & { context: string };
 
 
 export type UserWord = {
-  id: number,
+  id?: number,
   word: string,
   status: string,
   translations: Array<UserTranslation>,

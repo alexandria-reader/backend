@@ -2,8 +2,9 @@
 import boom from '@hapi/boom';
 import { QueryResult } from 'pg';
 import wordData from '../data-access/words';
+import translations from './translations';
 import {
-  WordDB, Word, convertWordTypes, UserWord,
+  WordDB, Word, convertWordTypes, UserWord, SanitizedUser, Translation,
 } from '../types';
 
 
@@ -106,6 +107,38 @@ const updateStatus = async function(wordId: number, userId: number, wordStatus: 
 };
 
 
+const addNewUserWord = async function(user: SanitizedUser, userWordData: UserWord): Promise<UserWord> {
+  const returnUserWord = userWordData;
+
+  const newWordData: Word = {
+    word: userWordData.word,
+    languageId: user.currentLearnLanguageId || '',
+  };
+
+  const newWord: Word = await addNew(newWordData);
+
+  if (newWord.id && user.id) {
+    returnUserWord.id = newWord.id;
+    await addStatus(newWord.id, user.id, userWordData.status);
+
+    const uwdTranslation = userWordData.translations[0];
+
+    const newTranslation: Translation = await translations.add(
+      newWord.id,
+      uwdTranslation.translation,
+      uwdTranslation.targetLanguageId,
+    );
+
+    if (newTranslation.id) {
+      returnUserWord.translations[0].id = newTranslation.id;
+      await translations.addToUsersTranslations(user.id, newTranslation.id, uwdTranslation.context);
+    }
+  }
+
+  return returnUserWord;
+};
+
+
 export default {
   getAll,
   getById,
@@ -117,4 +150,5 @@ export default {
   getStatus,
   addStatus,
   updateStatus,
+  addNewUserWord,
 };

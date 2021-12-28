@@ -42,15 +42,11 @@ router.get('/text/:textId/language/:langId', async(req, res): Promise<void> => {
 
 router.post('/', async(req, res): Promise<void> => {
   const { user } = res.locals;
+  const userWordData: UserWord = req.body;
 
-  const wordData: Word = req.body;
-  const newWord: Word | null = await words.addNew(wordData);
+  const newUserWord = await words.addNewUserWord(user, userWordData);
 
-  if (newWord.id) {
-    const newStatus = await words.addStatus(newWord.id, user.id, 'learning');
-
-    res.status(201).json({ ...newWord, status: newStatus });
-  }
+  res.status(201).json(newUserWord);
 });
 
 
