@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { QueryResult } from 'pg';
 import userData from '../data-access/users';
 import {
-  SanitizedUser, User, convertUserTypes, UserDB,
+  SanitizedUser, User, convertUserTypes,
 } from '../types';
 
 
@@ -55,6 +55,12 @@ const updatePassword = async function (
   currentPassword: string,
   newPassword: string,
 ): Promise<{ message: string; }> {
+  if (!currentPassword) {
+    throw boom.notAcceptable('You must submit your current password.');
+  } else if (!newPassword) {
+    throw boom.notAcceptable('You must submit a new password.');
+  }
+
   const passwordsMatch = await verifyPassword(userId, currentPassword);
 
   if (passwordsMatch) {
@@ -94,20 +100,19 @@ const remove = async function (userId: string, password: string) {
     }
   }
 
-  return { message: 'Passwords do not match' };
+  throw boom.unauthorized('Incorrect password.');
 };
+
 
 // eslint-disable-next-line max-len
 const setUserLanguages = async function(currentKnownId: string, currentLearnId: string, userId: string) {
   const result = await userData.setUserLanguages(currentKnownId, currentLearnId, userId);
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
-  const user: UserDB = result.rows[0];
 
-  const convertedUser = convertUserTypes(user);
-  const santizedUser = sanitizeUser(convertedUser);
-  return santizedUser;
+  return sanitizeUser(convertUserTypes(result.rows[0]));
 };
+
 
 export default {
   sanitizeUser,

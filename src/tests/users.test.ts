@@ -11,7 +11,7 @@ beforeAll(async () => {
   await dbQuery(reset);
 });
 
-describe('Testing adding users', () => {
+xdescribe('Testing adding users', () => {
   test('users are returned as json, there are no users', async () => {
     const response = await api
       .get('/api/users')
