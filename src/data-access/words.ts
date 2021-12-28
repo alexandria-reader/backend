@@ -107,8 +107,9 @@ const getUserwordsInText = async function(userId: number, textId: number, target
   const USER_WORDS_IN_TEXT: string = `
       SELECT DISTINCT w.id AS word_id, 
                       w.word, 
-                      array_agg(t.translation) AS translations, 
-                      array_agg(ut.context) AS contexts, 
+                      array_agg(t.id) AS translation_ids,
+                      array_agg(t.translation) AS translation_texts,
+                      array_agg(ut.context) AS translation_contexts, 
                       uw.word_status AS status
         FROM words AS w 
         JOIN translations AS t ON w.id = t.word_id 
