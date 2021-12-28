@@ -33,7 +33,12 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
 const getUserwordsInText = async function(userId: number, textId: number, targetLanguageId: string, simple: boolean = true): Promise<Array<UserWord>> {
   const wordsResult: QueryResult = await wordData.getUserwordsInText(userId, textId, targetLanguageId, simple);
 
-  return wordsResult.rows;
+  return wordsResult.rows.map((row) => {
+    const modifiedRow = row;
+    modifiedRow.id = row.word_id;
+    delete modifiedRow.word_id;
+    return modifiedRow;
+  });
 };
 
 
