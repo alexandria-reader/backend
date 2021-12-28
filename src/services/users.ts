@@ -3,7 +3,9 @@ import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import { QueryResult } from 'pg';
 import userData from '../data-access/users';
-import { SanitizedUser, User, convertUserTypes } from '../types';
+import {
+  SanitizedUser, User, convertUserTypes, UserDB,
+} from '../types';
 
 
 const sanitizeUser = function (user: User): SanitizedUser {
@@ -100,8 +102,11 @@ const setUserLanguages = async function(currentKnownId: string, currentLearnId: 
   const result = await userData.setUserLanguages(currentKnownId, currentLearnId, userId);
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
+  const user: UserDB = result.rows[0];
 
-  return result.rows;
+  const convertedUser = convertUserTypes(user);
+  const santizedUser = sanitizeUser(convertedUser);
+  return santizedUser;
 };
 
 export default {
