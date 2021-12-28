@@ -52,9 +52,10 @@ const add = async function(
 const addToUsersTranslations = async function(
   userId: number,
   translationId: number,
+  context: string | undefined,
 ) {
-  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id) VALUES(%L, %L) RETURNING users_translations.*';
-  const result = await dbQuery(USER_TRANSLATION, userId, translationId);
+  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id, context) VALUES(%L, %L, %L) RETURNING users_translations.*';
+  const result = await dbQuery(USER_TRANSLATION, userId, translationId, context);
   return result;
 };
 

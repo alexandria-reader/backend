@@ -42,14 +42,15 @@ const add = async function(
 ) {
   const result = await translationsData.add(wordId, translation, targetLang);
   if (!result.rows) throw boom.notFound('Adding new translation not successful.');
-  return result.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
+  return result.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem))[0];
 };
 
 const addToUsersTranslations = async function(
   userId: number,
   translationId: number,
+  context: string | undefined,
 ) {
-  const result = await translationsData.addToUsersTranslations(userId, translationId);
+  const result = await translationsData.addToUsersTranslations(userId, translationId, context);
   if (!result.rows) throw boom.notFound('Adding new translation with given user and translation id input not successful.');
   return result;
 };
