@@ -8,8 +8,8 @@ export type User = {
   username: string,
   passwordHash: string,
   email: string,
-  knownLanguageId?: string,
-  learnLanguageId?: string,
+  currentKnownLanguageId?: string,
+  currentLearnLanguageId?: string,
 };
 
 export type UserDB = {
@@ -23,14 +23,16 @@ export type UserDB = {
 
 export type SanitizedUser = Omit<User, 'passwordHash'>;
 
+export type LoggedInUser = SanitizedUser & { token: string };
+
 export const convertUserTypes = function(dbItem: UserDB): User {
   return {
     id: dbItem.id,
     username: dbItem.username,
     passwordHash: dbItem.password_hash,
     email: dbItem.email,
-    knownLanguageId: dbItem.current_known_language_id,
-    learnLanguageId: dbItem.current_learn_language_id,
+    currentKnownLanguageId: dbItem.current_known_language_id,
+    currentLearnLanguageId: dbItem.current_learn_language_id,
   };
 };
 

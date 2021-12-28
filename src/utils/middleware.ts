@@ -1,30 +1,36 @@
-// // helpful functions for later, not yet implemented
+/* eslint-disable max-len */
+import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import boom from '@hapi/boom';
+import type { Request, Response, NextFunction } from 'express';
+import users from '../services/users';
 
-// export const unknownEndpoint = function(request, response) => {
-//   response.status(404).send({ error: 'unknown endpoint ' });
-// };
 
-// export const tokenExtractor = function(request, response, next) => {
-//   const authorization = request.get('authorization');
-//   request.token = null;
+export const extractToken = function(req: Request, res: Response, next: NextFunction) {
+  const authorization = req.get('authorization');
 
-//   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-//     request.token = authorization.substring(7);
-//   }
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    res.locals.token = authorization.substring(7);
+  }
 
-//   next();
-// };
+  next();
+};
 
-// export const userExtractor = async function(request, response, next) => {
-//   const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
-//   if (!request.token || !decodedToken.id) {
-//     return response.status(401).json({ error: 'token missing or invalid' });
-//   }
+const isJWTPayload = function (value: JwtPayload | String): value is JwtPayload {
+  return (value as JwtPayload).id !== undefined;
+};
 
-//   // const user = await User.findById(decodedToken.id);
+export const getUserFromToken = async function(_req: Request, res: Response, next: NextFunction) {
+  if (!res.locals.token) throw boom.unauthorized('token missing or invalid');
 
-//   request.user = user;
+  const decodedToken = jwt.verify(res.locals.token, process.env.SECRET as Secret);
 
-//   next();
-// };
+  if (isJWTPayload(decodedToken)) {
+    if (!decodedToken.id) throw boom.unauthorized('token invalid or missing');
+
+    const userById = await users.getById(decodedToken.id);
+    res.locals.user = userById;
+  }
+
+  next();
+};
