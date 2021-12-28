@@ -9,10 +9,14 @@ const userRouter = express.Router();
 
 userRouter.post('/', async (req, res) => {
   const {
-    username, password, email, knownLanguageId, learnLanguageId,
+    username,
+    password,
+    email,
+    currentKnownLanguageId,
+    currentLearnLanguageId,
   } = req.body;
-  // eslint-disable-next-line max-len
-  const newUser = await users.addNew(username, password, email, knownLanguageId, learnLanguageId);
+
+  const newUser = await users.addNew(username, password, email, currentKnownLanguageId, currentLearnLanguageId);
 
   res.status(201).json(newUser);
 });
@@ -24,42 +28,32 @@ userRouter.get('/', async (_req, res) => {
 });
 
 
-// reset password
-userRouter.put('/:userId', async (req, res) => {
-  // check user is logged in first
-  const { userId } = req.params;
-  const { password: currentPassword, newPassword } = req.body;
-  // will add paramater checking later
-  // if (!currentPassword) {
-  //   throw boom.notAcceptable('You must submit your current password.');
-  // } else if (!newPassword) {
-  //   throw boom.notAcceptable('You must submit a new password.');
-  // }
+userRouter.put('/change-password', getUserFromToken, async (req, res) => {
+  const { user } = res.locals;
+  const { currentPassword, newPassword } = req.body;
 
-  const response = await users.updatePassword(userId, currentPassword, newPassword);
+  const response = await users.updatePassword(user.id, currentPassword, newPassword);
 
   res.json(response);
 });
 
 
-userRouter.delete('/:userId', async (req, res) => {
-  // check user is logged in first
-  const { userId } = req.params;
+userRouter.delete('/', getUserFromToken, async (req, res) => {
+  const { user } = res.locals;
   const { password } = req.body;
 
-  // add missing data check and test
+  await users.remove(user.id, password);
 
-  const deletedUser = await users.remove(userId, password);
-
-  res.status(204).json(deletedUser);
+  res.status(204);
 });
 
 
-// set user languages
-userRouter.put('/', getUserFromToken, async (req, res) => {
+// update user languages
+userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
 
   const { currentKnownLanguageId, currentLearnLanguageId } = req.body;
+
   const updatedUser = await users.setUserLanguages(
     currentKnownLanguageId,
     currentLearnLanguageId,

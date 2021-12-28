@@ -9,7 +9,7 @@ import wordsRouter from './routes/words';
 import loginRouter from './routes/login';
 import languageRouter from './routes/languages';
 
-import { extractToken } from './utils/middleware';
+import { extractToken, getUserFromToken } from './utils/middleware';
 
 import { notFoundHandler, generalErrorHandler } from './utils/errorHandlers';
 
@@ -19,12 +19,12 @@ app.use(express.json());
 
 app.use(extractToken);
 
-app.use('/api/texts', textsRouter);
-app.use('/api/translations', translationsRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/words', wordsRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/languages', languageRouter);
+app.use('/api/texts', getUserFromToken, textsRouter);
+app.use('/api/translations', getUserFromToken, translationsRouter);
+app.use('/api/words', getUserFromToken, wordsRouter);
 
 app.use([notFoundHandler, generalErrorHandler]);
 

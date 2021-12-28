@@ -20,39 +20,46 @@ router.get('/:id', async(req, res): Promise<void> => {
 });
 
 
-router.get('/:langId/user/:userId', async(req, res): Promise<void> => {
-  const { langId, userId } = req.params;
-  const wordsByLanguageAndUser: Array<Word> = await words.getByLanguageAndUser(langId, Number(userId));
+router.get('language/:langId', async(req, res): Promise<void> => {
+  const { user } = res.locals;
+
+  const { langId } = req.params;
+  const wordsByLanguageAndUser: Array<Word> = await words.getByLanguageAndUser(langId, Number(user.id));
 
   res.json(wordsByLanguageAndUser);
 });
 
 
-router.get('/text/:textId/:langId/user/:userId', async(req, res): Promise<void> => {
-  const { textId, langId, userId } = req.params;
+router.get('/text/:textId/language/:langId', async(req, res): Promise<void> => {
+  const { user } = res.locals;
 
-  const userwordsInText: Array<UserWord> = await words.getUserwordsInText(Number(userId), Number(textId), langId, true);
+  const { textId, langId } = req.params;
+
+  const userwordsInText: Array<UserWord> = await words.getUserwordsInText(Number(user.id), Number(textId), langId, true);
   res.json(userwordsInText);
 });
 
 
-router.post('/user/:userId', async(req, res): Promise<void> => {
+router.post('/', async(req, res): Promise<void> => {
+  const { user } = res.locals;
+
   const wordData: Word = req.body;
-  const userId: number = Number(req.params.userId);
   const newWord: Word | null = await words.addNew(wordData);
 
   if (newWord.id) {
-    const newStatus = await words.addStatus(newWord.id, userId, 'learning');
+    const newStatus = await words.addStatus(newWord.id, user.id, 'learning');
 
     res.status(201).json({ ...newWord, status: newStatus });
   }
 });
 
 
-router.put('/:wordId/user/:userId', async(req, res): Promise<void> => {
+router.put('/:wordId', async(req, res): Promise<void> => {
+  const { user } = res.locals;
+
   const { status } = req.body;
-  const { wordId, userId } = req.params;
-  const updatedStatus: string | null = await words.updateStatus(Number(wordId), Number(userId), status);
+  const { wordId } = req.params;
+  const updatedStatus: string | null = await words.updateStatus(Number(wordId), Number(user.id), status);
 
   res.send(updatedStatus);
 });
