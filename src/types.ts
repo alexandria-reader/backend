@@ -57,9 +57,6 @@ export type TextDB = {
   title: string,
   author: string | null,
   body: string,
-  // ts_config: string,
-  // tsvector_simple: string,
-  // tsvector_language: string,
   source_url: string | null,
   source_type: string | null,
   upload_time: string,
@@ -92,9 +89,6 @@ export type WordDB = {
   id: number,
   language_id: string,
   word: string,
-  // ts_config: string,
-  // tsquery_simple: string,
-  // tsquery_language: string,
 };
 
 export const convertWordTypes = function(dbItem: WordDB): Word {
@@ -161,7 +155,7 @@ export type Translation = {
   id?: number,
   wordId: number,
   translation: string,
-  targetLanguageId: string
+  targetLanguageId: string,
 };
 
 export type TranslationDB = {
@@ -180,32 +174,33 @@ export const convertTranslationTypes = function(dbItem: TranslationDB): Translat
   };
 };
 
+export type UserTranslation = Translation & { context: string };
 
-export type Context = {
-  id?: number,
-  snippet: string,
-  translationId: number
-};
 
-export type ContextDB = {
-  id: number,
-  snippet: string,
-  translation_id: number
-};
+// export type Context = {
+//   id?: number,
+//   snippet: string,
+//   translationId: number
+// };
 
-export const convertContextTypes = function(dbItem: ContextDB): Context {
-  return {
-    id: dbItem.id,
-    snippet: dbItem.snippet,
-    translationId: dbItem.translation_id,
-  };
-};
+// export type ContextDB = {
+//   id: number,
+//   snippet: string,
+//   translation_id: number
+// };
+
+// export const convertContextTypes = function(dbItem: ContextDB): Context {
+//   return {
+//     id: dbItem.id,
+//     snippet: dbItem.snippet,
+//     translationId: dbItem.translation_id,
+//   };
+// };
 
 
 export type UserWord = {
   id: number,
   word: string,
   status: string,
-  translations: Array<string>,
-  contexts: Array<string>
+  translations: Array<UserTranslation>,
 };
