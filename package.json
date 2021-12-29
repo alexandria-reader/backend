@@ -14,7 +14,7 @@
     "build:server": "rm -rf build/server && npm run tsc",
     "build:client": "rm -rf build/client && mkdir build/client && cd ../frontend/ && npm run build --prod && cd build && cp -r * ../../backend/build/client",
     "build": "npn run build:server && npm run build:client",
-    "deploy": "npm run build && git add . && git commit -m 'new full build' && git push && gh pr create --fill",
+    "review": "npm run build && git add . && git commit -m 'new full review build' && git push && gh pr create --fill",
     "lint": "eslint --ext .ts .",
     "tsc": "tsc"
   },
