@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import express from 'express';
 import users from '../services/users';
+import translations from '../services/translations';
 import { getUserFromToken } from '../utils/middleware';
 
 
@@ -19,6 +20,16 @@ userRouter.post('/', async (req, res) => {
   const newUser = await users.addNew(username, password, email, currentKnownLanguageId, currentLearnLanguageId);
 
   res.status(201).json(newUser);
+});
+
+
+userRouter.post('/translation/:translationId', getUserFromToken, async (req, res) => {
+  const { user } = res.locals;
+  const { translationId, context } = req.body;
+
+  await translations.addToUsersTranslations(Number(user.id), translationId, context);
+
+  res.status(201);
 });
 
 
