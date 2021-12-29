@@ -12,7 +12,8 @@ const logQuery = function(statement: string):void {
   console.log(formattedTimeStamp, statement);
 };
 
-const isProduction: boolean = (config.NODE_ENV === 'production');
+let isProduction: boolean = (config.NODE_ENV === 'production');
+if (!config.NODE_ENV) isProduction = true;
 
 let connectionString: string | undefined;
 

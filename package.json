@@ -2,17 +2,19 @@
   "name": "Alexandria",
   "version": "0.1.0",
   "description": "Learn languages by reading texts.",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
-    "tsc": "tsc",
+    "start": "ts-node src/server.ts",
     "dev": "cross-env NODE_ENV=development ts-node-dev src/server.ts",
     "staging": "cross-env NODE_ENV=staging ts-node-dev src/server.ts",
-    "lint": "eslint --ext .ts .",
-    "start": "node build/server.js",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --collectCoverage",
     "start-docker-postgres": "docker-compose -f postgres.yaml up -d",
     "stop-docker-postgres": "docker-compose -f postgres.yaml down --volumes",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --collectCoverage",
-    "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres"
+    "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres",
+    "build:ui": "rm -rf build && cd ../frontend/ && npm run build --prod && cp -r build ../backend && cd ../backend",
+    "ui-pr": "git checkout main && git branch -D ui-build && git checkout -B ui-build & npm git add build && git commit -m 'new UI build' && git push && gh pr create --fill",
+    "lint": "eslint --ext .ts .",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
