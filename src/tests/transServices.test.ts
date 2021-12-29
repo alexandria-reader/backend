@@ -61,8 +61,8 @@ describe('Testing adding translations', () => {
 
     const result = await translations.add(wordId, translation, targetLanguageId);
     if (result) {
-      expect(result[0].translation).toContain('voitures');
-      expect(result[0].targetLanguageId).toContain('fr');
+      expect(result.translation).toContain('voitures');
+      expect(result.targetLanguageId).toContain('fr');
     }
   });
 
@@ -72,9 +72,9 @@ describe('Testing adding translations', () => {
     const targetLanguageId = 'de';
 
     const resultTrans = await translations.add(wordId, translation, targetLanguageId);
-    if (resultTrans[0].id) {
-      const lastTransId = resultTrans[0].id;
-      const result = await translations.addToUsersTranslations(1, lastTransId);
+    if (resultTrans.id) {
+      const lastTransId = resultTrans.id;
+      const result = await translations.addToUsersTranslations(1, lastTransId, '');
       if (result) {
         expect(result.rows[0].user_id).toBe(1);
         expect(result.rows[0].translation_id).toBe(lastTransId);
