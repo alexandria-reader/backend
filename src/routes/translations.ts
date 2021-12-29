@@ -59,9 +59,11 @@ router.post('/', async (req, res) => {
     context,
   } = req.body;
 
-  const newTranslation = await translation.add(Number(wordId), translation, targetLanguageId);
+  const newTranslation = await translations.add(Number(wordId), translation, targetLanguageId);
 
-  await translations.addToUsersTranslations(Number(user.id), newTranslation.id, context);
+  if (newTranslation.id) {
+    await translations.addToUsersTranslations(Number(user.id), newTranslation.id, context);
+  }
 
   res.send(newTranslation);
 });
