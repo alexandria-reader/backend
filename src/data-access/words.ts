@@ -210,14 +210,17 @@ const getStatus = async function(wordId: number, userId: number): Promise<QueryR
     wordId,
   );
 
-  // if (result.rowCount === 0) return null;
-
-  // return result.rows[0].word_status;
   return result;
 };
 
 
 const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<QueryResult> {
+  const existingStatus = await getStatus(wordId, userId);
+
+  if (existingStatus.rowCount > 0) {
+    return existingStatus;
+  }
+
   const ADD_USER_WORD_STATUS: string = `
     INSERT INTO users_words (user_id, word_id, word_status)
          VALUES (%s, %s, %L)
@@ -230,9 +233,6 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
     wordStatus,
   );
 
-  // if (result.rowCount === 0) return null;
-
-  // return result.rows[0].word_status;
   return result;
 };
 
@@ -252,9 +252,6 @@ const updateStatus = async function(wordId: number, userId: number, wordStatus: 
     wordId,
   );
 
-  // if (result.rowCount === 0) return null;
-
-  // return result.rows[0].word_status;
   return result;
 };
 
