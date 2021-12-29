@@ -12,7 +12,7 @@
     "stop-docker-postgres": "docker-compose -f postgres.yaml down --volumes",
     "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres",
     "build:ui": "rm -rf build && cd ../frontend/ && npm run build --prod && cp -r build ../backend && cd ../backend",
-    "ui-pr": "npm run build:ui & git add build && git commit -m 'new UI build' && git push && gh pr create --fill",
+    "ui-pr": "npm run build:ui && git add build && git commit -m 'new UI build' && git push && gh pr create --fill",
     "lint": "eslint --ext .ts .",
     "tsc": "tsc"
   },
