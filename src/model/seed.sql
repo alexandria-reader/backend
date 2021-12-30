@@ -1,15 +1,15 @@
-INSERT INTO users (username, password_hash, email)
-VALUES
-('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com'),
-('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com'),
-('Marc', 'marcpwhash', 'marc@example.com');
-
-
 INSERT INTO languages (id, "name") 
 VALUES
 ('en', 'english'),
 ('de', 'german'),
 ('fr', 'french');
+
+
+INSERT INTO users (username, password_hash, email, current_known_language_id, current_learn_language_id)
+VALUES
+('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com', 'de', 'en'),
+('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com', 'fr', 'de'),
+('Marc', 'marcpwhash', 'marc@example.com', 'en', 'fr');
 
 
 INSERT INTO texts (user_id, language_id, title, body, ts_config) 
