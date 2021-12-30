@@ -2,7 +2,7 @@
   "name": "Alexandria",
   "version": "0.1.0",
   "description": "Learn languages by reading texts.",
-  "main": "server.js",
+  "main": "build/server/server.js",
   "scripts": {
     "start": "node build/server/server.js",
     "dev": "cross-env NODE_ENV=development ts-node-dev src/server.ts",
