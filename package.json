@@ -1,8 +1,8 @@
 {
   "name": "Alexandria",
   "version": "0.1.0",
-  "description": "Learn languages by reading texts.",
-  "main": "server.js",
+  "description": "Learn languages by translating texts.",
+  "main": "build/server/server.js",
   "scripts": {
     "start": "node build/server/server.js",
     "dev": "cross-env NODE_ENV=development ts-node-dev src/server.ts",
@@ -13,21 +13,21 @@
     "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres",
     "build:server": "rm -rf build/server && npm run tsc",
     "build:client": "rm -rf build/client && mkdir build/client && cd ../frontend/ && npm run build --prod && cd build && cp -r * ../../backend/build/client",
-    "build": "npm run build:server && npm run build:client",
-    "deploy": "npm run build && git add . && git commit -m 'new full build' && git push",
+    "build:full": "npm run build:server && npm run build:client",
+    "deploy": "npm run build:full && git add . && git commit -m 'new full build' && git push",
     "lint": "eslint --ext .ts .",
     "tsc": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Team-Capstone-Europe/project-repo.git"
+    "url": "git+https://github.com/alexandria-reader/backend.git"
   },
   "author": "Dana, Eamon, Marc",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Team-Capstone-Europe/project-repo/issues"
+    "url": "https://github.com/alexandria-reader/backend/issues"
   },
-  "homepage": "https://github.com/Team-Capstone-Europe/project-repo#readme",
+  "homepage": "https://github.com/alexandria-reader/backend#readme",
   "dependencies": {
     "@hapi/boom": "^9.1.4",
     "bcrypt": "^5.0.1",
@@ -39,6 +39,7 @@
     "pg": "^8.7.1",
     "pg-format": "^1.0.4",
     "react-bootstrap": "^2.0.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   },
   "devDependencies": {
@@ -61,7 +62,6 @@
     "jest": "^27.4.3",
     "supertest": "^6.1.6",
     "ts-jest": "^27.1.1",
-    "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8",
     "tslib": "^2.3.1"
   }
