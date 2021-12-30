@@ -29,7 +29,6 @@
       { "argsIgnorePattern": "^_" }
     ],
     "no-case-declarations": "off",
-    "linebreak-style": "warn",
     "@typescript-eslint/func-names": ["off"],
     "func-names": ["off"],
     "@typescript-eslint/space-before-function-paren": ["off"],
