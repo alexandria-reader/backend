@@ -49,7 +49,7 @@ router.post('/', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, fu
 router.delete('/:translationId', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const { translationId } = req.params;
     const deleted = yield translations_1.default.remove(Number(translationId));
-    res.send(deleted);
+    res.status(204).send(deleted);
 }));
 router.put('/translation/:transId', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const data = {

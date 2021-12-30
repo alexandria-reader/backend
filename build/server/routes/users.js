@@ -16,7 +16,7 @@ userRouter.post('/translation/:translationId', middleware_1.getUserFromToken, (r
     const { user } = res.locals;
     const { translationId, context } = req.body;
     yield translations_1.default.addToUsersTranslations(Number(user.id), translationId, context);
-    res.status(201);
+    res.status(201).send();
 }));
 userRouter.get('/', (_req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const allUsers = yield users_1.default.getAll();
@@ -32,7 +32,7 @@ userRouter.delete('/', middleware_1.getUserFromToken, (req, res) => (0, tslib_1.
     const { user } = res.locals;
     const { password } = req.body;
     yield users_1.default.remove(user.id, password);
-    res.status(204);
+    res.status(204).send();
 }));
 // update user languages
 userRouter.put('/set-languages', middleware_1.getUserFromToken, (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {

@@ -36,6 +36,6 @@ router.put('/:id', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, 
 router.delete('/:id', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     yield texts_1.default.remove(id);
-    res.status(204);
+    res.status(204).send();
 }));
 exports.default = router;

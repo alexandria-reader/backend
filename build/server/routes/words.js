@@ -41,7 +41,7 @@ router.put('/:wordId', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void
 }));
 router.delete('/:wordId', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const id = req.params.wordId;
-    const result = yield words_1.default.remove(Number(id));
-    res.status(204).json(result);
+    yield words_1.default.remove(Number(id));
+    res.status(204).send();
 }));
 exports.default = router;
