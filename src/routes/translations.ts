@@ -72,7 +72,7 @@ router.post('/', async (req, res) => {
 router.delete('/:translationId', async (req, res) => {
   const { translationId } = req.params;
   const deleted = await translations.remove(Number(translationId));
-  res.send(deleted);
+  res.status(204).send(deleted);
 });
 
 

@@ -62,9 +62,9 @@ router.put('/:wordId', async(req, res): Promise<void> => {
 
 router.delete('/:wordId', async(req, res): Promise<void> => {
   const id = req.params.wordId;
-  const result = await words.remove(Number(id));
+  await words.remove(Number(id));
 
-  res.status(204).json(result);
+  res.status(204).send();
 });
 
 export default router;

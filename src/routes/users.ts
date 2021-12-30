@@ -29,7 +29,7 @@ userRouter.post('/translation/:translationId', getUserFromToken, async (req, res
 
   await translations.addToUsersTranslations(Number(user.id), translationId, context);
 
-  res.status(201);
+  res.status(201).send();
 });
 
 
@@ -55,7 +55,7 @@ userRouter.delete('/', getUserFromToken, async (req, res) => {
 
   await users.remove(user.id, password);
 
-  res.status(204);
+  res.status(204).send();
 });
 
 

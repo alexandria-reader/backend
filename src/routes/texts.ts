@@ -54,7 +54,7 @@ router.put('/:id', async(req, res): Promise<void> => {
 router.delete('/:id', async(req, res): Promise<void> => {
   const id: number = Number(req.params.id);
   await texts.remove(id);
-  res.status(204);
+  res.status(204).send();
 });
 
 
