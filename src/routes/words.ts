@@ -20,7 +20,7 @@ router.get('/:id', async(req, res): Promise<void> => {
 });
 
 
-router.get('language/:langId', async(req, res): Promise<void> => {
+router.get('/language/:langId', async(req, res): Promise<void> => {
   const { user } = res.locals;
 
   const { langId } = req.params;
