@@ -53,6 +53,28 @@ const getUserwordsInText = async function(userId: number, textId: number, target
 };
 
 
+const getUserwordsByLanguage = async function(languageId: string, userId: number): Promise<Array<UserWord>> {
+  const wordsResult: QueryResult = await wordData.getUserwordsByLanguage(languageId, userId);
+
+  const rawUserWords = wordsResult.rows;
+
+  const userWords = rawUserWords.map((rawWord) => ({
+    id: rawWord.word_id,
+    word: rawWord.word,
+    status: rawWord.status,
+    translations: rawWord.translation_ids.map((id: number, index: number) => ({
+      id,
+      wordId: rawWord.word_id,
+      targetLanguageId: rawWord.language_ids[index],
+      translation: rawWord.translation_texts[index],
+      context: rawWord.translation_contexts[index],
+    })),
+  }));
+
+  return userWords;
+};
+
+
 const getWordInLanguage = async function (word: string, languageId: string): Promise<Word | null> {
   const result: QueryResult = await wordData.getWordInLanguage(word, languageId);
 
@@ -145,6 +167,7 @@ export default {
   getByLanguageAndUser,
   getUserwordsInText,
   getWordInLanguage,
+  getUserwordsByLanguage,
   addNew,
   remove,
   getStatus,

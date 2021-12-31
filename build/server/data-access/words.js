@@ -40,9 +40,11 @@ const getUserwordsByLanguage = function (languageId, userId) {
         const WORDS_BY_LANGUAGE_AND_USER = `
       SELECT DISTINCT w.id AS word_id, 
                       w.word, 
+                      array_agg(t.id) AS translation_ids,
+                      array_agg(t.target_language_id) AS language_ids,
                       array_agg(t.translation) AS translations, 
                       array_agg(ut.context) AS contexts, 
-                      uw.word_status
+                      uw.word_status AS status
         FROM words AS w 
         JOIN translations AS t ON w.id = t.word_id 
         JOIN users_translations AS ut ON t.id = ut.translation_id 
@@ -51,7 +53,7 @@ const getUserwordsByLanguage = function (languageId, userId) {
              AND 
              ut.user_id = %s 
              AND
-             t.target_language_id = %L 
+             w.language_id = %L 
     GROUP BY w.id, w.word, uw.word_status`;
         const result = yield (0, db_query_1.default)(WORDS_BY_LANGUAGE_AND_USER, userId, userId, languageId);
         return result;
@@ -187,7 +189,7 @@ exports.default = {
     getById,
     getByLanguageAndUser,
     getUserwordsByLanguage,
-    getByUserAndText: getByUserInText,
+    getByUserInText,
     getUserwordsInText,
     getWordInLanguage,
     addNew,

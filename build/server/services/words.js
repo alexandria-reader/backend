@@ -45,6 +45,25 @@ const getUserwordsInText = function (userId, textId, targetLanguageId, simple = 
         return userWords;
     });
 };
+const getUserwordsByLanguage = function (languageId, userId) {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        const wordsResult = yield words_1.default.getUserwordsByLanguage(languageId, userId);
+        const rawUserWords = wordsResult.rows;
+        const userWords = rawUserWords.map((rawWord) => ({
+            id: rawWord.word_id,
+            word: rawWord.word,
+            status: rawWord.status,
+            translations: rawWord.translation_ids.map((id, index) => ({
+                id,
+                wordId: rawWord.word_id,
+                targetLanguageId: rawWord.language_ids[index],
+                translation: rawWord.translation_texts[index],
+                context: rawWord.translation_contexts[index],
+            })),
+        }));
+        return userWords;
+    });
+};
 const getWordInLanguage = function (word, languageId) {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const result = yield words_1.default.getWordInLanguage(word, languageId);
@@ -120,6 +139,7 @@ exports.default = {
     getByLanguageAndUser,
     getUserwordsInText,
     getWordInLanguage,
+    getUserwordsByLanguage,
     addNew,
     remove,
     getStatus,
