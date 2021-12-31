@@ -24,9 +24,9 @@ router.get('language/:langId', async(req, res): Promise<void> => {
   const { user } = res.locals;
 
   const { langId } = req.params;
-  const wordsByLanguageAndUser: Array<Word> = await words.getByLanguageAndUser(langId, Number(user.id));
+  const userwordsInLanguage: Array<UserWord> = await words.getUserwordsByLanguage(langId, Number(user.id));
 
-  res.json(wordsByLanguageAndUser);
+  res.json(userwordsInLanguage);
 });
 
 
