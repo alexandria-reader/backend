@@ -17,8 +17,8 @@ router.get('/:id', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, 
 router.get('language/:langId', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const { user } = res.locals;
     const { langId } = req.params;
-    const wordsByLanguageAndUser = yield words_1.default.getByLanguageAndUser(langId, Number(user.id));
-    res.json(wordsByLanguageAndUser);
+    const userwordsInLanguage = yield words_1.default.getUserwordsByLanguage(langId, Number(user.id));
+    res.json(userwordsInLanguage);
 }));
 router.get('/text/:textId/language/:langId', (req, res) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     const { user } = res.locals;
