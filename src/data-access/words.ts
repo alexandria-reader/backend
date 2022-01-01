@@ -52,8 +52,8 @@ const getUserwordsByLanguage = async function(languageId: string, userId: number
                       w.word, 
                       array_agg(t.id) AS translation_ids,
                       array_agg(t.target_language_id) AS language_ids,
-                      array_agg(t.translation) AS translations, 
-                      array_agg(ut.context) AS contexts, 
+                      array_agg(t.translation) AS translation_texts, 
+                      array_agg(ut.context) AS translation_contexts, 
                       uw.word_status AS status
         FROM words AS w 
         JOIN translations AS t ON w.id = t.word_id 
