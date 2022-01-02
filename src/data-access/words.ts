@@ -64,7 +64,8 @@ const getUserwordsByLanguage = async function(languageId: string, userId: number
              ut.user_id = %s 
              AND
              w.language_id = %L 
-    GROUP BY w.id, w.word, uw.word_status`;
+    GROUP BY w.id, w.word, uw.word_status
+    ORDER BY w.word ASC`;
 
   const result = await dbQuery(
     WORDS_BY_LANGUAGE_AND_USER,
@@ -129,6 +130,7 @@ const getUserwordsInText = async function(userId: number, textId: number, target
              w.tsquery_${tsvectorType} @@ (SELECT t.tsvector_${tsvectorType} FROM texts AS t 
                                             WHERE t.id = %s)        
     GROUP BY w.id, w.word, uw.word_status`;
+
 
   const result = await dbQuery(
     USER_WORDS_IN_TEXT,
