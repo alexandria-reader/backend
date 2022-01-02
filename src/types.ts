@@ -103,6 +103,7 @@ export const convertWordTypes = function(dbItem: WordDB): Word {
 export type Language = {
   id: string,
   name: string,
+  flag: string,
   eachCharIsWord: boolean,
   isRightToLeft: boolean,
 };
@@ -110,6 +111,7 @@ export type Language = {
 export type LanguageDB = {
   id: string,
   name: string,
+  flag: string,
   each_char_is_word: boolean,
   is_right_to_left: boolean
 };
@@ -118,6 +120,7 @@ export const convertLanguageTypes = function(dbItem: LanguageDB): Language {
   return {
     id: dbItem.id,
     name: dbItem.name,
+    flag: dbItem.flag,
     eachCharIsWord: dbItem.each_char_is_word,
     isRightToLeft: dbItem.is_right_to_left,
   };

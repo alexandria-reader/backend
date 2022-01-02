@@ -1,8 +1,20 @@
-INSERT INTO languages (id, "name") 
+INSERT INTO languages (id, "name", flag) 
 VALUES
-('en', 'english'),
-('de', 'german'),
-('fr', 'french');
+('en', 'english', '🇬🇧'),
+('de', 'german', '🇩🇪'),
+('fr', 'french', '🇫🇷'),
+('dk', 'danish', '🇩🇰'),
+('nl', 'dutch', '🇳🇱'),
+('fi', 'finnish', '🇫🇮'),
+('hu', 'hungarian', '🇭🇺'),
+('it', 'italian', '🇮🇹'),
+('no', 'norwegian', '🇳🇴'),
+('pt', 'portuguese', '🇵🇹'),
+('ro', 'romanian', '🇷🇴'),
+('ru', 'russian', '🇷🇺'),
+('es', 'spanish', '🇪🇸'),
+('se', 'swedish', '🇸🇪'),
+('tk', 'turkish', '🇹🇷');
 
 
 INSERT INTO users (username, password_hash, email, current_known_language_id, current_learn_language_id)

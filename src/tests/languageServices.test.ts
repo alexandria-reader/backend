@@ -28,6 +28,7 @@ describe('Getting languages', () => {
     const languageObject: Language = {
       id: 'jp',
       name: 'japanese',
+      flag: '🇯🇵',
       eachCharIsWord: false,
       isRightToLeft: false,
     };
