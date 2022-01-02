@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS languages;
 CREATE TABLE languages (
     id varchar(4) PRIMARY KEY,
     "name" varchar(32) UNIQUE NOT NULL,
+    flag varchar(4) NOT NULL,
     each_char_is_word boolean DEFAULT false,
     is_right_to_left boolean DEFAULT false
 );
