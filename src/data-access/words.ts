@@ -46,14 +46,19 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
 };
 
 // Finds all words a user has marked in a given language and returns translations and contexts as well
-const getUserwordsByLanguage = async function(languageId: string, userId: number): Promise<QueryResult> {
+const getUserwordsByLanguage = async function(languageId: string, userId: number, simple: boolean = true): Promise<QueryResult> {
+  const tsvectorType = simple ? 'simple' : 'language';
+
   const WORDS_BY_LANGUAGE_AND_USER: string = `
       SELECT DISTINCT w.id AS word_id, 
                       w.word, 
                       array_agg(t.id) AS translation_ids,
                       array_agg(t.target_language_id) AS language_ids,
                       array_agg(t.translation) AS translation_texts, 
-                      array_agg(ut.context) AS translation_contexts, 
+                      array_agg(ts_headline('${tsvectorType}', 
+                                            ut.context, 
+                                            w.tsquery_${tsvectorType}, 
+                                            'StartSel=<strong>, StopSel=</strong>')) AS translation_contexts, 
                       uw.word_status AS status
         FROM words AS w 
         JOIN translations AS t ON w.id = t.word_id 
@@ -64,7 +69,8 @@ const getUserwordsByLanguage = async function(languageId: string, userId: number
              ut.user_id = %s 
              AND
              w.language_id = %L 
-    GROUP BY w.id, w.word, uw.word_status`;
+    GROUP BY w.id, w.word, uw.word_status
+    ORDER BY w.word ASC`;
 
   const result = await dbQuery(
     WORDS_BY_LANGUAGE_AND_USER,
@@ -129,6 +135,7 @@ const getUserwordsInText = async function(userId: number, textId: number, target
              w.tsquery_${tsvectorType} @@ (SELECT t.tsvector_${tsvectorType} FROM texts AS t 
                                             WHERE t.id = %s)        
     GROUP BY w.id, w.word, uw.word_status`;
+
 
   const result = await dbQuery(
     USER_WORDS_IN_TEXT,
