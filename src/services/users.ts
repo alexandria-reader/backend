@@ -41,7 +41,13 @@ const getAll = async function() {
 };
 
 
-const addNew = async function (username: string, password: string, email: string, knownLanguageId: string, learnLanguageId: string): Promise<SanitizedUser> {
+const addNew = async function(
+  username: string,
+  password: string,
+  email: string,
+  knownLanguageId: string,
+  learnLanguageId: string,
+): Promise<SanitizedUser> {
   const emailExists = await userData.getByEmail(email);
   if (emailExists.rowCount > 0) throw boom.notAcceptable('Email already in use.');
 
@@ -106,7 +112,7 @@ const getById = async function(userId: string): Promise<SanitizedUser> {
 };
 
 
-const remove = async function (userId: string, password: string) {
+const remove = async function (userId: string, password: string): Promise<SanitizedUser> {
   const passwordsMatch = await verifyPassword(userId, password);
 
   if (passwordsMatch) {
@@ -114,8 +120,7 @@ const remove = async function (userId: string, password: string) {
 
     if (result.rowCount > 0) {
       const deletedUser: User = result.rows[0];
-      const santizedDeleteUser: SanitizedUser = sanitizeUser(deletedUser);
-      return santizedDeleteUser;
+      return sanitizeUser(deletedUser);
     }
   }
 
@@ -123,8 +128,11 @@ const remove = async function (userId: string, password: string) {
 };
 
 
-// eslint-disable-next-line max-len
-const setUserLanguages = async function(currentKnownId: string, currentLearnId: string, userId: string) {
+const setUserLanguages = async function(
+  currentKnownId: string,
+  currentLearnId: string,
+  userId: string,
+): Promise<SanitizedUser> {
   const result = await userData.setUserLanguages(currentKnownId, currentLearnId, userId);
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
