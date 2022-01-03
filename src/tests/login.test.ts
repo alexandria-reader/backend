@@ -6,14 +6,18 @@ import dbQuery from '../model/db-query';
 const api = supertest(app);
 
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
+const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 
   const newUser = {
     username: 'test user',
     password: '12345',
     email: 'test@userRouter.com',
+    knownLanguageId: 'de',
+    learnLanguageId: 'en',
   };
 
   await api

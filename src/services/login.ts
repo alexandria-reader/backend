@@ -29,8 +29,11 @@ const verifyLoginDetails = async function (email: string, password: string): Pro
 
 
 const login = async function (email: string, password: string): Promise<LoggedInUser> {
-  const verifiedUser: User = convertUserTypes(await verifyLoginDetails(email, password));
+  const verifiedUserResult: UserDB = await verifyLoginDetails(email, password);
 
+  const verifiedUser: User = convertUserTypes(verifiedUserResult);
+
+  console.log(verifiedUser);
   users.addLanguages(verifiedUser);
 
   const sanitizedUser = users.sanitizeUser(verifiedUser);
