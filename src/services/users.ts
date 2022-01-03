@@ -3,8 +3,12 @@ import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import { QueryResult } from 'pg';
 import userData from '../data-access/users';
+import languages from './languages';
 import {
-  SanitizedUser, User, convertUserTypes,
+  SanitizedUser,
+  User,
+  convertUserTypes,
+  Language,
 } from '../types';
 
 
@@ -13,11 +17,20 @@ const sanitizeUser = function (user: User): SanitizedUser {
     id: user.id,
     username: user.username,
     email: user.email,
-    currentKnownLanguageId: user.currentKnownLanguageId,
-    currentLearnLanguageId: user.currentLearnLanguageId,
+    knows: user.knows,
+    learns: user.learns,
   };
 
   return santizedUser;
+};
+
+const addLanguages = async function(user: User): Promise<void> {
+  const updatedUser = user;
+  const knownLanguage: Language = await languages.getById(String(user.knows));
+  const learnLanguage: Language = await languages.getById(String(user.learns));
+
+  updatedUser.knows = knownLanguage;
+  updatedUser.learns = learnLanguage;
 };
 
 
@@ -28,7 +41,13 @@ const getAll = async function() {
 };
 
 
-const addNew = async function (username: string, password: string, email: string, knownLanguageId: string, learnLanguageId: string): Promise<SanitizedUser> {
+const addNew = async function(
+  username: string,
+  password: string,
+  email: string,
+  knownLanguageId: string,
+  learnLanguageId: string,
+): Promise<SanitizedUser> {
   const emailExists = await userData.getByEmail(email);
   if (emailExists.rowCount > 0) throw boom.notAcceptable('Email already in use.');
 
@@ -36,9 +55,11 @@ const addNew = async function (username: string, password: string, email: string
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
   const result = await userData.addNew(username, passwordHash, email, knownLanguageId, learnLanguageId);
-  const newUser: User = result.rows[0];
-  const santizedNewUser: SanitizedUser = sanitizeUser(newUser);
-  return santizedNewUser;
+  const newUser: User = convertUserTypes(result.rows[0]);
+
+  await addLanguages(newUser);
+
+  return sanitizeUser(newUser);
 };
 
 
@@ -83,11 +104,15 @@ const getById = async function(userId: string): Promise<SanitizedUser> {
 
   if (result.rowCount === 0) throw boom.notFound('cannot find user with this id');
 
-  return sanitizeUser(convertUserTypes(result.rows[0]));
+  const foundUser: User = convertUserTypes(result.rows[0]);
+
+  await addLanguages(foundUser);
+
+  return sanitizeUser(foundUser);
 };
 
 
-const remove = async function (userId: string, password: string) {
+const remove = async function (userId: string, password: string): Promise<SanitizedUser> {
   const passwordsMatch = await verifyPassword(userId, password);
 
   if (passwordsMatch) {
@@ -95,8 +120,7 @@ const remove = async function (userId: string, password: string) {
 
     if (result.rowCount > 0) {
       const deletedUser: User = result.rows[0];
-      const santizedDeleteUser: SanitizedUser = sanitizeUser(deletedUser);
-      return santizedDeleteUser;
+      return sanitizeUser(deletedUser);
     }
   }
 
@@ -104,18 +128,26 @@ const remove = async function (userId: string, password: string) {
 };
 
 
-// eslint-disable-next-line max-len
-const setUserLanguages = async function(currentKnownId: string, currentLearnId: string, userId: string) {
+const setUserLanguages = async function(
+  currentKnownId: string,
+  currentLearnId: string,
+  userId: string,
+): Promise<SanitizedUser> {
   const result = await userData.setUserLanguages(currentKnownId, currentLearnId, userId);
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
 
-  return sanitizeUser(convertUserTypes(result.rows[0]));
+  const updatedUser: User = convertUserTypes(result.rows[0]);
+
+  await addLanguages(updatedUser);
+
+  return sanitizeUser(updatedUser);
 };
 
 
 export default {
   sanitizeUser,
+  addLanguages,
   getAll,
   addNew,
   updatePassword,
