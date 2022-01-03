@@ -39,6 +39,15 @@ userRouter.get('/', async (_req, res) => {
 });
 
 
+userRouter.get('/from-token', getUserFromToken, async (_req, res) => {
+  const { user } = res.locals;
+
+  const response = await users.getById(user.id);
+
+  res.json(response);
+});
+
+
 userRouter.put('/change-password', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
   const { currentPassword, newPassword } = req.body;
@@ -63,11 +72,11 @@ userRouter.delete('/', getUserFromToken, async (req, res) => {
 userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
 
-  const { currentKnownLanguageId, currentLearnLanguageId } = req.body;
+  const { knownLanguageId, learnLanguageId } = req.body;
 
   const updatedUser = await users.setUserLanguages(
-    currentKnownLanguageId,
-    currentLearnLanguageId,
+    knownLanguageId,
+    learnLanguageId,
     user.id,
   );
 
