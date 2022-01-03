@@ -139,6 +139,7 @@ const setUserLanguages = async function(currentKnownId: string, currentLearnId: 
 
 export default {
   sanitizeUser,
+  addLanguages,
   getAll,
   addNew,
   updatePassword,
