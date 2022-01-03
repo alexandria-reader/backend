@@ -3,8 +3,12 @@ import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import { QueryResult } from 'pg';
 import userData from '../data-access/users';
+import languages from './languages';
 import {
-  SanitizedUser, User, convertUserTypes,
+  SanitizedUser,
+  User,
+  convertUserTypes,
+  Language,
 } from '../types';
 
 
@@ -13,11 +17,20 @@ const sanitizeUser = function (user: User): SanitizedUser {
     id: user.id,
     username: user.username,
     email: user.email,
-    currentKnownLanguageId: user.currentKnownLanguageId,
-    currentLearnLanguageId: user.currentLearnLanguageId,
+    knows: user.knows,
+    learns: user.learns,
   };
 
   return santizedUser;
+};
+
+const addLanguages = async function(user: User): Promise<void> {
+  const updatedUser = user;
+  const knownLanguage: Language = await languages.getById(String(user.knows));
+  const learnLanguage: Language = await languages.getById(String(user.learns));
+
+  updatedUser.knows = knownLanguage;
+  updatedUser.learns = learnLanguage;
 };
 
 
@@ -36,9 +49,11 @@ const addNew = async function (username: string, password: string, email: string
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
   const result = await userData.addNew(username, passwordHash, email, knownLanguageId, learnLanguageId);
-  const newUser: User = result.rows[0];
-  const santizedNewUser: SanitizedUser = sanitizeUser(newUser);
-  return santizedNewUser;
+  const newUser: User = convertUserTypes(result.rows[0]);
+
+  await addLanguages(newUser);
+
+  return sanitizeUser(newUser);
 };
 
 
@@ -83,7 +98,11 @@ const getById = async function(userId: string): Promise<SanitizedUser> {
 
   if (result.rowCount === 0) throw boom.notFound('cannot find user with this id');
 
-  return sanitizeUser(convertUserTypes(result.rows[0]));
+  const foundUser: User = convertUserTypes(result.rows[0]);
+
+  await addLanguages(foundUser);
+
+  return sanitizeUser(foundUser);
 };
 
 
@@ -110,7 +129,11 @@ const setUserLanguages = async function(currentKnownId: string, currentLearnId: 
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
 
-  return sanitizeUser(convertUserTypes(result.rows[0]));
+  const updatedUser: User = convertUserTypes(result.rows[0]);
+
+  await addLanguages(updatedUser);
+
+  return sanitizeUser(updatedUser);
 };
 
 
