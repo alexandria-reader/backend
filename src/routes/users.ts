@@ -13,11 +13,11 @@ userRouter.post('/', async (req, res) => {
     username,
     password,
     email,
-    knownLanguageId,
-    learnLanguageId,
+    currentKnownLanguageId,
+    currentLearnLanguageId,
   } = req.body;
 
-  const newUser = await users.addNew(username, password, email, knownLanguageId, learnLanguageId);
+  const newUser = await users.addNew(username, password, email, currentKnownLanguageId, currentLearnLanguageId);
 
   res.status(201).json(newUser);
 });
