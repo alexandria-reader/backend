@@ -13,11 +13,11 @@ userRouter.post('/', async (req, res) => {
     username,
     password,
     email,
-    currentKnownLanguageId,
-    currentLearnLanguageId,
+    knownLanguageId,
+    learnLanguageId,
   } = req.body;
 
-  const newUser = await users.addNew(username, password, email, currentKnownLanguageId, currentLearnLanguageId);
+  const newUser = await users.addNew(username, password, email, knownLanguageId, learnLanguageId);
 
   res.status(201).json(newUser);
 });
@@ -36,6 +36,15 @@ userRouter.post('/translation/:translationId', getUserFromToken, async (req, res
 userRouter.get('/', async (_req, res) => {
   const allUsers = await users.getAll();
   res.json(allUsers);
+});
+
+
+userRouter.get('/from-token', getUserFromToken, async (_req, res) => {
+  const { user } = res.locals;
+
+  const response = await users.getById(user.id);
+
+  res.json(response);
 });
 
 
@@ -63,11 +72,11 @@ userRouter.delete('/', getUserFromToken, async (req, res) => {
 userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
 
-  const { currentKnownLanguageId, currentLearnLanguageId } = req.body;
+  const { knownLanguageId, learnLanguageId } = req.body;
 
   const updatedUser = await users.setUserLanguages(
-    currentKnownLanguageId,
-    currentLearnLanguageId,
+    knownLanguageId,
+    learnLanguageId,
     user.id,
   );
 

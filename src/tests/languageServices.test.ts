@@ -12,9 +12,9 @@ beforeAll(async () => {
 });
 
 describe('Getting languages', () => {
-  test('getAll: get all 3 languages from test database', async () => {
+  test('getAll: get all 15 languages from test database', async () => {
     const allTexts = await languages.getAll();
-    expect(allTexts).toHaveLength(3);
+    expect(allTexts).toHaveLength(15);
   });
 
 
@@ -35,7 +35,7 @@ describe('Getting languages', () => {
 
     const newLanguage = await languages.addNew(languageObject);
     if (newLanguage) expect(newLanguage.name).toBe('japanese');
-    expect(await languages.getAll()).toHaveLength(4);
+    expect(await languages.getAll()).toHaveLength(16);
   });
 
   // test('getById: get language with non-existent id "fdd" returns null', async () => {
