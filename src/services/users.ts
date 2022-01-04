@@ -3,12 +3,10 @@ import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import { QueryResult } from 'pg';
 import userData from '../data-access/users';
-import languages from './languages';
 import {
   SanitizedUser,
   User,
   convertUserTypes,
-  Language,
 } from '../types';
 
 
@@ -17,20 +15,11 @@ const sanitizeUser = function (user: User): SanitizedUser {
     id: user.id,
     username: user.username,
     email: user.email,
-    knows: user.knows,
-    learns: user.learns,
+    knownLanguage: user.knownLanguage,
+    learnLanguage: user.learnLanguage,
   };
 
   return santizedUser;
-};
-
-const addLanguages = async function(user: User): Promise<void> {
-  const updatedUser = user;
-  const knownLanguage: Language = await languages.getById(String(user.knows));
-  const learnLanguage: Language = await languages.getById(String(user.learns));
-
-  updatedUser.knows = knownLanguage;
-  updatedUser.learns = learnLanguage;
 };
 
 
@@ -56,8 +45,6 @@ const addNew = async function(
 
   const result = await userData.addNew(username, passwordHash, email, knownLanguageId, learnLanguageId);
   const newUser: User = convertUserTypes(result.rows[0]);
-
-  await addLanguages(newUser);
 
   return sanitizeUser(newUser);
 };
@@ -106,8 +93,6 @@ const getById = async function(userId: string): Promise<SanitizedUser> {
 
   const foundUser: User = convertUserTypes(result.rows[0]);
 
-  await addLanguages(foundUser);
-
   return sanitizeUser(foundUser);
 };
 
@@ -139,15 +124,12 @@ const setUserLanguages = async function(
 
   const updatedUser: User = convertUserTypes(result.rows[0]);
 
-  await addLanguages(updatedUser);
-
   return sanitizeUser(updatedUser);
 };
 
 
 export default {
   sanitizeUser,
-  addLanguages,
   getAll,
   addNew,
   updatePassword,

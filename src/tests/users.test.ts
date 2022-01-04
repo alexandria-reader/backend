@@ -6,13 +6,15 @@ import dbQuery from '../model/db-query';
 const api = supertest(app);
 
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
+const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });
 
-xdescribe('Testing adding users', () => {
-  test('users are returned as json, there are no users', async () => {
+describe('Testing adding users', () => {
+  xtest('users are returned as json, there are no users', async () => {
     const response = await api
       .get('/api/users')
       .expect(200)
@@ -27,6 +29,8 @@ xdescribe('Testing adding users', () => {
       username: 'test user',
       password: '12345',
       email: 'test@userRouter.com',
+      knownLanguageId: 'de',
+      learnLanguageId: 'fr',
     };
 
     const response = await api
@@ -36,9 +40,10 @@ xdescribe('Testing adding users', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.text).toContain('test user');
+    expect(response.text).toContain('fr');
   });
 
-  test('There is one user', async () => {
+  xtest('There is one user', async () => {
     const response = await api
       .get('/api/users')
       .expect(200)
@@ -48,11 +53,13 @@ xdescribe('Testing adding users', () => {
     expect(responseBody).toHaveLength(1);
   });
 
-  test('duplicate usernames are not added', async () => {
+  xtest('duplicate usernames are not added', async () => {
     const newUser = {
       username: 'test user',
       password: '12345',
       email: 'test1@userRouter.com',
+      knownLanguageId: 'de',
+      learnLanguageId: 'fr',
     };
 
     const response = await api
@@ -61,7 +68,7 @@ xdescribe('Testing adding users', () => {
       .expect(406)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.text).toContain('Username already in use');
+    expect(response.text).toContain('Email already in use.');
   });
 
   test('duplicate emails are not added', async () => {
@@ -69,6 +76,8 @@ xdescribe('Testing adding users', () => {
       username: 'test user1',
       password: '12345',
       email: 'test@userRouter.com',
+      knownLanguageId: 'de',
+      learnLanguageId: 'fr',
     };
 
     const response = await api
@@ -80,7 +89,7 @@ xdescribe('Testing adding users', () => {
     expect(response.text).toContain('Email already in use');
   });
 
-  test('users can change passwords', async () => {
+  xtest('users can change passwords', async () => {
     const password = {
       password: '12345',
       newPassword: 'password',
@@ -94,7 +103,7 @@ xdescribe('Testing adding users', () => {
       .expect('{"message":"Your password has been updated"}');
   });
 
-  test('users cant change passwords unless correct password is supplied', async () => {
+  xtest('users cant change passwords unless correct password is supplied', async () => {
     const password = {
       password: '123456',
       newPassword: 'password',
@@ -109,7 +118,7 @@ xdescribe('Testing adding users', () => {
     expect(response.text).toContain('Incorrect password');
   });
 
-  test('users cannot delete account unless correct password is supplied', async () => {
+  xtest('users cannot delete account unless correct password is supplied', async () => {
     const password = {
       password: 'wrong',
     };
@@ -122,7 +131,7 @@ xdescribe('Testing adding users', () => {
       .expect('{"message":"Passwords do not match"}');
   });
 
-  test('users are successfully deleted', async () => {
+  xtest('users are successfully deleted', async () => {
     const password = {
       password: 'password',
     };
@@ -136,7 +145,7 @@ xdescribe('Testing adding users', () => {
     expect(response.text).toMatch(/test user/);
   });
 
-  test('After deletion, there are no users', async () => {
+  xtest('After deletion, there are no users', async () => {
     const response = await api
       .get('/api/users')
       .expect(200)
@@ -149,4 +158,5 @@ xdescribe('Testing adding users', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });

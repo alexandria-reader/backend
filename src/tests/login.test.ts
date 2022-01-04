@@ -180,4 +180,5 @@ describe('Testing user login', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });

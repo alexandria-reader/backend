@@ -116,4 +116,5 @@ describe('Getting words', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });
