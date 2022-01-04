@@ -83,5 +83,18 @@ userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
   return res.json(updatedUser);
 });
 
+userRouter.put('/update', getUserFromToken, async (req, res) => {
+  const { user } = res.locals;
+  const { userName, email } = req.body;
+
+  const updatedUser = await users.updateUserInfo(
+    user.id,
+    userName,
+    email,
+  );
+
+  return res.json(updatedUser);
+});
+
 
 export default userRouter;

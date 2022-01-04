@@ -127,6 +127,20 @@ const setUserLanguages = async function(
   return sanitizeUser(updatedUser);
 };
 
+const updateUserInfo = async function(
+  userId: string,
+  userName: string,
+  email: string,
+): Promise<SanitizedUser> {
+  const result = await userData.updateUserInfo(userId, userName, email);
+
+  if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
+
+  const updatedUser: User = convertUserTypes(result.rows[0]);
+
+  return sanitizeUser(updatedUser);
+};
+
 
 export default {
   sanitizeUser,
@@ -137,4 +151,5 @@ export default {
   getById,
   verifyPassword,
   setUserLanguages,
+  updateUserInfo,
 };
