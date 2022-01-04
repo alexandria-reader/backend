@@ -114,11 +114,11 @@ const remove = async function (userId: string, password: string): Promise<Saniti
 
 
 const setUserLanguages = async function(
-  currentKnownId: string,
-  currentLearnId: string,
+  knownLanguageId: string,
+  learnLanguageId: string,
   userId: string,
 ): Promise<SanitizedUser> {
-  const result = await userData.setUserLanguages(currentKnownId, currentLearnId, userId);
+  const result = await userData.setUserLanguages(knownLanguageId, learnLanguageId, userId);
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
 

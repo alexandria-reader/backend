@@ -45,8 +45,8 @@ export type UserDB = {
   username: string,
   password_hash: string,
   email: string,
-  current_known_language_id: string,
-  current_learn_language_id: string,
+  known_language_id: string,
+  learn_language_id: string,
 };
 
 export type SanitizedUser = Omit<User, 'passwordHash'>;
@@ -59,8 +59,8 @@ export const convertUserTypes = function(dbItem: UserDB): User {
     username: dbItem.username,
     passwordHash: dbItem.password_hash,
     email: dbItem.email,
-    knownLanguageId: dbItem.current_known_language_id,
-    learnLanguageId: dbItem.current_learn_language_id,
+    knownLanguageId: dbItem.known_language_id,
+    learnLanguageId: dbItem.learn_language_id,
   };
 };
 
