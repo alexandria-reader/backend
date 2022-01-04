@@ -2,13 +2,7 @@ import boom from '@hapi/boom';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import userData from '../data-access/users';
-import users from './users';
-import {
-  UserDB,
-  LoggedInUser,
-  User,
-  convertUserTypes,
-} from '../types';
+import { UserDB, LoggedInUser } from '../types';
 
 
 const verifyLoginDetails = async function (email: string, password: string): Promise<UserDB> {
@@ -29,11 +23,7 @@ const verifyLoginDetails = async function (email: string, password: string): Pro
 
 
 const login = async function (email: string, password: string): Promise<LoggedInUser> {
-  const verifiedUser: User = convertUserTypes(await verifyLoginDetails(email, password));
-
-  users.addLanguages(verifiedUser);
-
-  const sanitizedUser = users.sanitizeUser(verifiedUser);
+  const verifiedUser: UserDB = await verifyLoginDetails(email, password);
 
   const userForToken = {
     email: verifiedUser.email,
@@ -46,9 +36,14 @@ const login = async function (email: string, password: string): Promise<LoggedIn
     { expiresIn: 60 * 60 * 24 * 7 }, // token expires in one week
   );
 
-  const loggedInUser: LoggedInUser = { ...sanitizedUser, token };
-
-  return loggedInUser;
+  return {
+    id: verifiedUser.id,
+    email: verifiedUser.email,
+    username: verifiedUser.username,
+    currentKnownLanguageId: verifiedUser.current_known_language_id,
+    currentLearnLanguageId: verifiedUser.current_learn_language_id,
+    token,
+  };
 };
 
 
