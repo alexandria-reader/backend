@@ -51,8 +51,13 @@ const updatePassword = async function(userId: string, newPasswordHash: string) {
   return result;
 };
 
+const updateUserInfo = async function(userId: string, userName: string, email: string) {
+  const UPDATE_INFO = 'UPDATE users SET username = %L, email = %L WHERE id = %L RETURNING *;';
+  const result = await dbQuery(UPDATE_INFO, userName, email, userId);
+  return result;
+};
+
 export default {
-  // getUserByUsername,
   getByEmail,
   addNew,
   getAll,
@@ -60,4 +65,5 @@ export default {
   remove,
   setUserLanguages,
   updatePassword,
+  updateUserInfo,
 };
