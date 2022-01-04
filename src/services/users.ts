@@ -133,7 +133,7 @@ const updateUserInfo = async function(
   email: string,
 ): Promise<SanitizedUser> {
   const result = await userData.updateUserInfo(userId, userName, email);
-  console.log(result);
+
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
 
   const updatedUser: User = convertUserTypes(result.rows[0]);
