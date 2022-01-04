@@ -15,8 +15,8 @@ const sanitizeUser = function (user: User): SanitizedUser {
     id: user.id,
     username: user.username,
     email: user.email,
-    knownLanguage: user.knownLanguage,
-    learnLanguage: user.learnLanguage,
+    knownLanguageId: user.knownLanguageId,
+    learnLanguageId: user.learnLanguageId,
   };
 
   return santizedUser;
