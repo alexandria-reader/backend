@@ -113,4 +113,5 @@ xdescribe('Testing updating translations', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });

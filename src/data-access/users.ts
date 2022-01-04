@@ -18,7 +18,7 @@ const getByEmail = async function (email: string): Promise<QueryResult> {
 
 
 const addNew = async function (username: string, passwordHash: string, email: string, knownLanguageId: string, learnLanguageId: string): Promise<QueryResult> {
-  const ADD_USER = 'INSERT INTO users (username, password_hash, email, current_known_language_id, current_learn_language_id) Values (%L, %L, %L, %L, %L) RETURNING *';
+  const ADD_USER = 'INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id) Values (%L, %L, %L, %L, %L) RETURNING *';
   const result = await dbQuery(ADD_USER, username, passwordHash, email, knownLanguageId, learnLanguageId);
   return result;
 };
@@ -38,9 +38,9 @@ const remove = async function (userId: string): Promise<QueryResult> {
 };
 
 
-const setUserLanguages = async function(currentKnownLanguageId: string, currentLearnLanguageId: string, userId: string) {
-  const setKnownLanguage = 'UPDATE users SET current_known_language_id = %L, current_learn_language_id = %L WHERE id = %L RETURNING *';
-  const result = await dbQuery(setKnownLanguage, currentKnownLanguageId, currentLearnLanguageId, userId);
+const setUserLanguages = async function(knownLanguageId: string, learnLanguageId: string, userId: string) {
+  const setKnownLanguage = 'UPDATE users SET known_language_id = %L, learn_language_id = %L WHERE id = %L RETURNING *';
+  const result = await dbQuery(setKnownLanguage, knownLanguageId, learnLanguageId, userId);
   return result;
 };
 

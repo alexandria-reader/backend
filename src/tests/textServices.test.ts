@@ -69,4 +69,5 @@ describe('Getting texts', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });

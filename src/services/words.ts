@@ -134,7 +134,7 @@ const addNewUserWord = async function(user: SanitizedUser, userWordData: UserWor
 
   const newWordData: Word = {
     word: userWordData.word,
-    languageId: user.currentLearnLanguageId || '',
+    languageId: user.learnLanguageId,
   };
 
   const newWord: Word = await addNew(newWordData);

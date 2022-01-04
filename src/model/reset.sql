@@ -28,8 +28,8 @@ CREATE TABLE users (
     username text NOT NULL,
     password_hash text NOT NULL,
     email text UNIQUE NOT NULL,
-    current_known_language_id varchar(4) REFERENCES languages (id),
-    current_learn_language_id varchar(4) REFERENCES languages (id)
+    known_language_id varchar(4) REFERENCES languages (id) NOT NULL,
+    learn_language_id varchar(4) REFERENCES languages (id) NOT NULL
 );
 
 

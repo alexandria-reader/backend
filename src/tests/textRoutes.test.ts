@@ -3,26 +3,14 @@ import supertest from 'supertest';
 import app from '../app';
 import dbQuery from '../model/db-query';
 
-
 const api = supertest(app);
 
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
+const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
 beforeAll(async () => {
   await dbQuery(reset);
-
-  await dbQuery(`INSERT INTO users (username, password_hash, email)
-  VALUES
-  ('eamon', 'eamonpwhash', 'eamon@example.com'),
-  ('dana', 'danapwhash', 'dana@example.com'),
-  ('marc', 'marcpwhash', 'marc@example.com');
-
-  INSERT INTO languages (id, "name") 
-  VALUES
-  ('en', 'english'),
-  ('de', 'german'),
-  ('fr', 'french');
-  `);
+  await dbQuery(seed);
 });
 
 xdescribe('Testing adding texts', () => {
@@ -82,4 +70,5 @@ xdescribe('Testing adding texts', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });

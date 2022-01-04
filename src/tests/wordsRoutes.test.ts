@@ -85,6 +85,7 @@ xdescribe('Testing deleting a word', () => {
 
 afterAll(async () => {
   await dbQuery(reset);
+  await dbQuery(seed);
 });
 
 
