@@ -52,12 +52,16 @@ router.post('/', async(req, res): Promise<void> => {
 
 router.put('/:wordId', async(req, res): Promise<void> => {
   const { user } = res.locals;
-
-  const { status } = req.body;
   const { wordId } = req.params;
-  const updatedStatus: string | null = await words.updateStatus(Number(wordId), Number(user.id), status);
+  const { status } = req.body;
 
-  res.send(updatedStatus);
+  if (status) {
+    const updatedStatus: string = await words.updateStatus(Number(wordId), Number(user.id), status);
+    res.send(updatedStatus);
+  } else {
+    await words.removeUserWord(Number(wordId), Number(user.id));
+    res.status(204).send();
+  }
 });
 
 router.delete('/:wordId', async(req, res): Promise<void> => {
