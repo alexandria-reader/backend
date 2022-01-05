@@ -270,7 +270,7 @@ const removeUserWord = async function(wordId: number, userId: number): Promise<Q
   const REMOVE_USER_WORD: string = `
     DELETE FROM users_words 
           WHERE user_id = %s 
-            AND word_id = %S
+            AND word_id = %s
     RETURNING *`;
 
   const result = await dbQuery(
