@@ -129,6 +129,15 @@ const updateStatus = async function(wordId: number, userId: number, wordStatus: 
 };
 
 
+const removeUserWord = async function(wordId: number, userId: number): Promise<string> {
+  const result: QueryResult = await wordData.removeUserWord(wordId, userId);
+
+  if (result.rowCount === 0) throw boom.badRequest('Could not remove status.');
+
+  return result.rows[0].word_status;
+};
+
+
 const addNewUserWord = async function(user: SanitizedUser, userWordData: UserWord): Promise<UserWord> {
   const returnUserWord = userWordData;
 
@@ -173,5 +182,6 @@ export default {
   getStatus,
   addStatus,
   updateStatus,
+  removeUserWord,
   addNewUserWord,
 };

@@ -245,6 +245,7 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
   return result;
 };
 
+
 const updateStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<QueryResult> {
   const UPDATE_USER_WORD_STATUS: string = `
        UPDATE users_words 
@@ -257,6 +258,23 @@ const updateStatus = async function(wordId: number, userId: number, wordStatus: 
   const result = await dbQuery(
     UPDATE_USER_WORD_STATUS,
     wordStatus,
+    userId,
+    wordId,
+  );
+
+  return result;
+};
+
+
+const removeUserWord = async function(wordId: number, userId: number): Promise<QueryResult> {
+  const REMOVE_USER_WORD: string = `
+    DELETE FROM users_words 
+          WHERE user_id = %s 
+            AND word_id = %S
+    RETURNING *`;
+
+  const result = await dbQuery(
+    REMOVE_USER_WORD,
     userId,
     wordId,
   );
@@ -278,4 +296,5 @@ export default {
   getStatus,
   addStatus,
   updateStatus,
+  removeUserWord,
 };
