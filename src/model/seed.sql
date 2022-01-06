@@ -8,7 +8,6 @@ VALUES
 ('it', 'italian', '🇮🇹'),
 ('pt', 'portuguese', '🇵🇹'),
 ('ro', 'romanian', '🇷🇴'),
-('ru', 'russian', '🇷🇺'),
 ('se', 'swedish', '🇸🇪'),
 ('tr', 'turkish', '🇹🇷');
 
@@ -31,7 +30,6 @@ VALUES
 (3, 'de', 'Boykott der Olympischen Spiele', 
 'Die Unterdrückung der uigurischen Muslime in Xinjiang, das mysteriöse Verschwinden einer Tennisspielerin und Repressionen gegen die Demokratiebewegung in Hongkong – die Liste der Vorwürfe gegen China ist lang und triftig. Und doch scheint die Ankündigung der USA, keine Repräsentanten zu den Olympischen Winterspielen nach Peking zu schicken, wie das Werfen eines Wattebauschs. Die Formulierung diplomatischer Boykott besagt ja gerade, dass ein Boykott, demzufolge die Athleten eines ganzen Landes ihre Kufen ungeschliffen und die Skier ungewachst lassen, nicht infrage kommt. Das Fernbleiben vieler westlicher Sportteams bei den Sommerspielen 1980 in Moskau und der anschließende Boykott der Sowjetunion sowie 18 weiterer Mannschaften 1984 in Los Angeles waren ein Tiefpunkt der olympischen Idee, die doch die Überwindung politischer Konflikte in Aussicht stellt.',
 (SELECT "name" FROM languages AS l WHERE l.id = 'de')::regconfig);
-
 
 
 INSERT INTO words (language_id, word, ts_config)
@@ -113,6 +111,7 @@ VALUES
 (3, 9, 'a poor little girl, bareheaded and barefoot, was'),
 (3, 10, 'two carriages had rattled by terribly fast.');
 
+
 INSERT INTO webdictionaries (source_language_id, target_language_id, name, url)
 VALUES
 ('en', 'de', 'WordReference.com Englisch - Deutsch', 'https://www.wordreference.com/ende/'),
@@ -129,8 +128,6 @@ VALUES
 ('pt', 'en', 'WordReference.com Portuguese - English', 'https://www.wordreference.com/pten/'),
 ('en', 'ro', 'WordReference.com Englez - Român', 'https://www.wordreference.com/enro/'),
 ('ro', 'en', 'WordReference.com Romanian - English', 'https://www.wordreference.com/roen/'),
-('en', 'ru', 'WordReference.com Англо - русский', 'https://www.wordreference.com/enru/'),
-('ru', 'en', 'WordReference.com Russian - English', 'https://www.wordreference.com/ruen/'),
 ('en', 'se', 'WordReference.com Engelsk - Svenska', 'https://www.wordreference.com/ensv/'),
 ('se', 'en', 'WordReference.com Swedish - English', 'https://www.wordreference.com/sven/'),
 ('en', 'tr', 'WordReference.com İngilizce - Türkçe', 'https://www.wordreference.com/entr/'),
