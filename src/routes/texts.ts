@@ -16,9 +16,16 @@ router.get('/language/:langId/', async(req, res): Promise<unknown> => {
 
 
 router.get('/:id', async(req, res): Promise<void> => {
+  const { user } = res.locals;
+
   const id: number = Number(req.params.id);
   const textById: Text = await texts.getById(id);
-  res.json(textById);
+
+  if (textById.userId === user.id) {
+    res.json(textById);
+  } else {
+    res.status(404).send();
+  }
 });
 
 
@@ -44,17 +51,31 @@ router.post('/', async(req, res): Promise<unknown> => {
 
 
 router.put('/:id', async(req, res): Promise<void> => {
+  const { user } = res.locals;
+
   const id: number = Number(req.params.id);
   const textData = req.body;
-  const updatedText: Text = await texts.update({ id, ...textData });
-  res.json(updatedText);
+
+  if (textData.userId === user.id) {
+    const updatedText: Text = await texts.update({ id, ...textData });
+    res.json(updatedText);
+  } else {
+    res.status(406).send();
+  }
 });
 
 
 router.delete('/:id', async(req, res): Promise<void> => {
+  const { user } = res.locals;
   const id: number = Number(req.params.id);
-  await texts.remove(id);
-  res.status(204).send();
+  const toBeDeleted = await texts.getById(id);
+
+  if (toBeDeleted.userId === user.id) {
+    await texts.remove(id);
+    res.status(204).send();
+  } else {
+    res.status(406).send();
+  }
 });
 
 
