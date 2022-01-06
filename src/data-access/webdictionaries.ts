@@ -51,7 +51,7 @@ const getBySourceTarget = async function getBySourceLanguage(sourceLanguageId: s
   const DICTIONARIES_BY_SOURCE_TARGET: string = `
     SELECT * FROM webdictionaries
      WHERE source_language_id = %L
-       AND target_lanugage_id = %L`;
+       AND target_language_id = %L`;
 
   const result = await dbQuery(DICTIONARIES_BY_SOURCE_TARGET, sourceLanguageId, targetLanguageId);
 

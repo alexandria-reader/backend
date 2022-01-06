@@ -139,4 +139,4 @@ VALUES
 ('pt', 'es', 'WordReference.com Portuguese - Spanish', 'https://www.wordreference.com/ptes'),
 ('es', 'pt', 'WordReference.com Spanish - Portuguese', 'https://www.wordreference.com/espt'),
 ('de', 'es', 'WordReference.com German - Spanish', 'https://www.wordreference.com/dees'),
-('es', 'de', 'WordReference.com Spanisch - Deutsch', 'https://www.wordreference.com/esde'),
+('es', 'de', 'WordReference.com Spanisch - Deutsch', 'https://www.wordreference.com/esde');
