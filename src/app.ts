@@ -8,6 +8,7 @@ import usersRouter from './routes/users';
 import wordsRouter from './routes/words';
 import loginRouter from './routes/login';
 import languageRouter from './routes/languages';
+import webdictionariesRouter from './routes/webdictionaries';
 
 import { extractToken, getUserFromToken } from './utils/middleware';
 
@@ -22,6 +23,7 @@ app.use(extractToken);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/languages', languageRouter);
+app.use('/api/webdictionaries', webdictionariesRouter);
 app.use('/api/texts', getUserFromToken, textsRouter);
 app.use('/api/translations', getUserFromToken, translationsRouter);
 app.use('/api/words', getUserFromToken, wordsRouter);

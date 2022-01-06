@@ -94,7 +94,8 @@ CREATE TABLE webdictionaries (
 CREATE TABLE users_translations (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     translation_id int NOT NULL REFERENCES translations (id) ON DELETE CASCADE,
-    context text,
+    context text DEFAULT '',
+    date_created timestamptz DEFAULT now(),
     PRIMARY KEY (user_id, translation_id)
 );
 

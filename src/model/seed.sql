@@ -3,18 +3,13 @@ VALUES
 ('en', 'english', '🇬🇧'),
 ('de', 'german', '🇩🇪'),
 ('fr', 'french', '🇫🇷'),
-('dk', 'danish', '🇩🇰'),
+('es', 'spanish', '🇪🇸'),
 ('nl', 'dutch', '🇳🇱'),
-('fi', 'finnish', '🇫🇮'),
-('hu', 'hungarian', '🇭🇺'),
 ('it', 'italian', '🇮🇹'),
-('no', 'norwegian', '🇳🇴'),
 ('pt', 'portuguese', '🇵🇹'),
 ('ro', 'romanian', '🇷🇴'),
-('ru', 'russian', '🇷🇺'),
-('es', 'spanish', '🇪🇸'),
 ('se', 'swedish', '🇸🇪'),
-('tk', 'turkish', '🇹🇷');
+('tr', 'turkish', '🇹🇷');
 
 
 INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id)
@@ -35,7 +30,6 @@ VALUES
 (3, 'de', 'Boykott der Olympischen Spiele', 
 'Die Unterdrückung der uigurischen Muslime in Xinjiang, das mysteriöse Verschwinden einer Tennisspielerin und Repressionen gegen die Demokratiebewegung in Hongkong – die Liste der Vorwürfe gegen China ist lang und triftig. Und doch scheint die Ankündigung der USA, keine Repräsentanten zu den Olympischen Winterspielen nach Peking zu schicken, wie das Werfen eines Wattebauschs. Die Formulierung diplomatischer Boykott besagt ja gerade, dass ein Boykott, demzufolge die Athleten eines ganzen Landes ihre Kufen ungeschliffen und die Skier ungewachst lassen, nicht infrage kommt. Das Fernbleiben vieler westlicher Sportteams bei den Sommerspielen 1980 in Moskau und der anschließende Boykott der Sowjetunion sowie 18 weiterer Mannschaften 1984 in Los Angeles waren ein Tiefpunkt der olympischen Idee, die doch die Überwindung politischer Konflikte in Aussicht stellt.',
 (SELECT "name" FROM languages AS l WHERE l.id = 'de')::regconfig);
-
 
 
 INSERT INTO words (language_id, word, ts_config)
@@ -116,3 +110,33 @@ VALUES
 (3, 8, ''),
 (3, 9, 'a poor little girl, bareheaded and barefoot, was'),
 (3, 10, 'two carriages had rattled by terribly fast.');
+
+
+INSERT INTO webdictionaries (source_language_id, target_language_id, name, url)
+VALUES
+('en', 'de', 'WordReference.com Englisch - Deutsch', 'https://www.wordreference.com/ende'),
+('de', 'en', 'WordReference.com German - English', 'https://www.wordreference.com/deen'),
+('en', 'fr', 'WordReference.com Anglais - Francais', 'https://www.wordreference.com/enfr'),
+('fr', 'en', 'WordReference.com French - English', 'https://www.wordreference.com/fren'),
+('en', 'es', 'WordReference.com Inglés - Espanol', 'https://www.wordreference.com/enes'),
+('es', 'en', 'WordReference.com Spanish - English', 'https://www.wordreference.com/esen'),
+('en', 'nl', 'WordReference.com Engels - Nederlands', 'https://www.wordreference.com/ennl'),
+('nl', 'en', 'WordReference.com Dutch - English', 'https://www.wordreference.com/nlen'),
+('en', 'it', 'WordReference.com Inglese - Italiano', 'https://www.wordreference.com/enit'),
+('it', 'en', 'WordReference.com Italian - English', 'https://www.wordreference.com/iten'),
+('en', 'pt', 'WordReference.com Inglês - Português', 'https://www.wordreference.com/enpt'),
+('pt', 'en', 'WordReference.com Portuguese - English', 'https://www.wordreference.com/pten'),
+('en', 'ro', 'WordReference.com Englez - Român', 'https://www.wordreference.com/enro'),
+('ro', 'en', 'WordReference.com Romanian - English', 'https://www.wordreference.com/roen'),
+('en', 'se', 'WordReference.com Engelsk - Svenska', 'https://www.wordreference.com/ensv'),
+('se', 'en', 'WordReference.com Swedish - English', 'https://www.wordreference.com/sven'),
+('en', 'tr', 'WordReference.com İngilizce - Türkçe', 'https://www.wordreference.com/entr'),
+('tr', 'en', 'WordReference.com Turkish - English', 'https://www.wordreference.com/tren'),
+('fr', 'es', 'WordReference.com French - Spanish', 'https://www.wordreference.com/fres'),
+('es', 'fr', 'WordReference.com Spanish - French', 'https://www.wordreference.com/esfr'),
+('it', 'es', 'WordReference.com Italian - Spanish', 'https://www.wordreference.com/ites'),
+('es', 'it', 'WordReference.com Spanish - Italian', 'https://www.wordreference.com/esit'),
+('pt', 'es', 'WordReference.com Portuguese - Spanish', 'https://www.wordreference.com/ptes'),
+('es', 'pt', 'WordReference.com Spanish - Portuguese', 'https://www.wordreference.com/espt'),
+('de', 'es', 'WordReference.com German - Spanish', 'https://www.wordreference.com/dees'),
+('es', 'de', 'WordReference.com Spanisch - Deutsch', 'https://www.wordreference.com/esde');

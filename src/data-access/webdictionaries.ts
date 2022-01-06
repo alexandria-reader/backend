@@ -47,6 +47,18 @@ const getByTarget = async function getByTargetLanguage(targetLanguageId: string)
 };
 
 
+const getBySourceTarget = async function getBySourceLanguage(sourceLanguageId: string, targetLanguageId: string): Promise<QueryResult> {
+  const DICTIONARIES_BY_SOURCE_TARGET: string = `
+    SELECT * FROM webdictionaries
+     WHERE source_language_id = %L
+       AND target_language_id = %L`;
+
+  const result = await dbQuery(DICTIONARIES_BY_SOURCE_TARGET, sourceLanguageId, targetLanguageId);
+
+  return result;
+};
+
+
 const getPrefWebdicts = async function getPreferredWebdictionaries(userId: number): Promise<QueryResult> {
   const PREFERRED_WEBDICTIONARIES: string = `
     SELECT wd.id,
@@ -93,6 +105,7 @@ export default {
   getById,
   getBySource,
   getByTarget,
+  getBySourceTarget,
   addNew,
   getPrefWebdicts,
 };
