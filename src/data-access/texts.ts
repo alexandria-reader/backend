@@ -29,7 +29,7 @@ const getByUser = async function(userId: number): Promise<QueryResult> {
   const TEXTS_BY_USER: string = `
       SELECT * FROM texts
        WHERE user_id = %s
-    ORDER BY last_opened DESC NULLS LAST`;
+    ORDER BY upload_time DESC NULLS LAST`;
 
   const result = await dbQuery(TEXTS_BY_USER, userId);
 
@@ -41,7 +41,7 @@ const getByUserAndLanguage = async function(userId: number, languageId: string):
   const TEXTS_BY_USER: string = `
       SELECT * FROM texts
        WHERE user_id = %L AND language_id = %L
-    ORDER BY last_opened DESC NULLS LAST`;
+    ORDER BY upload_time DESC NULLS LAST`;
 
   const result = await dbQuery(TEXTS_BY_USER, userId, languageId);
 
