@@ -54,7 +54,7 @@ const getUserwordsInText = async function(userId: number, textId: number, target
 
 
 const getUserwordsByLanguage = async function(languageId: string, userId: number): Promise<Array<UserWord>> {
-  const wordsResult: QueryResult = await wordData.getUserwordsByLanguage(languageId, userId);
+  const wordsResult: QueryResult = await wordData.getUserwordsByLanguage(languageId, userId, false);
 
   const rawUserWords = wordsResult.rows;
 

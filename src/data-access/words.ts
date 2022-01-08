@@ -2,6 +2,7 @@
 import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 import { Word } from '../types';
+import languages from './languages';
 
 
 // Returning all words in the database is most likely not needed
@@ -47,7 +48,14 @@ const getByLanguageAndUser = async function(languageId: string, userId: number):
 
 // Finds all words a user has marked in a given language and returns translations and contexts as well
 const getUserwordsByLanguage = async function(languageId: string, userId: number, simple: boolean = true): Promise<QueryResult> {
-  const tsvectorType = simple ? 'simple' : 'language';
+  let tsvectorType = 'simple';
+  let tsConfig = 'simple';
+
+  if (!simple) {
+    tsvectorType = 'language';
+    const result = await languages.getById(languageId);
+    tsConfig = result.rows[0].name;
+  }
 
   const WORDS_BY_LANGUAGE_AND_USER: string = `
       SELECT DISTINCT w.id AS word_id, 
@@ -55,10 +63,10 @@ const getUserwordsByLanguage = async function(languageId: string, userId: number
                       array_agg(t.id) AS translation_ids,
                       array_agg(t.target_language_id) AS language_ids,
                       array_agg(t.translation) AS translation_texts, 
-                      array_agg(ts_headline('${tsvectorType}', 
+                      array_agg(ts_headline('${tsConfig}', 
                                             ut.context, 
                                             w.tsquery_${tsvectorType}, 
-                                            'StartSel=<strong>, StopSel=</strong>')) AS translation_contexts, 
+                                            'StartSel=<strong>, StopSel=</strong> MaxWords=35, MinWords=20')) AS translation_contexts, 
                       uw.word_status AS status
         FROM words AS w 
         JOIN translations AS t ON w.id = t.word_id 
