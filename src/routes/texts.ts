@@ -21,7 +21,10 @@ router.get('/:id', async(req, res): Promise<void> => {
   const id: number = Number(req.params.id);
   const textById: Text = await texts.getById(id);
 
+  const cacheDuration = 60 * 60 * 24 * 7; // one week
+
   if (textById.userId === user.id) {
+    res.set('Cache-control', `public, max-age=${cacheDuration}`);
     res.json(textById);
   } else {
     res.status(404).send();
