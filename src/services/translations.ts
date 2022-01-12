@@ -1,4 +1,5 @@
 import boom from '@hapi/boom';
+import { QueryResult } from 'pg';
 import translationsData from '../data-access/translations';
 import {
   Translation, TranslationDB, convertTranslationTypes,
@@ -56,20 +57,27 @@ const addToUsersTranslations = async function(
 };
 
 const update = async function(
-  translation: string,
   translationId: number,
+  translation: string,
 ) {
-  const result = await translationsData.update(translation, translationId);
-  if (!result.rows) throw boom.notFound('Updating translation with given translation id not successful.');
-  return result;
+  const result = await translationsData.update(translationId, translation);
+  if (result.rowCount === 0) throw boom.notFound('Updating translation with given translation id not successful.');
+  return convertTranslationTypes(result.rows[0]);
 };
 
-const remove = async function(
+const remove = async function(translationId: number) {
+  const result: QueryResult = await translationsData.remove(translationId);
+  if (result.rowCount === 0) throw boom.notFound('Removing translation not successful.');
+  return convertTranslationTypes(result.rows[0]);
+};
+
+const getUserTranslationContext = async function(
+  userId: number,
   translationId: number,
-) {
-  const result = await translationsData.remove(translationId);
-  if (!result.rows) throw boom.notFound('Removing translation not successful.');
-  return result;
+): Promise<string> {
+  const result = await translationsData.getUserTranslationContext(userId, translationId);
+  if (result.rowCount === 0) throw boom.notFound('No connection between user and translation');
+  return result.rows[0] || '';
 };
 
 export default {
@@ -80,6 +88,7 @@ export default {
   getAllByWordByLang,
   add,
   addToUsersTranslations,
+  getUserTranslationContext,
   update,
   remove,
 };

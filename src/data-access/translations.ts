@@ -49,19 +49,9 @@ const add = async function(
   return results;
 };
 
-const addToUsersTranslations = async function(
-  userId: number,
-  translationId: number,
-  context: string | undefined,
-) {
-  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id, context) VALUES(%L, %L, %L) RETURNING users_translations.*';
-  const result = await dbQuery(USER_TRANSLATION, userId, translationId, context);
-  return result;
-};
-
 const update = async function(
-  translation: string,
   translationId: number,
+  translation: string,
 ) {
   const UPDATE_TRANSLATION = 'UPDATE translations SET translation = %L WHERE id = %L RETURNING translations.*';
   const result = await dbQuery(UPDATE_TRANSLATION, translation, translationId);
@@ -76,6 +66,25 @@ const remove = async function(
   return result;
 };
 
+const getUserTranslationContext = async function(
+  userId: number,
+  translationId: number,
+) {
+  const USER_TRANSLATION = 'SELECT context FROM users_translations WHERE user_id = %s AND translation_id = %s';
+  const result = await dbQuery(USER_TRANSLATION, userId, translationId);
+  return result;
+};
+
+const addToUsersTranslations = async function(
+  userId: number,
+  translationId: number,
+  context: string | undefined,
+) {
+  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id, context) VALUES(%L, %L, %L) RETURNING users_translations.*';
+  const result = await dbQuery(USER_TRANSLATION, userId, translationId, context);
+  return result;
+};
+
 export default {
   getAllByUser,
   getAll,
@@ -86,4 +95,5 @@ export default {
   addToUsersTranslations,
   update,
   remove,
+  getUserTranslationContext,
 };

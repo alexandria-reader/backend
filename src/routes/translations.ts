@@ -1,5 +1,6 @@
 import express from 'express';
 import translations from '../services/translations';
+import { Translation } from '../types';
 
 const router = express.Router();
 
@@ -69,21 +70,22 @@ router.post('/', async (req, res) => {
 });
 
 
-router.delete('/:translationId', async (req, res) => {
-  const { translationId } = req.params;
-  const deleted = await translations.remove(Number(translationId));
-  res.send(deleted);
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  translations.remove(Number(id));
+  res.status(204).send();
 });
 
 
-router.put('/translation/:transId', async (req, res) => {
-  const data = {
-    trans: req.body.translation,
-    id: req.params.transId,
-  };
-  const { trans, id } = data;
-  const updated = await translations.update(trans, Number(id));
-  res.send(updated);
+router.put('/translation/:id', async (req, res) => {
+  const { translation } = req.body;
+  const { id } = req.params;
+  const updatedTranslation: Translation = await translations.update(Number(id), translation);
+
+  const { user } = res.locals;
+  const context = await translations.getUserTranslationContext(Number(user.id), Number(id));
+
+  res.json({ ...updatedTranslation, context });
 });
 
 
