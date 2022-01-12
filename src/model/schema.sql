@@ -31,7 +31,8 @@ CREATE TABLE users (
     password_hash text NOT NULL,
     email text UNIQUE NOT NULL,
     known_language_id varchar(4) REFERENCES languages (id) NOT NULL,
-    learn_language_id varchar(4) REFERENCES languages (id) NOT NULL
+    learn_language_id varchar(4) REFERENCES languages (id) NOT NULL, 
+    is_verified boolean DEFAULT false
 );
 
 
