@@ -98,10 +98,10 @@ describe('Testing updating translations', () => {
   test('update translation with specified id', async () => {
     const updatedTranslation = 'avide';
     const translationId = 14;
-    const result = await translations.update(updatedTranslation, translationId);
+    const result = await translations.update(translationId, updatedTranslation);
     if (result) {
-      expect(result.rows[0].translation).toContain('avide');
-      expect(result.rows[0].target_language_id).toContain('fr');
+      expect(result.translation).toContain('avide');
+      expect(result.targetLanguageId).toContain('fr');
     }
   });
 });
