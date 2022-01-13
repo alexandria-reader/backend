@@ -1,7 +1,7 @@
 {
   "name": "Alexandria",
   "version": "0.1.0",
-  "description": "Learn languages by translating texts.",
+  "description": "Learn languages by reading.",
   "main": "build/server.js",
   "scripts": {
     "build": "tsc",
@@ -13,7 +13,8 @@
     "stop-docker-postgres": "docker-compose -f postgres.yaml down --volumes",
     "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres",
     "lint": "eslint --ext .ts .",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "repository": {
     "type": "git",
