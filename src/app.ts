@@ -21,6 +21,10 @@ app.use(express.json());
 
 app.use(extractToken);
 
+app.get('/', (_req, res) => {
+  res.redirect('https://tryalexandria.com');
+});
+
 app.use('/verify', verifyRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
