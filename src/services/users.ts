@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import jwt, { Secret } from 'jsonwebtoken';
 import { QueryResult } from 'pg';
-import sgMail from '@sendgrid/mail';
 import userData from '../data-access/users';
 import {
   SanitizedUser,
@@ -12,25 +11,27 @@ import {
   convertUserTypes,
 } from '../types';
 
+const sgMail = require('@sendgrid/mail');
+
 if (process.env.SENDGRID_API_KEY) sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendVerificationEmail = async function (code: string, email: string, name: string) {
   const token = jwt.sign(
     email,
     String(process.env.SECRET),
-    { expiresIn: 60 * 60 * 24 }, // token expires in one day
   );
 
   const mail = {
     to: email,
     from: 'read.with.alexandria@gmail.com',
     subject: 'Verify your email address for Alexandria',
+    text: `Text version of the link: https://alexandria-reader.herokuapp.com/verify/${code}/${token}`,
     html: `
     <h3>Hello, ${name}!</h3>
     <p>Please follow this link to verify the email address you used to sign up for Alexandria:</p>
-    <p><a href="https://tryalexandria.com/${code}/${token}">Verify ${email}</a></p>
-    <p>The link expires in 24 hours.</p>
-    <p>Greetings from your Alexandria team</p>`,
+    <p><a href="https://alexandria-reader.herokuapp.com/verify/${code}/${token}">Verify ${email}</a></p>
+    <p>You can then start to add your own texts.</p>
+    <p>Greetings from team Alexandria</p>`,
   };
 
   const response = await sgMail.send(mail);
