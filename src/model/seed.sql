@@ -12,10 +12,10 @@ VALUES
 ('tr', 'turkish', '🇹🇷');
 
 
-INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id)
+INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id, verified)
 VALUES
-('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com', 'de', 'en'),
-('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com', 'fr', 'de'),
+('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com', 'de', 'en', true),
+('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com', 'fr', 'de', false),
 ('Marc', 'marcpwhash', 'marc@example.com', 'en', 'fr');
 
 

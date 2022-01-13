@@ -48,6 +48,15 @@ userRouter.get('/from-token', getUserFromToken, async (_req, res) => {
 });
 
 
+userRouter.get('/verify/:code/:token', async (req, res) => {
+  const { code, token } = req.params;
+
+  const verifiedUser = await users.verify(code, token);
+
+  res.json(verifiedUser);
+});
+
+
 userRouter.put('/change-password', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
   const { currentPassword, newPassword } = req.body;

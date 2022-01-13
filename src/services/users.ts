@@ -1,13 +1,42 @@
 /* eslint-disable max-len */
 import boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+import jwt, { Secret } from 'jsonwebtoken';
 import { QueryResult } from 'pg';
+import sgMail from '@sendgrid/mail';
 import userData from '../data-access/users';
 import {
   SanitizedUser,
   User,
   convertUserTypes,
 } from '../types';
+
+if (process.env.SENDGRID_API_KEY) sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const sendVerificationEmail = async function (code: string, email: string, name: string) {
+  const token = jwt.sign(
+    email,
+    String(process.env.SECRET),
+    { expiresIn: 60 * 60 * 24 }, // token expires in one day
+  );
+
+  const mail = {
+    to: email,
+    from: 'read.with.alexandria@gmail.com',
+    subject: 'Verify your email address for Alexandria',
+    html: `
+    <h3>Hello, ${name}!</h3>
+    <p>Please follow this link to verify the email address you used to sign up for Alexandria:</p>
+    <p><a href="https://tryalexandria.com/${code}/${token}">Verify ${email}</a></p>
+    <p>The link expires in 24 hours.</p>
+    <p>Greetings from your Alexandria team</p>`,
+  };
+
+  const response = await sgMail.send(mail);
+  console.log(response[0].statusCode);
+  console.log(response[0].headers);
+};
 
 
 const sanitizeUser = function (user: User): SanitizedUser {
@@ -17,6 +46,7 @@ const sanitizeUser = function (user: User): SanitizedUser {
     email: user.email,
     knownLanguageId: user.knownLanguageId,
     learnLanguageId: user.learnLanguageId,
+    verified: user.verified,
   };
 
   return santizedUser;
@@ -27,6 +57,17 @@ const getAll = async function() {
   const result = await userData.getAll();
   const users = result.rows;
   return users;
+};
+
+
+const getById = async function(userId: string): Promise<SanitizedUser> {
+  const result: QueryResult = await userData.getById(userId);
+
+  if (result.rowCount === 0) throw boom.notFound('cannot find user with this id');
+
+  const foundUser: User = convertUserTypes(result.rows[0]);
+
+  return sanitizeUser(foundUser);
 };
 
 
@@ -43,10 +84,35 @@ const addNew = async function(
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  const result = await userData.addNew(username, passwordHash, email, knownLanguageId, learnLanguageId);
+  const verificationCode = uuidv4();
+
+  const result = await userData.addNew(username, passwordHash, email, knownLanguageId, learnLanguageId, verificationCode);
   const newUser: User = convertUserTypes(result.rows[0]);
 
+  sendVerificationEmail(verificationCode, email, username);
+
   return sanitizeUser(newUser);
+};
+
+
+const verify = async function (code: string, token: string): Promise<SanitizedUser> {
+  const decodedToken = jwt.verify(token, process.env.SECRET as Secret);
+
+  if (typeof decodedToken === 'string') {
+    let result: QueryResult = await userData.getByEmail(decodedToken);
+    if (result.rowCount === 0) throw boom.notFound('cannot find user with this email');
+
+    const foundUser: User = convertUserTypes(result.rows[0]);
+    if (foundUser.verificationCode !== code) throw boom.unauthorized('invalid verification code');
+
+    result = await userData.verify(Number(foundUser.id));
+    if (result.rowCount === 0) throw boom.notFound('cannot verify user');
+
+    const verifiedUser = convertUserTypes(result.rows[0]);
+    return sanitizeUser(verifiedUser);
+  }
+
+  throw boom.unauthorized('invalid token');
 };
 
 
@@ -83,17 +149,6 @@ const updatePassword = async function (
   }
 
   throw boom.notAcceptable('Incorrect password.');
-};
-
-
-const getById = async function(userId: string): Promise<SanitizedUser> {
-  const result: QueryResult = await userData.getById(userId);
-
-  if (result.rowCount === 0) throw boom.notFound('cannot find user with this id');
-
-  const foundUser: User = convertUserTypes(result.rows[0]);
-
-  return sanitizeUser(foundUser);
 };
 
 
@@ -150,6 +205,7 @@ export default {
   remove,
   getById,
   verifyPassword,
+  verify,
   setUserLanguages,
   updateUserInfo,
 };
