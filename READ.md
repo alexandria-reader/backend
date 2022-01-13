@@ -1,13 +1,5 @@
-An open source app that allows you to learn languages using text.
-Currently in development.
+Alexandria is an open source language learning app that allows users learn languages using text.
 
-To run the app with access to the database,
-1. Clone the repo
-2. Add a `.env` file
-3. Add a DATABASE_URL and a STAGING_DATABASE_URL following the format found in /src/model/env
-4. Run npm run staging to start the app
+Read about how we made it [here](https://alexandria-reader.github.io/).
 
-Before running local tests, to get the Postgres Docker container working, run the command:
-`docker-compose -f postgres.yaml up -d`
-Once the tests are finished, close the container by running:
-`docker-compose -f postgres.yaml down --volumes`
+Alexandria is accessible [here](https://tryalexandria.com/).
