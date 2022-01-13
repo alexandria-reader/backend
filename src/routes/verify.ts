@@ -10,7 +10,7 @@ verifyRouter.get('/:code/:token', async (req, res) => {
 
   const verifiedUser = await users.verify(code, token);
 
-  if (verifiedUser) res.redirect('https://tryalexandria.com/login');
+  if (verifiedUser) res.redirect('https://tryalexandria.com/verified');
 
   res.status(404).send();
   // res.json(verifiedUser);
