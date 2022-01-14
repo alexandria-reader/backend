@@ -25,11 +25,11 @@ const sendVerificationEmail = async function (code: string, email: string, name:
     to: email,
     from: 'read.with.alexandria@gmail.com',
     subject: 'Verify your email address for Alexandria',
-    text: `Text version of the link: https://alexandria-reader.herokuapp.com/verify/${code}/${token}`,
+    text: `Text version of the link: https://alexandria-reader-staging.herokuapp.com/verify/${code}/${token}`,
     html: `
     <h3>Hello, ${name}!</h3>
     <p>Please follow this link to verify the email address you used to sign up for Alexandria:</p>
-    <p><a href="https://alexandria-reader.herokuapp.com/verify/${code}/${token}">Verify ${email}</a></p>
+    <p><a href="https://alexandria-reader-staging.herokuapp.com/verify/${code}/${token}">Verify ${email}</a></p>
     <p>You can then start to add your own texts.</p>
     <p>Greetings from team Alexandria</p>`,
   };
@@ -61,14 +61,16 @@ const getAll = async function() {
 };
 
 
-const getById = async function(userId: string): Promise<SanitizedUser> {
+const getById = async function(userId: string, sanitize: boolean = true): Promise<SanitizedUser | User> {
   const result: QueryResult = await userData.getById(userId);
 
   if (result.rowCount === 0) throw boom.notFound('cannot find user with this id');
 
   const foundUser: User = convertUserTypes(result.rows[0]);
 
-  return sanitizeUser(foundUser);
+  if (sanitize) return sanitizeUser(foundUser);
+
+  return foundUser;
 };
 
 
@@ -209,4 +211,5 @@ export default {
   verify,
   setUserLanguages,
   updateUserInfo,
+  sendVerificationEmail,
 };
