@@ -28,6 +28,7 @@
   "homepage": "https://github.com/alexandria-reader/backend#readme",
   "dependencies": {
     "@hapi/boom": "^9.1.4",
+    "article-parser": "^5.0.2",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
