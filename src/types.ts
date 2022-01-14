@@ -38,6 +38,8 @@ export type User = {
   email: string,
   knownLanguageId: string,
   learnLanguageId: string,
+  verified: boolean,
+  verificationCode: string,
 };
 
 export type UserDB = {
@@ -47,9 +49,11 @@ export type UserDB = {
   email: string,
   known_language_id: string,
   learn_language_id: string,
+  verified: boolean,
+  verification_code: string,
 };
 
-export type SanitizedUser = Omit<User, 'passwordHash'>;
+export type SanitizedUser = Omit<User, 'passwordHash' | 'verificationCode'>;
 
 export type LoggedInUser = SanitizedUser & { token: string };
 
@@ -61,6 +65,8 @@ export const convertUserTypes = function(dbItem: UserDB): User {
     email: dbItem.email,
     knownLanguageId: dbItem.known_language_id,
     learnLanguageId: dbItem.learn_language_id,
+    verified: dbItem.verified,
+    verificationCode: dbItem.verification_code,
   };
 };
 

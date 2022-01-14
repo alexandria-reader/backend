@@ -7,6 +7,7 @@ import translationsRouter from './routes/translations';
 import usersRouter from './routes/users';
 import wordsRouter from './routes/words';
 import loginRouter from './routes/login';
+import verifyRouter from './routes/verify';
 import languageRouter from './routes/languages';
 import webdictionariesRouter from './routes/webdictionaries';
 
@@ -20,6 +21,11 @@ app.use(express.json());
 
 app.use(extractToken);
 
+app.get('/', (_req, res) => {
+  res.redirect('https://tryalexandria.com');
+});
+
+app.use('/verify', verifyRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/languages', languageRouter);
