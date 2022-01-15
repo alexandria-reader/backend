@@ -10,6 +10,7 @@ import loginRouter from './routes/login';
 import verifyRouter from './routes/verify';
 import languageRouter from './routes/languages';
 import webdictionariesRouter from './routes/webdictionaries';
+import urlExtranctionRouter from './routes/url';
 
 import { extractToken, getUserFromToken } from './utils/middleware';
 
@@ -33,6 +34,7 @@ app.use('/api/webdictionaries', webdictionariesRouter);
 app.use('/api/texts', getUserFromToken, textsRouter);
 app.use('/api/translations', getUserFromToken, translationsRouter);
 app.use('/api/words', getUserFromToken, wordsRouter);
+app.use('/api/url', getUserFromToken, urlExtranctionRouter);
 
 app.use([notFoundHandler, generalErrorHandler]);
 
