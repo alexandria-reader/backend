@@ -140,3 +140,59 @@ VALUES
 ('es', 'pt', 'WordReference.com Spanish - Portuguese', 'https://www.wordreference.com/espt'),
 ('de', 'es', 'WordReference.com German - Spanish', 'https://www.wordreference.com/dees'),
 ('es', 'de', 'WordReference.com Spanisch - Deutsch', 'https://www.wordreference.com/esde');
+
+INSERT INTO match_girl (language_id, title, body) 
+VALUES
+('en', 'The Little Match Girl', 
+'It was so terribly cold. Snow was falling, and it was almost dark. Evening came on, the last evening of the year. 
+In the cold and gloom a poor little girl, bareheaded and barefoot, was walking through the streets. 
+Of course when she had left her house she''d had slippers on, but what good had they been? 
+They were very big slippers, way too big for her, for they belonged to her mother. 
+The little girl had lost them running across the road, where two carriages had rattled by terribly fast. 
+One slipper she''d not been able to find again, and a boy had run off with the other, saying he could use it very well as a cradle some day when he had children of his own. 
+And so the little girl walked on her naked feet, which were quite red and blue with the cold. 
+In an old apron she carried several packages of matches, and she held a box of them in her hand. 
+No one had bought any from her all day long, and no one had given her a cent.
+\n
+Shivering with cold and hunger, she crept along, a picture of misery, poor little girl! 
+The snowflakes fell on her long fair hair, which hung in pretty curls over her neck. 
+In all the windows lights were shining, and there was a wonderful smell of roast goose, for it was New Year''s eve. Yes, she thought of that!
+\n
+In a corner formed by two houses, one of which projected farther out into the street than the other, she sat down and drew up her little feet under her. 
+She was getting colder and colder, but did not dare to go home, for she had sold no matches, nor earned a single cent, and her father would surely beat her. 
+Besides, it was cold at home, for they had nothing over them but a roof through which the wind whistled even though the biggest cracks had been stuffed with straw and rags.'),
+
+('de', 'Das kleine Mädchen mit den Schwefelhölzern', 
+'Es war fürchterlich kalt; es schneite und begann dunkler Abend zu werden, es war der letzte Abend im Jahre, Neujahrsabend! 
+In dieser Kälte und in dieser Finsternis ging ein kleines, armes Mädchen mit bloßem Kopfe und nackten Füßen auf der Straße. 
+Sie hatte freilich Pantoffeln gehabt, als sie vom Hause wegging, aber was half das! 
+Es waren sehr große Pantoffeln, ihre Mutter hatte sie zuletzt getragen, so groß waren sie, diese verlor die Kleine, als sie sich beeilte, über die Straße zu gelangen, indem zwei Wagen gewaltig schnell daher jagten. 
+Der eine Pantoffel war nicht wieder zu finden und mit dem andern lief ein Knabe davon, der sagte, er könne ihn als Wiege benutzen, wenn er selbst einmal Kinder bekomme.
+\n
+Da ging nun das arme Mädchen auf den bloßen, kleinen Füßen, die ganz rot und blau vor Kälte waren. 
+In einer alten Schürze hielt sie eine Menge Schwefelhölzer und ein Bund trug sie in der Hand. 
+Niemand hatte ihr während des ganzen Tages etwas abgekauft, niemand hatte ihr auch nur einen Dreier geschenkt; 
+hungrig und halberfroren schlich sie einher und sah sehr gedrückt aus, die arme Kleine! 
+Die Schneeflocken fielen in ihr langes, gelbes Haar, welches sich schön über den Hals lockte, aber an Pracht dachte sie freilich nicht.
+\n
+In einem Winkel zwischen zwei Häusern – das eine sprang etwas weiter in die Straße vor, als das andere – da setzte sie sich und kauerte sich zusammen. 
+Die kleinen Füße hatte sie fest angezogen, aber es fror sie noch mehr, und sie wagte nicht nach Hause zu gehen, denn sie hatte ja keine Schwefelhölzer verkauft, nicht einen einzigen Dreier erhalten. 
+Ihr Vater würde sie schlagen, und kalt war es daheim auch, sie hatten nur das Dach gerade über sich und da pfiff der Wind herein, obgleich Stroh und Lappen zwischen die größten Spalten gestopft waren.'),
+
+('fr', '',
+'Il faisait effroyablement froid; il neigeait depuis le matin; il faisait déjà sombre; le soir approchait, le soir du dernier jour de l''année. 
+Au milieu des rafales, par ce froid glacial, une pauvre petite fille marchait dans la rue: elle n''avait rien sur la tête, elle était pieds nus. 
+Lorsqu''elle était sortie de chez elle le matin, elle avait eu de vieilles pantoufles beaucoup trop grandes pour elle. 
+Aussi les perdit-elle lorsqu''elle eut à se sauver devant une file de voitures; les voitures passées, elle chercha après ses chaussures; un méchant gamin s''enfuyait emportant en riant l''une des pantoufles; l''autre avait été entièrement écrasée.
+\n
+Voilà la malheureuse enfant n''ayant plus rien pour abriter ses pauvres petits petons. Dans son vieux tablier, elle portait des allumettes: elle en tenait à la main un paquet. 
+Mais, ce jour, la veille du nouvel an, tout le monde était affairé; par cet affreux temps, personne ne s''arrêtait pour considérer l''air suppliant de la petite qui faisait pitié. 
+La journée finissait, et elle n''avait pas encore vendu un seul paquet d''allumettes. Tremblante de froid et de faim, elle se traînait de rue en rue.
+\n
+Des flocons de neige couvraient sa longue chevelure blonde. De toutes les fenêtres brillaient des lumières: 
+de presque toutes les maisons sortait une délicieuse odeur, celle de l''oie, qu''on rôtissait pour le festin du soir: c''était la Saint-Sylvestre. 
+Cela, oui, cela lui faisait arrêter ses pas errants.
+\n
+Enfin, après avoir une dernière fois offert en vain son paquet d''allumettes, l''enfant aperçoit une encoignure entre deux maisons, dont l''une dépassait un peu l''autre. 
+Harassée, elle s''y assied et s''y blottit, tirant à elle ses petits pieds: mais elle grelotte et frissonne encore plus qu''avant et cependant elle n''ose rentrer chez elle. 
+Elle n''y rapporterait pas la plus petite monnaie, et son père la battrait.');

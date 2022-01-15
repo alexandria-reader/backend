@@ -117,3 +117,9 @@ CREATE TABLE webdictionary_preferences (
     webdictionary_id int NOT NULL REFERENCES webdictionaries (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, webdictionary_id)
 );
+
+CREATE TABLE match_girl (
+    language_id varchar(4) PRIMARY KEY REFERENCES languages (id) ON DELETE CASCADE,
+    title text NOT NULL,
+    body text NOT NULL
+);
