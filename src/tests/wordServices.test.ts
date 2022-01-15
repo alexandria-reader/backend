@@ -89,17 +89,17 @@ describe('Getting words', () => {
   });
 
 
-  test('getStatus: status of word 5 for user 3 in "learning"', async () => {
-    const status = await words.getStatus(5, 3);
-    expect(status).toBe('learning');
+  test('getStatus: status of word 5 for user 1', async () => {
+    const status = await words.getStatus(5, 1);
+    expect(status).toBe('learned');
   });
 
 
   test('updateStatus: change previous status to "familiar"', async() => {
-    const updatedStatus = await words.updateStatus(5, 3, 'familiar');
+    const updatedStatus = await words.updateStatus(5, 1, 'familiar');
     expect(updatedStatus).toBe('familiar');
 
-    const status = await words.getStatus(5, 3);
+    const status = await words.getStatus(5, 1);
     expect(status).toBe('familiar');
   });
 
