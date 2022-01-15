@@ -17,9 +17,24 @@ const getByEmail = async function (email: string): Promise<QueryResult> {
 };
 
 
-const addNew = async function (username: string, passwordHash: string, email: string, knownLanguageId: string, learnLanguageId: string): Promise<QueryResult> {
-  const ADD_USER = 'INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id) Values (%L, %L, %L, %L, %L) RETURNING *';
-  const result = await dbQuery(ADD_USER, username, passwordHash, email, knownLanguageId, learnLanguageId);
+const addNew = async function (
+  username: string,
+  passwordHash: string,
+  email: string,
+  knownLanguageId: string,
+  learnLanguageId: string,
+  verificationCode: string,
+): Promise<QueryResult> {
+  const ADD_USER = 'INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id, verification_code) Values (%L, %L, %L, %L, %L, %L) RETURNING *';
+  const result = await dbQuery(
+    ADD_USER,
+    username,
+    passwordHash,
+    email,
+    knownLanguageId,
+    learnLanguageId,
+    verificationCode,
+  );
   return result;
 };
 
@@ -57,6 +72,12 @@ const updateUserInfo = async function(userId: string, userName: string, email: s
   return result;
 };
 
+const verify = async function(userId: number) {
+  const VERIFY = 'UPDATE users SET verified = true WHERE id = %s RETURNING *';
+  const result = await dbQuery(VERIFY, userId);
+  return result;
+};
+
 export default {
   getByEmail,
   addNew,
@@ -66,4 +87,5 @@ export default {
   setUserLanguages,
   updatePassword,
   updateUserInfo,
+  verify,
 };
