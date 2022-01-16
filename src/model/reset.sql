@@ -1,11 +1,8 @@
+DROP TABLE IF EXISTS match_girl;
 DROP TABLE IF EXISTS webdictionary_preferences;
 DROP TABLE IF EXISTS users_words;
 DROP TABLE IF EXISTS users_translations;
-DROP TABLE IF EXISTS users_know_languages;
-DROP TABLE IF EXISTS users_study_languages;
 DROP TABLE IF EXISTS webdictionaries;
-DROP TABLE IF EXISTS languagepairs;
-DROP TABLE IF EXISTS contexts;
 DROP TABLE IF EXISTS translations;
 DROP TABLE IF EXISTS texts;
 DROP TABLE IF EXISTS words;
@@ -54,7 +51,7 @@ CREATE TABLE words (
 
 CREATE TABLE texts (
     id integer PRIMARY KEY GENERATED ALWAYS AS identity,
-    user_id int REFERENCES users (id),
+    user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     language_id varchar(4) NOT NULL REFERENCES languages (id),
     title text NOT NULL,
     author text,
@@ -114,4 +111,10 @@ CREATE TABLE webdictionary_preferences (
     user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     webdictionary_id int NOT NULL REFERENCES webdictionaries (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, webdictionary_id)
+);
+
+CREATE TABLE match_girl (
+    language_id varchar(4) PRIMARY KEY REFERENCES languages (id) ON DELETE CASCADE,
+    title text NOT NULL,
+    body text NOT NULL
 );

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import jwt, { Secret } from 'jsonwebtoken';
 import { QueryResult } from 'pg';
 import userData from '../data-access/users';
+import textData from '../data-access/texts';
 import {
   SanitizedUser,
   User,
@@ -25,11 +26,11 @@ const sendVerificationEmail = async function (code: string, email: string, name:
     to: email,
     from: 'read.with.alexandria@gmail.com',
     subject: 'Verify your email address for Alexandria',
-    text: `Text version of the link: https://alexandria-reader-staging.herokuapp.com/verify/${code}/${token}`,
+    text: `Text version of the link: ${process.env.SERVER_URL}/verify/${code}/${token}`,
     html: `
     <h3>Hello, ${name}!</h3>
     <p>Please follow this link to verify the email address you used to sign up for Alexandria:</p>
-    <p><a href="https://alexandria-reader-staging.herokuapp.com/verify/${code}/${token}">Verify ${email}</a></p>
+    <p><a href="${process.env.SERVER_URL}/${code}/${token}">Verify ${email}</a></p>
     <p>You can then start to add your own texts.</p>
     <p>Greetings from team Alexandria</p>`,
   };
@@ -92,7 +93,11 @@ const addNew = async function(
   const result = await userData.addNew(username, passwordHash, email, knownLanguageId, learnLanguageId, verificationCode);
   const newUser: User = convertUserTypes(result.rows[0]);
 
-  sendVerificationEmail(verificationCode, email, username);
+  if (newUser.id) {
+    await textData.addMatchGirlToUser(newUser.id, learnLanguageId);
+  }
+
+  if (process.env.NODE_ENV !== 'test') await sendVerificationEmail(verificationCode, email, username);
 
   return sanitizeUser(newUser);
 };

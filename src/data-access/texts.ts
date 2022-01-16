@@ -125,11 +125,26 @@ const update = async function(textObject: Text): Promise<QueryResult> {
 
 const remove = async function(textId: number): Promise<QueryResult> {
   const REMOVE_TEXT: string = `
-  DELETE FROM texts 
-        WHERE id = %s
-    RETURNING *`;
+    DELETE FROM texts 
+          WHERE id = %s
+      RETURNING *`;
 
   const result = await dbQuery(REMOVE_TEXT, textId);
+
+  return result;
+};
+
+
+const addMatchGirlToUser = async function(userId: number, languageId: string) {
+  const ADD_MATCH_GIRL = `
+    INSERT INTO texts (user_id, language_id, author, title, body, ts_config) 
+         VALUES (%s, %L, 'Hans Christian Andersen', 
+                  (SELECT title FROM match_girl WHERE language_id = %L), 
+                  (SELECT body FROM match_girl WHERE language_id = %L), 
+                  (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig)
+      RETURNING *`;
+
+  const result = await dbQuery(ADD_MATCH_GIRL, userId, languageId, languageId, languageId, languageId);
 
   return result;
 };
@@ -143,4 +158,5 @@ export default {
   addNew,
   update,
   remove,
+  addMatchGirlToUser,
 };

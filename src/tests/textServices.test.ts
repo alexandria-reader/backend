@@ -15,7 +15,7 @@ beforeAll(async () => {
 describe('Getting texts', () => {
   test('getAll: get all 3 words from test database', async () => {
     const allTexts = await texts.getAll();
-    expect(allTexts).toHaveLength(3);
+    expect(allTexts).toHaveLength(2);
   });
 
 
@@ -34,9 +34,9 @@ describe('Getting texts', () => {
   // });
 
 
-  test('addNew: add a new text for user 3', async () => {
+  test('addNew: add a new text for user 2', async () => {
     const textData: Text = {
-      userId: 3,
+      userId: 2,
       languageId: 'de',
       title: 'Die Kuchengabel',
       author: 'Marc',
@@ -45,23 +45,23 @@ describe('Getting texts', () => {
 
     const newText = await texts.addNew(textData);
     if (newText) expect(newText.title).toBe('Die Kuchengabel');
-    expect(await texts.getAll()).toHaveLength(4);
+    expect(await texts.getAll()).toHaveLength(3);
   });
 
 
-  test('getByUser: gets all texts for user 3', async () => {
-    const userTexts = await texts.getByUser(3);
+  test('getByUser: gets all texts for user 2', async () => {
+    const userTexts = await texts.getByUser(2);
     expect(userTexts).toHaveLength(2);
   });
 
 
   test('remove: removing an existing text', async () => {
-    const existingText = await texts.getById(4);
+    const existingText = await texts.getById(3);
 
     if (existingText?.id) {
       const removedText = await texts.remove(existingText.id);
       expect(removedText?.title).toBe('Die Kuchengabel');
-      expect(await texts.getAll()).toHaveLength(3);
+      expect(await texts.getAll()).toHaveLength(2);
     }
   });
 });
