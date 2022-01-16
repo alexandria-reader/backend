@@ -30,7 +30,7 @@ const sendVerificationEmail = async function (code: string, email: string, name:
     html: `
     <h3>Hello, ${name}!</h3>
     <p>Please follow this link to verify the email address you used to sign up for Alexandria:</p>
-    <p><a href="${process.env.SERVER_URL}/${code}/${token}">Verify ${email}</a></p>
+    <p><a href="${process.env.SERVER_URL}/verify/${code}/${token}">Verify ${email}</a></p>
     <p>You can then start to add your own texts.</p>
     <p>Greetings from team Alexandria</p>`,
   };
