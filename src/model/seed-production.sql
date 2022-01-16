@@ -12,12 +12,6 @@ VALUES
 ('tr', 'turkish', '🇹🇷');
 
 
-INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id, verified)
-VALUES
-('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com', 'de', 'en', true),
-('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com', 'en', 'fr', false);
-
-
 INSERT INTO webdictionaries (source_language_id, target_language_id, name, url)
 VALUES
 ('en', 'de', 'WordReference.com Englisch - Deutsch', 'https://www.wordreference.com/ende'),
