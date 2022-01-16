@@ -97,7 +97,7 @@ const addNew = async function(
     await textData.addMatchGirlToUser(newUser.id, learnLanguageId);
   }
 
-  await sendVerificationEmail(verificationCode, email, username);
+  // await sendVerificationEmail(verificationCode, email, username);
 
   return sanitizeUser(newUser);
 };
