@@ -32,6 +32,19 @@ userRouter.post('/translation/:translationId', getUserFromToken, async (req, res
   res.status(201).send();
 });
 
+userRouter.post('/verify', getUserFromToken, async (req, res) => {
+  const { user } = res.locals;
+  const { password } = req.body;
+
+  const response = await users.verifyPassword(user.id, password);
+
+  if (response) {
+    res.json({ match: 'true' });
+  } else {
+    res.json({ match: 'false' });
+  }
+});
+
 
 userRouter.get('/', async (_req, res) => {
   const allUsers = await users.getAll();
@@ -58,11 +71,10 @@ userRouter.put('/change-password', getUserFromToken, async (req, res) => {
 });
 
 
-userRouter.delete('/', getUserFromToken, async (req, res) => {
+userRouter.delete('/', getUserFromToken, async (_req, res) => {
   const { user } = res.locals;
-  const { password } = req.body;
 
-  await users.remove(user.id, password);
+  await users.remove(user.id);
 
   res.status(204).send();
 });
