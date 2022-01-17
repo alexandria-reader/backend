@@ -24,7 +24,7 @@ const sendVerificationEmail = async function (code: string, email: string, name:
 
   const mail = {
     to: email,
-    from: 'read.with.alexandria@gmail.com',
+    from: 'noreply@tryalexandria.com',
     subject: 'Verify your email address for Alexandria',
     text: `Text version of the link: ${process.env.SERVER_URL}/verify/${code}/${token}`,
     html: `
