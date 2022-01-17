@@ -160,19 +160,15 @@ const updatePassword = async function (
 };
 
 
-const remove = async function (userId: string, password: string): Promise<SanitizedUser> {
-  const passwordsMatch = await verifyPassword(userId, password);
+const remove = async function (userId: string): Promise<SanitizedUser | undefined> {
+  const result = await userData.remove(userId);
 
-  if (passwordsMatch) {
-    const result = await userData.remove(userId);
-
-    if (result.rowCount > 0) {
-      const deletedUser: User = result.rows[0];
-      return sanitizeUser(deletedUser);
-    }
+  if (result.rowCount > 0) {
+    const deletedUser: User = result.rows[0];
+    return sanitizeUser(deletedUser);
   }
 
-  throw boom.unauthorized('Incorrect password.');
+  throw boom.unauthorized('Something went wrong');
 };
 
 
