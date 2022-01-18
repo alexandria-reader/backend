@@ -32,12 +32,13 @@ userRouter.post('/translation/:translationId', getUserFromToken, async (req, res
   res.status(201).send();
 });
 
-userRouter.post('/verify', getUserFromToken, async (req, res) => {
+userRouter.post('/confirm', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
   const { password } = req.body;
-
+  console.log(user, password);
   const response = await users.verifyPassword(user.id, password);
 
+  console.log(response);
   if (response) {
     res.json({ match: 'true' });
   } else {
