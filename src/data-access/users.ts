@@ -3,9 +3,9 @@ import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 
 
-const getAll = async function(): Promise<QueryResult> {
-  const SELECT_ALL_USERS = 'SELECT * FROM users';
-  const result = await dbQuery(SELECT_ALL_USERS);
+const getById = async function (userId: string): Promise<QueryResult> {
+  const findUserById = 'SELECT * FROM users WHERE id = %L';
+  const result = await dbQuery(findUserById, userId);
   return result;
 };
 
@@ -39,16 +39,16 @@ const addNew = async function (
 };
 
 
-const getById = async function (userId: string): Promise<QueryResult> {
-  const findUserById = 'SELECT * FROM users WHERE id = %L';
-  const result = await dbQuery(findUserById, userId);
+const updateUserInfo = async function(userId: string, userName: string, email: string) {
+  const UPDATE_INFO = 'UPDATE users SET username = %L, email = %L WHERE id = %L RETURNING *;';
+  const result = await dbQuery(UPDATE_INFO, userName, email, userId);
   return result;
 };
 
 
-const remove = async function (userId: string): Promise<QueryResult> {
-  const deleteUser = 'DELETE FROM users WHERE id = %L RETURNING *';
-  const result = await dbQuery(deleteUser, userId);
+const updatePassword = async function(userId: string, newPasswordHash: string) {
+  const UPDATE_PASSWORD = 'UPDATE users SET password_hash = %L WHERE id = %L';
+  const result = await dbQuery(UPDATE_PASSWORD, newPasswordHash, userId);
   return result;
 };
 
@@ -60,17 +60,12 @@ const setUserLanguages = async function(knownLanguageId: string, learnLanguageId
 };
 
 
-const updatePassword = async function(userId: string, newPasswordHash: string) {
-  const UPDATE_PASSWORD = 'UPDATE users SET password_hash = %L WHERE id = %L';
-  const result = await dbQuery(UPDATE_PASSWORD, newPasswordHash, userId);
+const remove = async function (userId: string): Promise<QueryResult> {
+  const deleteUser = 'DELETE FROM users WHERE id = %L RETURNING *';
+  const result = await dbQuery(deleteUser, userId);
   return result;
 };
 
-const updateUserInfo = async function(userId: string, userName: string, email: string) {
-  const UPDATE_INFO = 'UPDATE users SET username = %L, email = %L WHERE id = %L RETURNING *;';
-  const result = await dbQuery(UPDATE_INFO, userName, email, userId);
-  return result;
-};
 
 const verify = async function(userId: number) {
   const VERIFY = 'UPDATE users SET verified = true WHERE id = %s RETURNING *';
@@ -78,10 +73,10 @@ const verify = async function(userId: number) {
   return result;
 };
 
+
 export default {
   getByEmail,
   addNew,
-  getAll,
   getById,
   remove,
   setUserLanguages,

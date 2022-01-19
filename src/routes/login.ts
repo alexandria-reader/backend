@@ -1,14 +1,14 @@
 import express from 'express';
-import loginServices from '../services/login';
+import login from '../services/login';
+import { LoggedInUser } from '../types';
 
 const loginRouter = express.Router();
+
 
 export default loginRouter.post('/', async (req, res) => {
   const { email, password } = req.body;
 
-  const loggedInUser = await loginServices.login(email, password);
+  const loggedInUser: LoggedInUser = await login.login(email, password);
 
-  res
-    .status(200)
-    .json(loggedInUser);
+  res.status(200).json(loggedInUser);
 });

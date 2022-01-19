@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import jwt, { Secret } from 'jsonwebtoken';
 import { QueryResult } from 'pg';
+
+import sendmail from '../utils/sendmail';
 import userData from '../data-access/users';
 import textData from '../data-access/texts';
 import {
@@ -11,34 +13,6 @@ import {
   User,
   convertUserTypes,
 } from '../types';
-
-const sgMail = require('@sendgrid/mail');
-
-if (process.env.SENDGRID_API_KEY) sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-const sendVerificationEmail = async function (code: string, email: string, name: string) {
-  const token = jwt.sign(
-    email,
-    String(process.env.SECRET),
-  );
-
-  const mail = {
-    to: email,
-    from: 'noreply@tryalexandria.com',
-    subject: 'Verify your email address for Alexandria',
-    text: `Text version of the link: ${process.env.SERVER_URL}/verify/${code}/${token}`,
-    html: `
-    <h3>Hello, ${name}!</h3>
-    <p>Please follow this link to verify the email address you used to sign up for Alexandria:</p>
-    <p><a href="${process.env.SERVER_URL}/verify/${code}/${token}">Verify ${email}</a></p>
-    <p>You can then start to add your own texts.</p>
-    <p>Greetings from team Alexandria</p>`,
-  };
-
-  const response = await sgMail.send(mail);
-  console.log(response[0].statusCode);
-  console.log(response[0].headers);
-};
 
 
 const sanitizeUser = function (user: User): SanitizedUser {
@@ -55,13 +29,6 @@ const sanitizeUser = function (user: User): SanitizedUser {
 };
 
 
-const getAll = async function() {
-  const result = await userData.getAll();
-  const users = result.rows;
-  return users;
-};
-
-
 const getById = async function(userId: string, sanitize: boolean = true): Promise<SanitizedUser | User> {
   const result: QueryResult = await userData.getById(userId);
 
@@ -72,6 +39,14 @@ const getById = async function(userId: string, sanitize: boolean = true): Promis
   if (sanitize) return sanitizeUser(foundUser);
 
   return foundUser;
+};
+
+
+const verifyPassword = async function(userId: string, password: string): Promise<boolean> {
+  const result = await userData.getById(userId);
+  const user = result.rows[0];
+  const passwordsMatch = await bcrypt.compare(password, user.password_hash);
+  return passwordsMatch;
 };
 
 
@@ -97,38 +72,24 @@ const addNew = async function(
     await textData.addMatchGirlToUser(newUser.id, learnLanguageId);
   }
 
-  if (process.env.NODE_ENV !== 'test') await sendVerificationEmail(verificationCode, email, username);
+  if (process.env.NODE_ENV !== 'test') await sendmail.sendVerificationEmail(verificationCode, email, username);
 
   return sanitizeUser(newUser);
 };
 
 
-const verify = async function (code: string, token: string): Promise<SanitizedUser> {
-  const decodedToken = jwt.verify(token, process.env.SECRET as Secret);
+const updateUserInfo = async function(
+  userId: string,
+  userName: string,
+  email: string,
+): Promise<SanitizedUser> {
+  const result = await userData.updateUserInfo(userId, userName, email);
 
-  if (typeof decodedToken === 'string') {
-    let result: QueryResult = await userData.getByEmail(decodedToken);
-    if (result.rowCount === 0) throw boom.notFound('cannot find user with this email');
+  if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
 
-    const foundUser: User = convertUserTypes(result.rows[0]);
-    if (foundUser.verificationCode !== code) throw boom.unauthorized('invalid verification code');
+  const updatedUser: User = convertUserTypes(result.rows[0]);
 
-    result = await userData.verify(Number(foundUser.id));
-    if (result.rowCount === 0) throw boom.notFound('cannot verify user');
-
-    const verifiedUser = convertUserTypes(result.rows[0]);
-    return sanitizeUser(verifiedUser);
-  }
-
-  throw boom.unauthorized('invalid token');
-};
-
-
-const verifyPassword = async function(userId: string, password: string): Promise<boolean> {
-  const result = await userData.getById(userId);
-  const user = result.rows[0];
-  const passwordsMatch = await bcrypt.compare(password, user.password_hash);
-  return passwordsMatch;
+  return sanitizeUser(updatedUser);
 };
 
 
@@ -160,18 +121,6 @@ const updatePassword = async function (
 };
 
 
-const remove = async function (userId: string): Promise<SanitizedUser | undefined> {
-  const result = await userData.remove(userId);
-
-  if (result.rowCount > 0) {
-    const deletedUser: User = result.rows[0];
-    return sanitizeUser(deletedUser);
-  }
-
-  throw boom.unauthorized('Something went wrong');
-};
-
-
 const setUserLanguages = async function(
   knownLanguageId: string,
   learnLanguageId: string,
@@ -186,24 +135,42 @@ const setUserLanguages = async function(
   return sanitizeUser(updatedUser);
 };
 
-const updateUserInfo = async function(
-  userId: string,
-  userName: string,
-  email: string,
-): Promise<SanitizedUser> {
-  const result = await userData.updateUserInfo(userId, userName, email);
 
-  if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
+const remove = async function (userId: string): Promise<SanitizedUser | undefined> {
+  const result = await userData.remove(userId);
 
-  const updatedUser: User = convertUserTypes(result.rows[0]);
+  if (result.rowCount > 0) {
+    const deletedUser: User = result.rows[0];
+    return sanitizeUser(deletedUser);
+  }
 
-  return sanitizeUser(updatedUser);
+  throw boom.unauthorized('Something went wrong');
+};
+
+
+const verify = async function (code: string, token: string): Promise<SanitizedUser> {
+  const decodedToken = jwt.verify(token, process.env.SECRET as Secret);
+
+  if (typeof decodedToken === 'string') {
+    let result: QueryResult = await userData.getByEmail(decodedToken);
+    if (result.rowCount === 0) throw boom.notFound('cannot find user with this email');
+
+    const foundUser: User = convertUserTypes(result.rows[0]);
+    if (foundUser.verificationCode !== code) throw boom.unauthorized('invalid verification code');
+
+    result = await userData.verify(Number(foundUser.id));
+    if (result.rowCount === 0) throw boom.notFound('cannot verify user');
+
+    const verifiedUser = convertUserTypes(result.rows[0]);
+    return sanitizeUser(verifiedUser);
+  }
+
+  throw boom.unauthorized('invalid token');
 };
 
 
 export default {
   sanitizeUser,
-  getAll,
   addNew,
   updatePassword,
   remove,
@@ -212,5 +179,4 @@ export default {
   verify,
   setUserLanguages,
   updateUserInfo,
-  sendVerificationEmail,
 };
