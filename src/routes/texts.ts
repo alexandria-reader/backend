@@ -1,5 +1,6 @@
 import express from 'express';
 import texts from '../services/texts';
+import users from '../services/users';
 import { Text } from '../types';
 
 const router: express.Router = express.Router();
@@ -22,9 +23,22 @@ router.get('/:id', async(req, res): Promise<void> => {
 
   if (textById.userId === user.id) {
     res.json(textById);
-  } else {
-    res.status(404).send();
   }
+
+  res.status(404).send();
+});
+
+
+router.get('/', async(_req, res): Promise<void> => {
+  const { user } = res.locals;
+  const isAdmin = await users.isAdmin(Number(user.id));
+
+  if (isAdmin) {
+    const allTexts: Array<Text> = await texts.getAll();
+    res.json(allTexts);
+  }
+
+  res.status(404).send();
 });
 
 

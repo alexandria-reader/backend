@@ -4,6 +4,13 @@ import textData from '../data-access/texts';
 import { TextDB, Text, convertTextTypes } from '../types';
 
 
+const getAll = async function(): Promise<Array<Text>> {
+  const result: QueryResult = await textData.getAll();
+
+  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
+};
+
+
 const getById = async function(textId: number): Promise<Text> {
   const result: QueryResult = await textData.getById(textId);
 
@@ -48,6 +55,7 @@ const remove = async function(textId: number): Promise<Text> {
 
 
 export default {
+  getAll,
   getById,
   getByUserAndLanguage,
   addNew,

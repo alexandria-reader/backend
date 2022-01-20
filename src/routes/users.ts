@@ -15,6 +15,19 @@ userRouter.get('/from-token', getUserFromToken, async (_req, res) => {
 });
 
 
+userRouter.get('/', getUserFromToken, async (_req, res) => {
+  const { user } = res.locals;
+  const isAdmin = await users.isAdmin(Number(user.id));
+
+  if (isAdmin) {
+    const response = await users.getAll();
+    res.json(response);
+  }
+
+  res.status(404).send();
+});
+
+
 userRouter.post('/confirm', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
   const { password } = req.body;

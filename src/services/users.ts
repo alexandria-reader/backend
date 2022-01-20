@@ -12,11 +12,12 @@ import {
   SanitizedUser,
   User,
   convertUserTypes,
+  UserDB,
 } from '../types';
 
 
-const sanitizeUser = function (user: User): SanitizedUser {
-  const santizedUser: SanitizedUser = {
+const sanitizeUser = function(user: User): SanitizedUser {
+  const sanitizedUser: SanitizedUser = {
     id: user.id,
     username: user.username,
     email: user.email,
@@ -25,7 +26,25 @@ const sanitizeUser = function (user: User): SanitizedUser {
     verified: user.verified,
   };
 
-  return santizedUser;
+  return sanitizedUser;
+};
+
+
+const isAdmin = async function(userId: Number): Promise<boolean> {
+  const result: QueryResult = await userData.isAdmin(userId);
+
+  if (result.rowCount === 0) return false;
+
+  return true;
+};
+
+
+const getAll = async function(): Promise<Array<SanitizedUser>> {
+  const result: QueryResult = await userData.getAll();
+
+  const allUsers = result.rows.map((dbItem: UserDB) => convertUserTypes(dbItem));
+
+  return allUsers;
 };
 
 
@@ -171,6 +190,8 @@ const verify = async function (code: string, token: string): Promise<SanitizedUs
 
 export default {
   sanitizeUser,
+  isAdmin,
+  getAll,
   addNew,
   updatePassword,
   remove,

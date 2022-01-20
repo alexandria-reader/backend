@@ -4,6 +4,16 @@ import dbQuery from '../model/db-query';
 import { Text } from '../types';
 
 
+const getAll = async function(): Promise<QueryResult> {
+  const ALL_TEXTS: string = `
+    SELECT * FROM texts`;
+
+  const result = await dbQuery(ALL_TEXTS);
+
+  return result;
+};
+
+
 const getById = async function(textId: number): Promise<QueryResult> {
   const TEXT_BY_ID: string = `
     SELECT * FROM texts 
@@ -129,6 +139,7 @@ const addMatchGirlToUser = async function(userId: number, languageId: string) {
 
 
 export default {
+  getAll,
   getByUserAndLanguage,
   getById,
   addNew,

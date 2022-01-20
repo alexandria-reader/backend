@@ -3,6 +3,20 @@ import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 
 
+const isAdmin = async function(userId: Number) {
+  const FIND_USER_IN_ADMINS = 'SELECT * FROM admins WHERE user_id = %s';
+  const result = await dbQuery(FIND_USER_IN_ADMINS, userId);
+  return result;
+};
+
+
+const getAll = async function(): Promise<QueryResult> {
+  const SELECT_ALL_USERS = 'SELECT * FROM users';
+  const result = await dbQuery(SELECT_ALL_USERS);
+  return result;
+};
+
+
 const getById = async function (userId: string): Promise<QueryResult> {
   const findUserById = 'SELECT * FROM users WHERE id = %L';
   const result = await dbQuery(findUserById, userId);
@@ -75,6 +89,8 @@ const verify = async function(userId: number) {
 
 
 export default {
+  isAdmin,
+  getAll,
   getByEmail,
   addNew,
   getById,
