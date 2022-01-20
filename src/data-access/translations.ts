@@ -1,6 +1,13 @@
 import dbQuery from '../model/db-query';
 
 
+const getAll = async function() {
+  const FIND_TRANSLATIONS = 'SELECT * FROM translations';
+  const results = await dbQuery(FIND_TRANSLATIONS);
+  return results;
+};
+
+
 const add = async function(
   wordId: number,
   translation: string,
@@ -53,6 +60,7 @@ const addToUsersTranslations = async function(
 
 
 export default {
+  getAll,
   add,
   addToUsersTranslations,
   update,

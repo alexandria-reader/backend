@@ -2,8 +2,14 @@ import boom from '@hapi/boom';
 import { QueryResult } from 'pg';
 import translationData from '../data-access/translations';
 import {
-  Translation, convertTranslationTypes,
+  TranslationDB, Translation, convertTranslationTypes,
 } from '../types';
+
+
+const getAll = async function() {
+  const results = await translationData.getAll();
+  return results.rows.map((dbItem: TranslationDB) => convertTranslationTypes(dbItem));
+};
 
 
 const add = async function(
@@ -65,6 +71,7 @@ const addToUsersTranslations = async function(
 
 
 export default {
+  getAll,
   add,
   addToUsersTranslations,
   getUserTranslationContext,

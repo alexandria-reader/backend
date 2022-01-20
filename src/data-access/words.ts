@@ -5,6 +5,17 @@ import { Word } from '../types';
 import languages from './languages';
 
 
+// Returning all words in the database is only needed in tests
+const getAll = async function(): Promise<QueryResult> {
+  const ALL_WORDS: string = `
+    SELECT * FROM words`;
+
+  const result = await dbQuery(ALL_WORDS);
+
+  return result;
+};
+
+
 const getWordInLanguage = async function(word: string, languageId: string): Promise<QueryResult> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
     SELECT * FROM words 
@@ -210,7 +221,23 @@ const removeUserWord = async function(wordId: number, userId: number): Promise<Q
 };
 
 
+const remove = async function(wordId: number): Promise <QueryResult> {
+  const DELETE_WORD: string = `
+       DELETE FROM words
+        WHERE id = %s
+    RETURNING *`;
+
+  const result = await dbQuery(
+    DELETE_WORD,
+    wordId,
+  );
+
+  return result;
+};
+
+
 export default {
+  getAll,
   getUserwordsByLanguage,
   getUserwordsInText,
   getWordInLanguage,
@@ -219,4 +246,5 @@ export default {
   addStatus,
   updateStatus,
   removeUserWord,
+  remove,
 };

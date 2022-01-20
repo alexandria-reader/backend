@@ -50,8 +50,8 @@ describe('Getting texts', () => {
 
 
   test('getByUser: gets all texts for user 2', async () => {
-    const userTexts = await texts.getByUser(2);
-    expect(userTexts).toHaveLength(2);
+    const userTexts = await texts.getByUserAndLanguage(2, 'de');
+    expect(userTexts).toHaveLength(1);
   });
 
 
