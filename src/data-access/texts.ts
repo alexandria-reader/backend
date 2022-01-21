@@ -25,18 +25,6 @@ const getById = async function(textId: number): Promise<QueryResult> {
 };
 
 
-const getByUser = async function(userId: number): Promise<QueryResult> {
-  const TEXTS_BY_USER: string = `
-      SELECT * FROM texts
-       WHERE user_id = %s
-    ORDER BY upload_time DESC NULLS LAST`;
-
-  const result = await dbQuery(TEXTS_BY_USER, userId);
-
-  return result;
-};
-
-
 const getByUserAndLanguage = async function(userId: number, languageId: string): Promise<QueryResult> {
   const TEXTS_BY_USER: string = `
       SELECT * FROM texts
@@ -154,7 +142,6 @@ export default {
   getAll,
   getByUserAndLanguage,
   getById,
-  getByUser,
   addNew,
   update,
   remove,

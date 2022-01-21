@@ -1,10 +1,5 @@
 import dbQuery from '../model/db-query';
 
-const getAllByUser = async function(userId: number) {
-  const FIND_TRANSLATIONS = 'SELECT * FROM translations AS t JOIN users_translations AS ut ON t.id = ut.translation_id AND user_id = %L';
-  const results = await dbQuery(FIND_TRANSLATIONS, userId);
-  return results;
-};
 
 const getAll = async function() {
   const FIND_TRANSLATIONS = 'SELECT * FROM translations';
@@ -12,32 +7,6 @@ const getAll = async function() {
   return results;
 };
 
-const getOne = async function(translationId: number) {
-  const FIND_TRANSLATION = 'SELECT * FROM translations WHERE id = %L';
-  const result = await dbQuery(FIND_TRANSLATION, translationId);
-  return result;
-};
-
-const getByWord = async function(word: string, userId: number) {
-  const FIND_WORD_ID = `
-          SELECT * FROM words WHERE word = %L`;
-  const wordId = await dbQuery(FIND_WORD_ID, word);
-  const FIND_WORD_TRAN = `SELECT * FROM translations AS t 
-            JOIN users_translations AS ut 
-            ON t.id = ut.translation_id 
-            WHERE ut.user_id = %L AND t.word_id = %L;`;
-  const results = await dbQuery(FIND_WORD_TRAN, userId, wordId.rows[0].id);
-  return results;
-};
-
-const getAllByWordByLang = async function(word: string, langId: string) {
-  const FIND_WORD_ID = `
-          SELECT * FROM words WHERE word = %L`;
-  const wordId = await dbQuery(FIND_WORD_ID, word);
-  const FIND_TRANSLATIONS = 'SELECT * FROM translations WHERE word_id = %L AND target_language_id = %L';
-  const results = await dbQuery(FIND_TRANSLATIONS, wordId.rows[0].id, langId);
-  return results;
-};
 
 const add = async function(
   wordId: number,
@@ -49,6 +18,7 @@ const add = async function(
   return results;
 };
 
+
 const update = async function(
   translationId: number,
   translation: string,
@@ -58,13 +28,6 @@ const update = async function(
   return result;
 };
 
-const remove = async function(
-  translationId: number,
-) {
-  const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L RETURNING *';
-  const result = await dbQuery(REMOVE_USERS_TRANSLATIONS, translationId);
-  return result;
-};
 
 const getUserTranslationContext = async function(
   userId: number,
@@ -75,22 +38,29 @@ const getUserTranslationContext = async function(
   return result;
 };
 
+
+const remove = async function(
+  translationId: number,
+) {
+  const REMOVE_USERS_TRANSLATIONS = 'DELETE FROM users_translations WHERE translation_id = %L RETURNING *';
+  const result = await dbQuery(REMOVE_USERS_TRANSLATIONS, translationId);
+  return result;
+};
+
+
 const addToUsersTranslations = async function(
   userId: number,
   translationId: number,
   context: string | undefined,
 ) {
-  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id, context) VALUES(%L, %L, %L) RETURNING users_translations.*';
+  const USER_TRANSLATION = 'INSERT INTO users_translations (user_id, translation_id, context) VALUES(%L, %L, %L) RETURNING *';
   const result = await dbQuery(USER_TRANSLATION, userId, translationId, context);
   return result;
 };
 
+
 export default {
-  getAllByUser,
   getAll,
-  getOne,
-  getByWord,
-  getAllByWordByLang,
   add,
   addToUsersTranslations,
   update,

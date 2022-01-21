@@ -3,6 +3,7 @@ import { QueryResult } from 'pg';
 import textData from '../data-access/texts';
 import { TextDB, Text, convertTextTypes } from '../types';
 
+
 const getAll = async function(): Promise<Array<Text>> {
   const result: QueryResult = await textData.getAll();
 
@@ -18,12 +19,6 @@ const getById = async function(textId: number): Promise<Text> {
   return convertTextTypes(result.rows[0]);
 };
 
-
-const getByUser = async function(userId: number): Promise<Array<Text>> {
-  const result: QueryResult = await textData.getByUser(userId);
-
-  return result.rows.map((dbItem: TextDB) => convertTextTypes(dbItem));
-};
 
 const getByUserAndLanguage = async function(userId: number, languageId: string)
   : Promise<Array<Text>> {
@@ -63,7 +58,6 @@ export default {
   getAll,
   getById,
   getByUserAndLanguage,
-  getByUser,
   addNew,
   update,
   remove,
