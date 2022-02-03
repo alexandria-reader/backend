@@ -18,6 +18,11 @@ VALUES
 ('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com', 'en', 'fr', false);
 
 
+INSERT INTO admins (user_id)
+VALUES
+(2);
+
+
 INSERT INTO texts (user_id, language_id, title, body, ts_config) 
 VALUES
 (1, 'en', 'The Little Match Girl', 

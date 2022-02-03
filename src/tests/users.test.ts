@@ -8,20 +8,30 @@ const api = supertest(app);
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
 
+let authorization: string;
+
 beforeAll(async () => {
   await dbQuery(reset);
   await dbQuery(seed);
+
+  const data = {
+    email: 'dana@example.com',
+    password: 'danapwhash',
+  };
+
+  const response = await api.post('/api/login').send(data);
+  authorization = `bearer ${response.body.token}`;
 });
 
 describe('Testing adding users', () => {
-  xtest('users are returned as json, there are no users', async () => {
+  test('users are returned as json, there are 2 users', async () => {
     const response = await api
       .get('/api/users')
       .expect(200)
+      .set('authorization', authorization)
       .expect('Content-Type', /application\/json/);
 
-    const responseBody = JSON.parse(response.text);
-    expect(responseBody).toHaveLength(0);
+    expect(response.body).toHaveLength(2);
   });
 
   test('users are successfully added', async () => {
@@ -33,42 +43,22 @@ describe('Testing adding users', () => {
       learnLanguageId: 'fr',
     };
 
-    const response = await api
+    const newUserResponse = await api
       .post('/api/users')
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.text).toContain('test user');
-    expect(response.text).toContain('fr');
-  });
+    expect(newUserResponse.text).toContain('test user');
+    expect(newUserResponse.text).toContain('fr');
 
-  xtest('There is one user', async () => {
-    const response = await api
+    const usersResponse = await api
       .get('/api/users')
       .expect(200)
+      .set('authorization', authorization)
       .expect('Content-Type', /application\/json/);
 
-    const responseBody = JSON.parse(response.text);
-    expect(responseBody).toHaveLength(1);
-  });
-
-  xtest('duplicate usernames are not added', async () => {
-    const newUser = {
-      username: 'test user',
-      password: '12345',
-      email: 'test1@userRouter.com',
-      knownLanguageId: 'de',
-      learnLanguageId: 'fr',
-    };
-
-    const response = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(406)
-      .expect('Content-Type', /application\/json/);
-
-    expect(response.text).toContain('Email already in use.');
+    expect(usersResponse.body).toHaveLength(3);
   });
 
   test('duplicate emails are not added', async () => {
@@ -96,7 +86,7 @@ describe('Testing adding users', () => {
     };
 
     await api
-      .put('/api/users/1')
+      .put('/api/users/3')
       .send(password)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -110,7 +100,7 @@ describe('Testing adding users', () => {
     };
 
     const response = await api
-      .put('/api/users/1')
+      .put('/api/users/3')
       .send(password)
       .expect(406)
       .expect('Content-Type', /application\/json/);
@@ -137,7 +127,7 @@ describe('Testing adding users', () => {
     };
 
     const response = await api
-      .delete('/api/users/1')
+      .delete('/api/users/')
       .send(password)
       .expect(200)
       .expect('Content-Type', /application\/json/);
