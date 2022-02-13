@@ -34,6 +34,16 @@ describe('Testing adding users', () => {
     expect(response.body).toHaveLength(2);
   });
 
+  test('logged in user returned after sending token', async () => {
+    const response = await api
+      .get('/api/users/from-token')
+      .expect(200)
+      .set('authorization', authorization)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.text).toContain('dana@example.com');
+  });
+
   test('users are successfully added', async () => {
     const newUser = {
       username: 'test user',
@@ -79,70 +89,113 @@ describe('Testing adding users', () => {
     expect(response.text).toContain('Email already in use');
   });
 
-  xtest('users can change passwords', async () => {
-    const password = {
-      password: '12345',
-      newPassword: 'password',
+  test('users can change passwords', async () => {
+    let data = {
+      currentPassword: 'danapwhash',
+      newPassword: 'danapwmash',
     };
 
     await api
-      .put('/api/users/3')
-      .send(password)
+      .put('/api/users/change-password')
+      .send(data)
       .expect(200)
+      .set('authorization', authorization)
+      .expect('Content-Type', /application\/json/)
+      .expect('{"message":"Your password has been updated"}');
+
+    data = {
+      currentPassword: 'danapwmash',
+      newPassword: 'danapwhash',
+    };
+
+    await api
+      .put('/api/users/change-password')
+      .send(data)
+      .expect(200)
+      .set('authorization', authorization)
       .expect('Content-Type', /application\/json/)
       .expect('{"message":"Your password has been updated"}');
   });
 
-  xtest('users cant change passwords unless correct password is supplied', async () => {
-    const password = {
-      password: '123456',
-      newPassword: 'password',
+  test('users cannot change passwords if wrong password is supplied', async () => {
+    const data = {
+      currentPassword: 'wrong password',
+      newPassword: 'danapwmash',
     };
 
     const response = await api
-      .put('/api/users/3')
-      .send(password)
+      .put('/api/users/change-password')
+      .send(data)
       .expect(406)
+      .set('authorization', authorization)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.text).toContain('Incorrect password');
+    expect(response.text).toContain('Incorrect password.');
   });
 
-  xtest('users cannot delete account unless correct password is supplied', async () => {
-    const password = {
-      password: 'wrong',
+  test('users can update their info', async () => {
+    const data = {
+      userName: 'Just Dana',
+      email: 'just@dana.com',
     };
 
+    const response = await api
+      .put('/api/users/update-info')
+      .send(data)
+      .expect(200)
+      .set('authorization', authorization);
+
+    expect(response.text).toContain('Just Dana');
+  });
+
+  test('users can change language settings', async () => {
+    const data = {
+      knownLanguageId: 'nl',
+      learnLanguageId: 'de',
+    };
+
+    const response = await api
+      .put('/api/users/set-languages')
+      .send(data)
+      .expect(200)
+      .set('authorization', authorization);
+
+    expect(response.text).toContain('nl');
+  });
+
+  describe('user confirmation', () => {
+    test('confirmed', async () => {
+      const data = {
+        password: 'danapwhash',
+      };
+
+      await api
+        .post('/api/users/confirm')
+        .send(data)
+        .expect(200)
+        .set('authorization', authorization)
+        .expect('{"match":"true"}');
+    });
+
+    test('not confirmed', async () => {
+      const data = {
+        password: 'wrong password',
+      };
+
+      await api
+        .post('/api/users/confirm')
+        .send(data)
+        .expect(200)
+        .set('authorization', authorization)
+        .expect('{"match":"false"}');
+    });
+  });
+
+  test('users are successfully deleted', async () => {
     await api
-      .delete('/api/users/1')
-      .send(password)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect('{"message":"Passwords do not match"}');
-  });
-
-  xtest('users are successfully deleted', async () => {
-    const password = {
-      password: 'password',
-    };
-
-    const response = await api
       .delete('/api/users/')
-      .send(password)
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
-
-    expect(response.text).toMatch(/test user/);
-  });
-
-  xtest('After deletion, there are no users', async () => {
-    const response = await api
-      .get('/api/users')
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
-
-    const responseBody = JSON.parse(response.text);
-    expect(responseBody).toHaveLength(0);
+      .expect(204)
+      .set('authorization', authorization);
   });
 });
 
