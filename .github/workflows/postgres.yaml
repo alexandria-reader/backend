@@ -60,3 +60,4 @@ jobs:
           # The default PostgreSQL port
           POSTGRES_PORT: 5432
           TEST_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      - run: npm run pgtest
