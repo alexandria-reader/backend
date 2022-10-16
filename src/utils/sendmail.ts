@@ -2,14 +2,15 @@ import jwt from 'jsonwebtoken';
 
 const sgMail = require('@sendgrid/mail');
 
-if (process.env.SENDGRID_API_KEY) sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+if (process.env.SENDGRID_API_KEY)
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
-const sendVerificationEmail = async function (code: string, email: string, name: string) {
-  const token = jwt.sign(
-    email,
-    String(process.env.SECRET),
-  );
+const sendVerificationEmail = async function (
+  code: string,
+  email: string,
+  name: string
+) {
+  const token = jwt.sign(email, String(process.env.SECRET));
 
   const mail = {
     to: email,

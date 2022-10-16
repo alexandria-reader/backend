@@ -4,7 +4,6 @@ import { LoggedInUser } from '../types';
 
 const loginRouter = express.Router();
 
-
 export default loginRouter.post('/', async (req, res) => {
   const { email, password } = req.body;
 

@@ -17,7 +17,6 @@ describe('Getting languages', () => {
   });
 });
 
-
 afterAll(async () => {
   await dbQuery(reset);
   await dbQuery(seed);

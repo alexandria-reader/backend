@@ -4,19 +4,32 @@ import { QueryResult } from 'pg';
 import wordData from '../data-access/words';
 import translations from './translations';
 import {
-  Word, WordDB, convertWordTypes, UserWord, SanitizedUser, Translation,
+  Word,
+  WordDB,
+  convertWordTypes,
+  UserWord,
+  SanitizedUser,
+  Translation,
 } from '../types';
 
-
-const getAll = async function(): Promise<Array<Word>> {
+const getAll = async function (): Promise<Array<Word>> {
   const result: QueryResult = await wordData.getAll();
 
   return result.rows.map((dbItem: WordDB) => convertWordTypes(dbItem));
 };
 
-
-const getUserwordsInText = async function(userId: number, textId: number, targetLanguageId: string, simple: boolean = true): Promise<Array<UserWord>> {
-  const wordsResult: QueryResult = await wordData.getUserwordsInText(userId, textId, targetLanguageId, simple);
+const getUserwordsInText = async function (
+  userId: number,
+  textId: number,
+  targetLanguageId: string,
+  simple: boolean = true
+): Promise<Array<UserWord>> {
+  const wordsResult: QueryResult = await wordData.getUserwordsInText(
+    userId,
+    textId,
+    targetLanguageId,
+    simple
+  );
 
   const rawUserWords = wordsResult.rows;
 
@@ -36,9 +49,14 @@ const getUserwordsInText = async function(userId: number, textId: number, target
   return userWords;
 };
 
-
-const getUserwordsByLanguage = async function(languageId: string, userId: number): Promise<Array<UserWord>> {
-  const wordsResult: QueryResult = await wordData.getUserwordsByLanguage(languageId, userId);
+const getUserwordsByLanguage = async function (
+  languageId: string,
+  userId: number
+): Promise<Array<UserWord>> {
+  const wordsResult: QueryResult = await wordData.getUserwordsByLanguage(
+    languageId,
+    userId
+  );
 
   const rawUserWords = wordsResult.rows;
 
@@ -58,17 +76,21 @@ const getUserwordsByLanguage = async function(languageId: string, userId: number
   return userWords;
 };
 
-
-const getWordInLanguage = async function (word: string, languageId: string): Promise<Word | null> {
-  const result: QueryResult = await wordData.getWordInLanguage(word, languageId);
+const getWordInLanguage = async function (
+  word: string,
+  languageId: string
+): Promise<Word | null> {
+  const result: QueryResult = await wordData.getWordInLanguage(
+    word,
+    languageId
+  );
 
   if (result.rowCount === 0) return null;
 
   return convertWordTypes(result.rows[0]);
 };
 
-
-const addNew = async function(wordObject: Word): Promise<Word> {
+const addNew = async function (wordObject: Word): Promise<Word> {
   const result: QueryResult = await wordData.addNew(wordObject);
 
   if (result.rowCount === 0) throw boom.badRequest('Could not add new word.');
@@ -76,26 +98,39 @@ const addNew = async function(wordObject: Word): Promise<Word> {
   return convertWordTypes(result.rows[0]);
 };
 
-
-const getStatus = async function(wordId: number, userId: number): Promise<string> {
+const getStatus = async function (
+  wordId: number,
+  userId: number
+): Promise<string> {
   const result: QueryResult = await wordData.getStatus(wordId, userId);
 
-  if (result.rowCount === 0) throw boom.badRequest('Could not get word status.');
+  if (result.rowCount === 0)
+    throw boom.badRequest('Could not get word status.');
 
   return result.rows[0].word_status;
 };
 
+const addStatus = async function (
+  wordId: number,
+  userId: number,
+  wordStatus: string
+): Promise<string> {
+  const result: QueryResult = await wordData.addStatus(
+    wordId,
+    userId,
+    wordStatus
+  );
 
-const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string> {
-  const result: QueryResult = await wordData.addStatus(wordId, userId, wordStatus);
-
-  if (result.rowCount === 0) throw boom.badRequest('Could not add status to word.');
+  if (result.rowCount === 0)
+    throw boom.badRequest('Could not add status to word.');
 
   return result.rows[0].word_status;
 };
 
-
-const addNewUserWord = async function(user: SanitizedUser, userWordData: UserWord): Promise<UserWord> {
+const addNewUserWord = async function (
+  user: SanitizedUser,
+  userWordData: UserWord
+): Promise<UserWord> {
   const returnUserWord = userWordData;
 
   const newWordData: Word = {
@@ -114,29 +149,40 @@ const addNewUserWord = async function(user: SanitizedUser, userWordData: UserWor
     const newTranslation: Translation = await translations.add(
       newWord.id,
       uwdTranslation.translation,
-      uwdTranslation.targetLanguageId,
+      uwdTranslation.targetLanguageId
     );
 
     if (newTranslation.id) {
       returnUserWord.translations[0].id = newTranslation.id;
-      await translations.addToUsersTranslations(user.id, newTranslation.id, uwdTranslation.context);
+      await translations.addToUsersTranslations(
+        user.id,
+        newTranslation.id,
+        uwdTranslation.context
+      );
     }
   }
 
   return returnUserWord;
 };
 
+const updateStatus = async function (
+  wordId: number,
+  userId: number,
+  wordStatus: string
+): Promise<string> {
+  const result: QueryResult = await wordData.updateStatus(
+    wordId,
+    userId,
+    wordStatus
+  );
 
-const updateStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<string> {
-  const result: QueryResult = await wordData.updateStatus(wordId, userId, wordStatus);
-
-  if (result.rowCount === 0) throw boom.badRequest('Could not update word status.');
+  if (result.rowCount === 0)
+    throw boom.badRequest('Could not update word status.');
 
   return result.rows[0].word_status;
 };
 
-
-const remove = async function(wordId: number): Promise<Word> {
+const remove = async function (wordId: number): Promise<Word> {
   const result: QueryResult = await wordData.remove(wordId);
 
   if (result.rowCount === 0) throw boom.badRequest('Could not remove word.');
@@ -144,15 +190,16 @@ const remove = async function(wordId: number): Promise<Word> {
   return convertWordTypes(result.rows[0]);
 };
 
-
-const removeUserWord = async function(wordId: number, userId: number): Promise<string> {
+const removeUserWord = async function (
+  wordId: number,
+  userId: number
+): Promise<string> {
   const result: QueryResult = await wordData.removeUserWord(wordId, userId);
 
   if (result.rowCount === 0) throw boom.badRequest('Could not remove status.');
 
   return result.rows[0].word_status;
 };
-
 
 export default {
   getAll,

@@ -56,10 +56,7 @@ xdescribe('Testing adding a word', () => {
       word: 'hellotest',
     };
 
-    await api
-      .post('/api/words/user/1')
-      .send(word)
-      .expect(201);
+    await api.post('/api/words/user/1').send(word).expect(201);
   });
 });
 
@@ -76,16 +73,11 @@ xdescribe('Testing updating a word', () => {
 
 xdescribe('Testing deleting a word', () => {
   test('delete an existing word', async () => {
-    await api
-      .delete('/api/words/1')
-      .expect(204);
+    await api.delete('/api/words/1').expect(204);
   });
 });
-
 
 afterAll(async () => {
   await dbQuery(reset);
   await dbQuery(seed);
 });
-
-

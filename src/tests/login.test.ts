@@ -20,9 +20,7 @@ beforeAll(async () => {
     learnLanguageId: 'en',
   };
 
-  await api
-    .post('/api/users')
-    .send(newUser);
+  await api.post('/api/users').send(newUser);
 });
 
 xdescribe('Testing user login', () => {

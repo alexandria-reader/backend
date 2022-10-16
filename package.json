@@ -16,6 +16,7 @@
     "stop-docker-postgres": "docker-compose -f postgres.yaml down --volumes",
     "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres",
     "lint": "eslint --ext .ts .",
+    "lint:prettier": "npx prettier --write .",
     "tsc": "tsc",
     "start:test": "cross-env NODE_ENV=test node index.js",
     "prepare": "husky install"

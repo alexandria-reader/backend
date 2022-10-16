@@ -11,19 +11,18 @@ beforeAll(async () => {
   await dbQuery(seed);
 });
 
-
 describe('Getting texts', () => {
   test('getAll: get all 3 words from test database', async () => {
     const allTexts = await texts.getAll();
     expect(allTexts).toHaveLength(2);
   });
 
-
   test('getById: get word with id 2', async () => {
     const textById = await texts.getById(2);
-    expect(textById?.title).toBe('Dans la « bibliothèque » de l’artiste zimbabwéen Kudzanai Chiurai');
+    expect(textById?.title).toBe(
+      'Dans la « bibliothèque » de l’artiste zimbabwéen Kudzanai Chiurai'
+    );
   });
-
 
   // test('getById: get text with non-existent id 999 returns null', () => {
   //   async function getNonExisting() {
@@ -32,7 +31,6 @@ describe('Getting texts', () => {
 
   //   expect(getNonExisting).toThrow();
   // });
-
 
   test('addNew: add a new text for user 2', async () => {
     const textData: Text = {
@@ -48,12 +46,10 @@ describe('Getting texts', () => {
     expect(await texts.getAll()).toHaveLength(3);
   });
 
-
   test('getByUser: gets all texts for user 2', async () => {
     const userTexts = await texts.getByUserAndLanguage(2, 'de');
     expect(userTexts).toHaveLength(1);
   });
-
 
   test('remove: removing an existing text', async () => {
     const existingText = await texts.getById(3);
@@ -65,7 +61,6 @@ describe('Getting texts', () => {
     }
   });
 });
-
 
 afterAll(async () => {
   await dbQuery(reset);

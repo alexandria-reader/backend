@@ -6,13 +6,13 @@ import format from 'pg-format';
 import config from '../lib/config';
 import { ConnectionOptions } from '../types';
 
-const logQuery = function(statement: string):void {
+const logQuery = function (statement: string): void {
   const timeStamp: Date = new Date();
   const formattedTimeStamp: string = timeStamp.toString().substring(4, 24);
   console.log(formattedTimeStamp, statement);
 };
 
-let isProduction: boolean = (config.NODE_ENV === 'production');
+let isProduction: boolean = config.NODE_ENV === 'production';
 if (!config.NODE_ENV) isProduction = true;
 
 let connectionString: string | undefined;
@@ -25,10 +25,15 @@ if (isProduction) {
 
 const CONNECTION: ConnectionOptions = {
   connectionString,
-  ssl: connectionString?.includes('amazonaws') ? { rejectUnauthorized: false } : false,
+  ssl: connectionString?.includes('amazonaws')
+    ? { rejectUnauthorized: false }
+    : false,
 };
 
-export default async function(statement: string, ...parameters: Array<unknown>) {
+export default async function (
+  statement: string,
+  ...parameters: Array<unknown>
+) {
   const sql = format(statement, ...parameters);
 
   const client = new Client(CONNECTION);

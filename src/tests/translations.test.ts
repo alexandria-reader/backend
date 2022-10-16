@@ -72,7 +72,8 @@ xdescribe('Testing retrieving translations', () => {
 xdescribe('Testing adding translations', () => {
   test('new translation is correctly added', async () => {
     await dbQuery('SELECT * FROM languages');
-    const ADD_WORD = 'INSERT INTO words (language_id, word, ts_config) VALUES(%L, %L, %L) RETURNING *';
+    const ADD_WORD =
+      'INSERT INTO words (language_id, word, ts_config) VALUES(%L, %L, %L) RETURNING *';
     const LAST_ADD_WORD = await dbQuery(ADD_WORD, 'en', 'hello', 'english');
     await dbQuery('SELECT * FROM words WHERE id=11');
     const LAST_ID = Number(LAST_ADD_WORD.rows[0].id);

@@ -11,19 +11,16 @@ beforeAll(async () => {
   await dbQuery(seed);
 });
 
-
 describe('Getting words', () => {
   test('getAll: get all 10 words from test database', async () => {
     const allWords = await words.getAll();
     expect(allWords).toHaveLength(10);
   });
 
-
   // test('getById: get word with id 7', async () => {
   //   const wordById = await words.getById(7);
   //   expect(wordById?.word).toBe('bareheaded');
   // });
-
 
   // xtest('getById: get word with non-existent id 999 is null', async () => {
   //   async function getNonExisting() {
@@ -32,7 +29,6 @@ describe('Getting words', () => {
 
   //   expect(getNonExisting).toThrow();
   // });
-
 
   // test('getByLanguageAndUser: find all words for user 2 in English', async () => {
   //   const wordsByLanguageAndUser = await words.getByLanguageAndUser('en', 2);
@@ -44,12 +40,10 @@ describe('Getting words', () => {
   //   });
   // });
 
-
   test('getByUser: find all words that user 1 marked in text 1', async () => {
     const userWords = await words.getUserwordsInText(1, 1, 'de');
     expect(userWords).toHaveLength(3);
   });
-
 
   test('addNew: add a new word', async () => {
     const wordData: Word = {
@@ -61,7 +55,6 @@ describe('Getting words', () => {
     if (newWord) expect(newWord.word).toContain('Kuchengabel');
     expect(await words.getAll()).toHaveLength(11);
   });
-
 
   test('addNew: add a word that already exists in the language', async () => {
     const existingWord = await words.getWordInLanguage('Kuchengabel', 'de');
@@ -77,7 +70,6 @@ describe('Getting words', () => {
     expect(await words.getAll()).toHaveLength(11);
   });
 
-
   test('remove: removing an existing word', async () => {
     const existingWord = await words.getWordInLanguage('Kuchengabel', 'de');
 
@@ -88,21 +80,18 @@ describe('Getting words', () => {
     }
   });
 
-
   test('getStatus: status of word 5 for user 1', async () => {
     const status = await words.getStatus(5, 1);
     expect(status).toBe('learned');
   });
 
-
-  test('updateStatus: change previous status to "familiar"', async() => {
+  test('updateStatus: change previous status to "familiar"', async () => {
     const updatedStatus = await words.updateStatus(5, 1, 'familiar');
     expect(updatedStatus).toBe('familiar');
 
     const status = await words.getStatus(5, 1);
     expect(status).toBe('familiar');
   });
-
 
   test('addStatus: add status "familiar" to word 4 for user 1', async () => {
     const addedStatus = await words.addStatus(4, 1, 'familiar');
@@ -112,7 +101,6 @@ describe('Getting words', () => {
     expect(status).toBe('familiar');
   });
 });
-
 
 afterAll(async () => {
   await dbQuery(reset);

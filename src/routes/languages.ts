@@ -4,7 +4,6 @@ import { Language } from '../types';
 
 const languageRouter = express.Router();
 
-
 languageRouter.get('/', async (_req, res) => {
   const cacheDuration = 60 * 60 * 24 * 7; // one week
   res.set('Cache-control', `public, max-age=${cacheDuration}`);

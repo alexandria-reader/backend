@@ -1,20 +1,25 @@
 import boom from '@hapi/boom';
 import type { Request, Response, NextFunction } from 'express';
 
-export const notFoundHandler = function(_req: Request, _res: Response, next: NextFunction) {
+export const notFoundHandler = function (
+  _req: Request,
+  _res: Response,
+  next: NextFunction
+) {
   next(boom.notFound('The requested resource does not exist.'));
 };
 
-export const generalErrorHandler = function(
+export const generalErrorHandler = function (
   err: Error,
   _req: Request,
   res: Response,
-  _next: NextFunction,
+  _next: NextFunction
 ) {
+  console.log('generalErrorHandler');
+  console.log(err);
   const {
     output: { payload: error, statusCode },
   } = boom.boomify(err);
-
   console.log(err.message);
   res.status(statusCode).json({ error });
 };
