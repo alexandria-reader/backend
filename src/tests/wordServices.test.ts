@@ -17,29 +17,6 @@ describe('Getting words', () => {
     expect(allWords).toHaveLength(10);
   });
 
-  // test('getById: get word with id 7', async () => {
-  //   const wordById = await words.getById(7);
-  //   expect(wordById?.word).toBe('bareheaded');
-  // });
-
-  // xtest('getById: get word with non-existent id 999 is null', async () => {
-  //   async function getNonExisting() {
-  //     await words.getById(999);
-  //   }
-
-  //   expect(getNonExisting).toThrow();
-  // });
-
-  // test('getByLanguageAndUser: find all words for user 2 in English', async () => {
-  //   const wordsByLanguageAndUser = await words.getByLanguageAndUser('en', 2);
-  //   expect(wordsByLanguageAndUser).toHaveLength(5);
-  //   expect(wordsByLanguageAndUser).toContainEqual({
-  //     id: 6,
-  //     languageId: 'en',
-  //     word: 'roast goose',
-  //   });
-  // });
-
   test('getByUser: find all words that user 1 marked in text 1', async () => {
     const userWords = await words.getUserwordsInText(1, 1, 'de');
     expect(userWords).toHaveLength(3);
