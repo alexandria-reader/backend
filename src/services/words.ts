@@ -140,7 +140,7 @@ const addNewUserWord = async function (
 
   const newWord: Word = await addNew(newWordData);
 
-  if (newWord.id && user.id) {
+  if (newWord.id && user.id && userWordData.status) {
     returnUserWord.id = newWord.id;
     await addStatus(newWord.id, user.id, userWordData.status);
 
