@@ -14,7 +14,7 @@ VALUES
 
 INSERT INTO users (username, password_hash, email, known_language_id, learn_language_id, verified)
 VALUES
-('Eamon', '$2a$10$kdYq/uADgMFVvqjPsQFgouDwWVHxGf66U2YxinRwLhFJ4ed/mksMy', 'eamon@example.com', 'de', 'en', true),
+('Eamon', '$2b$10$YAV5Q1EJQOOxcmtDmFJyi.rQR99hIowQZKEkcqz47L7REvn0EePDS', 'eamon@example.com', 'de', 'en', true),
 ('Dana', '$2a$10$UVTYPTdo1W/U5cBhkX6s9.T7d5QLzXvNTLS00BGJ2jUcW/MxvFCqO', 'dana@example.com', 'en', 'fr', false);
 
 
