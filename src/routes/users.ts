@@ -35,18 +35,14 @@ userRouter.post('/confirm', getUserFromToken, async (req, res) => {
 userRouter.post('/', async (req, res) => {
   const { username, password, email, knownLanguageId, learnLanguageId } =
     req.body;
-  try {
-    const newUser = await users.addNew(
-      username,
-      password,
-      email,
-      knownLanguageId,
-      learnLanguageId
-    );
-    res.status(201).json(newUser);
-  } catch (error) {
-    console.error(error);
-  }
+  const newUser = await users.addNew(
+    username,
+    password,
+    email,
+    knownLanguageId,
+    learnLanguageId
+  );
+  res.status(201).json(newUser);
 });
 
 userRouter.put('/update-info', getUserFromToken, async (req, res) => {

@@ -15,11 +15,8 @@ export const generalErrorHandler = function (
   res: Response,
   _next: NextFunction
 ) {
-  console.log('generalErrorHandler');
-  console.log(err);
   const {
     output: { payload: error, statusCode },
   } = boom.boomify(err);
-  console.log(err.message);
   res.status(statusCode).json({ error });
 };

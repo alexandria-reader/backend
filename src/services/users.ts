@@ -74,32 +74,27 @@ const addNew = async function (
   knownLanguageId: string,
   learnLanguageId: string
 ): Promise<SanitizedUser> {
-  try {
-    const emailExists = await userData.getByEmail(email);
-    if (emailExists.rowCount > 0)
-      throw boom.notAcceptable('Email already in use.');
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-    const verificationCode = uuidv4();
-    const result = await userData.addNew(
-      username,
-      passwordHash,
-      email,
-      knownLanguageId,
-      learnLanguageId,
-      verificationCode
-    );
-    const newUser: User = convertUserTypes(result.rows[0]);
-    if (newUser.id) {
-      await textData.addMatchGirlToUser(newUser.id, learnLanguageId);
-    }
-    if (process.env.NODE_ENV !== 'test')
-      await sendmail.sendVerificationEmail(verificationCode, email, username);
-    return sanitizeUser(newUser);
-  } catch (error) {
-    console.log(error);
-    throw error;
+  const emailExists = await userData.getByEmail(email);
+  if (emailExists.rowCount > 0)
+    throw boom.notAcceptable('Email already in use.');
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+  const verificationCode = uuidv4();
+  const result = await userData.addNew(
+    username,
+    passwordHash,
+    email,
+    knownLanguageId,
+    learnLanguageId,
+    verificationCode
+  );
+  const newUser: User = convertUserTypes(result.rows[0]);
+  if (newUser.id) {
+    await textData.addMatchGirlToUser(newUser.id, learnLanguageId);
   }
+  if (process.env.NODE_ENV !== 'test')
+    await sendmail.sendVerificationEmail(verificationCode, email, username);
+  return sanitizeUser(newUser);
 };
 
 const updateUserInfo = async function (
