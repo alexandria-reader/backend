@@ -7,73 +7,67 @@ const api = supertest(app);
 
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
+let token = '';
 
 beforeAll(async () => {
   await dbQuery(reset);
   await dbQuery(seed);
+
+  const loginDetails = {
+    password: 'password',
+    email: 'eamon@example.com',
+  };
+
+  const loginResponse = await api.post('/api/login').send(loginDetails);
+  token = loginResponse.body.token;
 });
 
-xdescribe('Testing getting all words', () => {
-  beforeAll(async () => {
-    await api.get('/api/words');
-  });
-
-  test('retrieve all words', async () => {
+describe('Test word routes', () => {
+  test('retrieve all words in a text by language', async () => {
     await api
-      .get('/api/words/')
+      .get('/api/words/text/1/language/de')
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .expect((response) => {
-        expect(response.body.length).toEqual(10);
+        expect(response.body.length).toEqual(3);
       });
   });
 
-  test('retrieve word by id', async () => {
+  test('retrieve word by language', async () => {
     await api
-      .get('/api/words/1')
+      .get('/api/words/language/en')
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body.word).toEqual('of course');
-      });
-  });
-
-  test('retrieve word by language and user id', async () => {
-    await api
-      .get('/api/words/en/user/1')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body[0].word).toEqual('of course');
+      .expect((res) => {
+        expect(res.body[0].word).toEqual('across the road');
       });
   });
 });
 
-xdescribe('Testing adding a word', () => {
+describe('Testing adding a word', () => {
   test('add a new word', async () => {
     const word = {
       languageId: 'en',
       word: 'hellotest',
     };
 
-    await api.post('/api/words/user/1').send(word).expect(201);
-  });
-});
-
-xdescribe('Testing updating a word', () => {
-  test('modify an existing word', async () => {
-    const data = { status: 'learned' };
     await api
-      .put('/api/words/1/user/1')
+      .post('/api/words')
+      .set('Authorization', `Bearer ${token}`)
+      .send(word)
+      .expect(201);
+  });
+
+  test('modify an existing word', async () => {
+    const data = { status: 'familiar' };
+    await api
+      .put('/api/words/1')
+      .set('Authorization', `Bearer ${token}`)
       .send(data)
       .expect(200)
-      .expect('learned');
-  });
-});
-
-xdescribe('Testing deleting a word', () => {
-  test('delete an existing word', async () => {
-    await api.delete('/api/words/1').expect(204);
+      .expect('familiar');
   });
 });
 
