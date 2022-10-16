@@ -25,19 +25,15 @@ const sanitizeUser = function (user: User): SanitizedUser {
 
 const isAdmin = async function (userId: Number): Promise<boolean> {
   const result: QueryResult = await userData.isAdmin(userId);
-
   if (result.rowCount === 0) return false;
-
   return true;
 };
 
 const getAll = async function (): Promise<Array<SanitizedUser>> {
   const result: QueryResult = await userData.getAll();
-
   const allUsers = result.rows.map((dbItem: UserDB) =>
     convertUserTypes(dbItem)
   );
-
   return allUsers;
 };
 
@@ -51,9 +47,7 @@ const getById = async function (
     throw boom.notFound('cannot find user with this id');
 
   const foundUser: User = convertUserTypes(result.rows[0]);
-
   if (sanitize) return sanitizeUser(foundUser);
-
   return foundUser;
 };
 
@@ -124,7 +118,6 @@ const updatePassword = async function (
   if (passwordsMatch) {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(newPassword, saltRounds);
-
     const result = await userData.updatePassword(userId, passwordHash);
 
     if (result.rowCount === 1) {
@@ -147,9 +140,7 @@ const setUserLanguages = async function (
   );
 
   if (result.rowCount === 0) throw boom.notAcceptable('Something went wrong');
-
   const updatedUser: User = convertUserTypes(result.rows[0]);
-
   return sanitizeUser(updatedUser);
 };
 

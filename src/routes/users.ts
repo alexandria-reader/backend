@@ -50,7 +50,6 @@ userRouter.put('/update-info', getUserFromToken, async (req, res) => {
   const { userName, email } = req.body;
 
   const updatedUser = await users.updateUserInfo(user.id, userName, email);
-
   return res.json(updatedUser);
 });
 
@@ -63,13 +62,11 @@ userRouter.put('/change-password', getUserFromToken, async (req, res) => {
     currentPassword,
     newPassword
   );
-
   res.json(response);
 });
 
 userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
   const { user } = res.locals;
-
   const { knownLanguageId, learnLanguageId } = req.body;
 
   const updatedUser = await users.setUserLanguages(
@@ -77,15 +74,12 @@ userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
     learnLanguageId,
     user.id
   );
-
   return res.json(updatedUser);
 });
 
 userRouter.delete('/', getUserFromToken, async (_req, res) => {
   const { user } = res.locals;
-
   await users.remove(user.id);
-
   res.status(204).send();
 });
 
