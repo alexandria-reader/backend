@@ -57,7 +57,7 @@ describe('Testing adding users', () => {
       .send(newUser)
       .expect(406)
       .expect('Content-Type', /application\/json/);
-    console.log(api);
+    console.log(response);
     expect(response.text).toContain('Email already in use');
   });
 
@@ -67,7 +67,6 @@ describe('Testing adding users', () => {
       newPassword: 'password',
     };
 
-    console.log(api);
     console.log(token);
     await api
       .put('/api/users/change-password')

@@ -54,9 +54,10 @@ userRouter.put('/update-info', getUserFromToken, async (req, res) => {
 });
 
 userRouter.put('/change-password', getUserFromToken, async (req, res) => {
+  console.log(req.body);
   const { user } = res.locals;
   const { currentPassword, newPassword } = req.body;
-
+  console.log(user);
   const response = await users.updatePassword(
     user.id,
     currentPassword,
@@ -78,7 +79,9 @@ userRouter.put('/set-languages', getUserFromToken, async (req, res) => {
 });
 
 userRouter.delete('/', getUserFromToken, async (_req, res) => {
+  console.log(_req);
   const { user } = res.locals;
+  console.log(user);
   await users.remove(user.id);
   res.status(204).send();
 });

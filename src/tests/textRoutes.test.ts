@@ -32,7 +32,6 @@ describe('Testing adding texts', () => {
       title: 'The Little Match Girl',
       body: 'It was so terribly cold.',
     };
-    console.log(api);
     console.log(token);
     const response = await api
       .post('/api/texts')
