@@ -57,7 +57,6 @@ describe('Testing adding users', () => {
       .send(newUser)
       .expect(406)
       .expect('Content-Type', /application\/json/);
-    console.log(response);
     expect(response.text).toContain('Email already in use');
   });
 
@@ -67,14 +66,17 @@ describe('Testing adding users', () => {
       newPassword: 'password',
     };
 
-    console.log(token);
-    await api
-      .put('/api/users/change-password')
-      .set('Authorization', `Bearer ${token}`)
-      .send(password)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect('{"message":"Your password has been updated"}');
+    try {
+      await api
+        .put('/api/users/change-password')
+        .set('Authorization', `Bearer ${token}`)
+        .send(password)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+        .expect('{"message":"Your password has been updated"}');
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   test('users cant change passwords unless correct password is supplied', async () => {
@@ -83,16 +85,12 @@ describe('Testing adding users', () => {
       newPassword: 'password',
     };
 
-    console.log(token);
-    console.log(token.length);
     const response = await api
       .put('/api/users/change-password')
       .set('Authorization', `Bearer ${token}`)
       .send(password)
       .expect(406)
       .expect('Content-Type', /application\/json/);
-    console.log(response);
-    console.log(response.body);
     expect(response.text).toContain('Incorrect password');
   });
 
