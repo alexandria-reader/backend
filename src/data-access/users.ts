@@ -2,31 +2,31 @@
 import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 
-const isAdmin = async function (userId: Number) {
+const isAdmin = async function(userId: Number) {
   const FIND_USER_IN_ADMINS = 'SELECT * FROM admins WHERE user_id = %s';
   const result = await dbQuery(FIND_USER_IN_ADMINS, userId);
   return result;
 };
 
-const getAll = async function (): Promise<QueryResult> {
+const getAll = async function(): Promise<QueryResult> {
   const SELECT_ALL_USERS = 'SELECT * FROM users';
   const result = await dbQuery(SELECT_ALL_USERS);
   return result;
 };
 
-const getById = async function (userId: string): Promise<QueryResult> {
+const getById = async function(userId: string): Promise<QueryResult> {
   const findUserById = 'SELECT * FROM users WHERE id = %L';
   const result = await dbQuery(findUserById, userId);
   return result;
 };
 
-const getByEmail = async function (email: string): Promise<QueryResult> {
+const getByEmail = async function(email: string): Promise<QueryResult> {
   const CHECK_EMAIL = 'SELECT * FROM users WHERE email = %L';
   const result = await dbQuery(CHECK_EMAIL, email);
   return result;
 };
 
-const addNew = async function (
+const addNew = async function(
   username: string,
   passwordHash: string,
   email: string,
@@ -48,7 +48,7 @@ const addNew = async function (
   return result;
 };
 
-const updateUserInfo = async function (
+const updateUserInfo = async function(
   userId: string,
   userName: string,
   email: string
@@ -59,7 +59,7 @@ const updateUserInfo = async function (
   return result;
 };
 
-const updatePassword = async function (
+const updatePassword = async function(
   userId: string,
   newPasswordHash: string
 ) {
@@ -68,7 +68,7 @@ const updatePassword = async function (
   return result;
 };
 
-const setUserLanguages = async function (
+const setUserLanguages = async function(
   knownLanguageId: string,
   learnLanguageId: string,
   userId: string
@@ -84,13 +84,13 @@ const setUserLanguages = async function (
   return result;
 };
 
-const remove = async function (userId: string): Promise<QueryResult> {
+const remove = async function(userId: string): Promise<QueryResult> {
   const deleteUser = 'DELETE FROM users WHERE id = %L RETURNING *';
   const result = await dbQuery(deleteUser, userId);
   return result;
 };
 
-const verify = async function (userId: number) {
+const verify = async function(userId: number) {
   const VERIFY = 'UPDATE users SET verified = true WHERE id = %s RETURNING *';
   const result = await dbQuery(VERIFY, userId);
   return result;

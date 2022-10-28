@@ -6,7 +6,7 @@ import format from 'pg-format';
 import config from '../lib/config';
 import { ConnectionOptions } from '../types';
 
-const logQuery = function (statement: string): void {
+const logQuery = function(statement: string): void {
   const timeStamp: Date = new Date();
   const formattedTimeStamp: string = timeStamp.toString().substring(4, 24);
   console.log(formattedTimeStamp, statement);
@@ -30,7 +30,7 @@ const CONNECTION: ConnectionOptions = {
     : false,
 };
 
-export default async function (
+export default async function(
   statement: string,
   ...parameters: Array<unknown>
 ) {

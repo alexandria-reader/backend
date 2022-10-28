@@ -3,7 +3,7 @@ import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 import { Text } from '../types';
 
-const getAll = async function (): Promise<QueryResult> {
+const getAll = async function(): Promise<QueryResult> {
   const ALL_TEXTS: string = `
     SELECT * FROM texts`;
 
@@ -12,7 +12,7 @@ const getAll = async function (): Promise<QueryResult> {
   return result;
 };
 
-const getById = async function (textId: number): Promise<QueryResult> {
+const getById = async function(textId: number): Promise<QueryResult> {
   const TEXT_BY_ID: string = `
     SELECT * FROM texts 
      WHERE id = %s`;
@@ -22,7 +22,7 @@ const getById = async function (textId: number): Promise<QueryResult> {
   return result;
 };
 
-const getByUserAndLanguage = async function (
+const getByUserAndLanguage = async function(
   userId: number,
   languageId: string
 ): Promise<QueryResult> {
@@ -36,7 +36,7 @@ const getByUserAndLanguage = async function (
   return result;
 };
 
-const addNew = async function (textObject: Text): Promise<QueryResult> {
+const addNew = async function(textObject: Text): Promise<QueryResult> {
   const { userId, languageId, title, author, body, sourceURL, sourceType } =
     textObject;
 
@@ -62,7 +62,7 @@ const addNew = async function (textObject: Text): Promise<QueryResult> {
   return result;
 };
 
-const update = async function (textObject: Text): Promise<QueryResult> {
+const update = async function(textObject: Text): Promise<QueryResult> {
   const { id, userId, languageId, title, author, body, sourceURL, sourceType } =
     textObject;
 
@@ -93,7 +93,7 @@ const update = async function (textObject: Text): Promise<QueryResult> {
   return result;
 };
 
-const remove = async function (textId: number): Promise<QueryResult> {
+const remove = async function(textId: number): Promise<QueryResult> {
   const REMOVE_TEXT: string = `
     DELETE FROM texts 
           WHERE id = %s
@@ -104,7 +104,7 @@ const remove = async function (textId: number): Promise<QueryResult> {
   return result;
 };
 
-const addMatchGirlToUser = async function (userId: number, languageId: string) {
+const addMatchGirlToUser = async function(userId: number, languageId: string) {
   const ADD_MATCH_GIRL = `
     INSERT INTO texts (user_id, language_id, author, title, body, ts_config) 
          VALUES (%s, %L, 'Hans Christian Andersen', 

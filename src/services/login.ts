@@ -1,11 +1,11 @@
 import boom from '@hapi/boom';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import userData from '../data-access/users';
+import { convertUserTypes, LoggedInUser, User, UserDB } from '../types';
 import users from './users';
-import { UserDB, LoggedInUser, User, convertUserTypes } from '../types';
 
-const verifyLoginDetails = async function (
+const verifyLoginDetails = async function(
   email: string,
   password: string
 ): Promise<UserDB> {
@@ -24,7 +24,7 @@ const verifyLoginDetails = async function (
   return user;
 };
 
-const login = async function (
+const login = async function(
   email: string,
   password: string
 ): Promise<LoggedInUser> {

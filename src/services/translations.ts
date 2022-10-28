@@ -3,14 +3,14 @@ import { QueryResult } from 'pg';
 import translationData from '../data-access/translations';
 import { TranslationDB, Translation, convertTranslationTypes } from '../types';
 
-const getAll = async function () {
+const getAll = async function() {
   const results = await translationData.getAll();
   return results.rows.map((dbItem: TranslationDB) =>
     convertTranslationTypes(dbItem)
   );
 };
 
-const add = async function (
+const add = async function(
   wordId: number,
   translation: string,
   targetLang: string
@@ -27,7 +27,7 @@ const add = async function (
   return convertTranslationTypes(result.rows[0]);
 };
 
-const update = async function (
+const update = async function(
   translationId: number,
   translation: string
 ): Promise<Translation> {
@@ -44,7 +44,7 @@ const update = async function (
   return convertTranslationTypes(result.rows[0]);
 };
 
-const getUserTranslationContext = async function (
+const getUserTranslationContext = async function(
   userId: number,
   translationId: number
 ): Promise<string> {
@@ -59,7 +59,7 @@ const getUserTranslationContext = async function (
   return result.rows[0] || '';
 };
 
-const remove = async function (translationId: number) {
+const remove = async function(translationId: number) {
   const result: QueryResult = await translationData.remove(translationId);
 
   if (result.rowCount === 0)
@@ -68,7 +68,7 @@ const remove = async function (translationId: number) {
   return convertTranslationTypes(result.rows[0]);
 };
 
-const addToUsersTranslations = async function (
+const addToUsersTranslations = async function(
   userId: number,
   translationId: number,
   context: string | undefined

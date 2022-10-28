@@ -6,7 +6,7 @@ import {
   convertWebdictionaryTypes,
 } from '../types';
 
-const getBySourceTarget = async function (
+const getBySourceTarget = async function(
   sourceLanguageId: string,
   targetLanguageId: string
 ): Promise<Array<Webdictionary>> {

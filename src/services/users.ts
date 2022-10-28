@@ -10,7 +10,7 @@ import userData from '../data-access/users';
 import textData from '../data-access/texts';
 import { SanitizedUser, User, convertUserTypes, UserDB } from '../types';
 
-const sanitizeUser = function (user: User): SanitizedUser {
+const sanitizeUser = function(user: User): SanitizedUser {
   const sanitizedUser: SanitizedUser = {
     id: user.id,
     username: user.username,
@@ -23,13 +23,13 @@ const sanitizeUser = function (user: User): SanitizedUser {
   return sanitizedUser;
 };
 
-const isAdmin = async function (userId: Number): Promise<boolean> {
+const isAdmin = async function(userId: Number): Promise<boolean> {
   const result: QueryResult = await userData.isAdmin(userId);
   if (result.rowCount === 0) return false;
   return true;
 };
 
-const getAll = async function (): Promise<Array<SanitizedUser>> {
+const getAll = async function(): Promise<Array<SanitizedUser>> {
   const result: QueryResult = await userData.getAll();
   const allUsers = result.rows.map((dbItem: UserDB) =>
     convertUserTypes(dbItem)
@@ -37,7 +37,7 @@ const getAll = async function (): Promise<Array<SanitizedUser>> {
   return allUsers;
 };
 
-const getById = async function (
+const getById = async function(
   userId: string,
   sanitize: boolean = true
 ): Promise<SanitizedUser | User> {
@@ -51,7 +51,7 @@ const getById = async function (
   return foundUser;
 };
 
-const verifyPassword = async function (
+const verifyPassword = async function(
   userId: string,
   password: string
 ): Promise<boolean> {
@@ -61,7 +61,7 @@ const verifyPassword = async function (
   return passwordsMatch;
 };
 
-const addNew = async function (
+const addNew = async function(
   username: string,
   password: string,
   email: string,
@@ -91,7 +91,7 @@ const addNew = async function (
   return sanitizeUser(newUser);
 };
 
-const updateUserInfo = async function (
+const updateUserInfo = async function(
   userId: string,
   userName: string,
   email: string
@@ -102,7 +102,7 @@ const updateUserInfo = async function (
   return sanitizeUser(updatedUser);
 };
 
-const updatePassword = async function (
+const updatePassword = async function(
   userId: string,
   currentPassword: string,
   newPassword: string
@@ -128,7 +128,7 @@ const updatePassword = async function (
   throw boom.notAcceptable('Incorrect password.');
 };
 
-const setUserLanguages = async function (
+const setUserLanguages = async function(
   knownLanguageId: string,
   learnLanguageId: string,
   userId: string
@@ -144,7 +144,7 @@ const setUserLanguages = async function (
   return sanitizeUser(updatedUser);
 };
 
-const remove = async function (
+const remove = async function(
   userId: string
 ): Promise<SanitizedUser | undefined> {
   const result = await userData.remove(userId);
@@ -157,7 +157,7 @@ const remove = async function (
   throw boom.unauthorized('Something went wrong');
 };
 
-const verify = async function (
+const verify = async function(
   code: string,
   token: string
 ): Promise<SanitizedUser> {

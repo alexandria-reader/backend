@@ -34,7 +34,7 @@ describe('Testing adding translations', () => {
       translation: 'allo',
       targetLanguageId: 'fr',
     };
-    const response = await api
+    await api
       .post('/api/translations')
       .set('Authorization', `Bearer ${token}`)
       .send(newTranslation)

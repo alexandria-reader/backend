@@ -5,7 +5,7 @@ import { Word } from '../types';
 import languages from './languages';
 
 // Returning all words in the database is only needed in tests
-const getAll = async function (): Promise<QueryResult> {
+const getAll = async function(): Promise<QueryResult> {
   const ALL_WORDS: string = `
     SELECT * FROM words`;
 
@@ -14,7 +14,7 @@ const getAll = async function (): Promise<QueryResult> {
   return result;
 };
 
-const getWordInLanguage = async function (
+const getWordInLanguage = async function(
   word: string,
   languageId: string
 ): Promise<QueryResult> {
@@ -30,7 +30,7 @@ const getWordInLanguage = async function (
 };
 
 // Finds all words in a text that a user has previously marked and returns translations and contexts as well
-const getUserwordsInText = async function (
+const getUserwordsInText = async function(
   userId: number,
   textId: number,
   targetLanguageId: string,
@@ -75,7 +75,7 @@ const getUserwordsInText = async function (
 };
 
 // Finds all words a user has marked in a given language and returns translations and contexts as well
-const getUserwordsByLanguage = async function (
+const getUserwordsByLanguage = async function(
   languageId: string,
   userId: number,
   simple: boolean = true
@@ -122,7 +122,7 @@ const getUserwordsByLanguage = async function (
   return result;
 };
 
-const addNew = async function (wordObject: Word): Promise<QueryResult> {
+const addNew = async function(wordObject: Word): Promise<QueryResult> {
   const { languageId, word } = wordObject;
 
   const existingWord = await getWordInLanguage(word, languageId);
@@ -141,7 +141,7 @@ const addNew = async function (wordObject: Word): Promise<QueryResult> {
 };
 
 // Retrieves word status string for given user
-const getStatus = async function (
+const getStatus = async function(
   wordId: number,
   userId: number
 ): Promise<QueryResult> {
@@ -156,7 +156,7 @@ const getStatus = async function (
   return result;
 };
 
-const addStatus = async function (
+const addStatus = async function(
   wordId: number,
   userId: number,
   wordStatus: string
@@ -182,7 +182,7 @@ const addStatus = async function (
   return result;
 };
 
-const updateStatus = async function (
+const updateStatus = async function(
   wordId: number,
   userId: number,
   wordStatus: string
@@ -205,7 +205,7 @@ const updateStatus = async function (
   return result;
 };
 
-const removeUserWord = async function (
+const removeUserWord = async function(
   wordId: number,
   userId: number
 ): Promise<QueryResult> {
@@ -220,7 +220,7 @@ const removeUserWord = async function (
   return result;
 };
 
-const remove = async function (wordId: number): Promise<QueryResult> {
+const remove = async function(wordId: number): Promise<QueryResult> {
   const DELETE_WORD: string = `
        DELETE FROM words
         WHERE id = %s
