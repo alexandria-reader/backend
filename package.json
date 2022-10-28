@@ -15,8 +15,8 @@
     "start-docker-postgres": "docker-compose -f postgres.yaml up -d",
     "stop-docker-postgres": "docker-compose -f postgres.yaml down --volumes",
     "pgtest": "npm run start-docker-postgres && npm test && npm run stop-docker-postgres",
-    "lint": "npx eslint --ext .ts .",
-    "lint:fix": "npx eslint -- --ext .ts . --fix --no-error-on-unmatched-pattern",
+    "lint": "npx eslint --ext .ts",
+    "lint:fix": "npx eslint --ext .ts --fix",
     "prettier": "npx prettier --write .",
     "format": "npm run prettier && npm run lint:fix",
     "tsc": "tsc",
@@ -24,7 +24,11 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.ts": "prettier --write --ignore-unknown && npm run lint:fix"
+    "src/**/*.{js,ts}": [
+      "prettier --write --ignore-unknown",
+      "eslint --fix src/",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
