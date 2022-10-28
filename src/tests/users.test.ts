@@ -40,7 +40,6 @@ describe('Testing adding users', () => {
     };
 
     const loginResponse = await api.post('/api/login').send(loginDetails);
-    console.log(loginResponse);
     token = loginResponse.body.token;
   });
 
@@ -66,18 +65,13 @@ describe('Testing adding users', () => {
       currentPassword: '12345',
       newPassword: 'password',
     };
-
-    try {
-      await api
-        .put('/api/users/change-password')
-        .set('Authorization', `Bearer ${token}`)
-        .send(password)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-        .expect('{"message":"Your password has been updated"}');
-    } catch (error) {
-      console.error(error);
-    }
+    await api
+      .put('/api/users/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send(password)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect('{"message":"Your password has been updated"}');
   });
 
   test('users cant change passwords unless correct password is supplied', async () => {

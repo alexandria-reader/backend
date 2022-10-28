@@ -30,29 +30,15 @@ export const getUserFromToken = async function(
   next: NextFunction
 ) {
   if (!res.locals.token) throw boom.unauthorized('token missing or invalid');
-  console.log('getUserFromToken');
-  try {
-    console.log('process.env.SECRET');
-    console.log(process.env.SECRET);
-    console.log(process.env);
-    const decodedToken = jwt.verify(
-      res.locals.token,
-      process.env.SECRET as Secret
-    );
-
-    console.log('isJWTPayload(decodedToken)');
-    console.log(isJWTPayload(decodedToken));
-    if (isJWTPayload(decodedToken)) {
-      if (!decodedToken.id) throw boom.unauthorized('token invalid or missing');
-
-      const userById = await users.getById(decodedToken.id);
-      console.log('userById');
-      console.log(userById);
-      res.locals.user = userById;
-      console.log(res.locals);
-    }
-  } catch (error) {
-    console.error(error);
+  const decodedToken = jwt.verify(
+    res.locals.token,
+    process.env.SECRET as Secret
+  );
+  if (isJWTPayload(decodedToken)) {
+    if (!decodedToken.id) throw boom.unauthorized('token invalid or missing');
+    const userById = await users.getById(decodedToken.id);
+    res.locals.user = userById;
   }
+
   next();
 };
