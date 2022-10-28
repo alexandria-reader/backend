@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import boom from '@hapi/boom';
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import users from '../services/users';
 
-export const extractToken = function(
+export const extractToken = function (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,13 +18,13 @@ export const extractToken = function(
   next();
 };
 
-const isJWTPayload = function(
+const isJWTPayload = function (
   value: JwtPayload | String
 ): value is JwtPayload {
   return (value as JwtPayload).id !== undefined;
 };
 
-export const getUserFromToken = async function(
+export const getUserFromToken = async function (
   _req: Request,
   res: Response,
   next: NextFunction
