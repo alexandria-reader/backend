@@ -54,6 +54,7 @@ userRouter.put('/update-info', getUserFromToken, async (req, res) => {
 });
 
 userRouter.put('/change-password', getUserFromToken, async (req, res) => {
+  console.log(req);
   console.log(req.body);
   const { user } = res.locals;
   const { currentPassword, newPassword } = req.body;

@@ -74,6 +74,7 @@ describe('Testing adding users', () => {
       // .expect(200)
       // .expect('Content-Type', /application\/json/)
       // .expect('{"message":"Your password has been updated"}');
+      console.log(response);
       console.log(response.body);
       console.log(response.status);
     } catch (error) {

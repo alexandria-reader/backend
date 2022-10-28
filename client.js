@@ -6,7 +6,7 @@ const schema = fs.readFileSync('./src/model/schema.sql', 'utf-8');
 const pgclient = new Client({
   connectionString: process.env.TEST_DATABASE_URL,
 });
-
+console.log(process.env);
 pgclient.connect();
 
 pgclient.query(schema, (err, _res) => {
