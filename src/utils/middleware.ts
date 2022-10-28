@@ -32,13 +32,14 @@ export const getUserFromToken = async function(
   if (!res.locals.token) throw boom.unauthorized('token missing or invalid');
   console.log('getUserFromToken');
   try {
+    console.log('process.env.SECRET');
+    console.log(process.env.SECRET);
+    console.log(process.env);
     const decodedToken = jwt.verify(
       res.locals.token,
       process.env.SECRET as Secret
     );
-    console.log('process.env.SECRET');
-    console.log(process.env.SECRET);
-    console.log(process.env);
+
     console.log('isJWTPayload(decodedToken)');
     console.log(isJWTPayload(decodedToken));
     if (isJWTPayload(decodedToken)) {
