@@ -11,3 +11,7 @@ Run `npm install` to install the dependencies, then add a .`env` file to the roo
 Then run `npm run dev`.
 
 Now that the backend is started, follow the getting started instructions in the frontend `README.md`.
+
+# Testing
+
+To run the tests, run `npm run pgtest`. This command spins up a docker container with a fresh postgres database for the tests, runs the tests, and then shuts down the container. Just running `npm test` will cause the tests to fail if the docker container is not available.
