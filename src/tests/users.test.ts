@@ -40,6 +40,7 @@ describe('Testing adding users', () => {
     };
 
     const loginResponse = await api.post('/api/login').send(loginDetails);
+    console.log(loginResponse);
     token = loginResponse.body.token;
   });
 
@@ -67,16 +68,13 @@ describe('Testing adding users', () => {
     };
 
     try {
-      const response = await api
+      await api
         .put('/api/users/change-password')
         .set('Authorization', `Bearer ${token}`)
-        .send(password);
-      // .expect(200)
-      // .expect('Content-Type', /application\/json/)
-      // .expect('{"message":"Your password has been updated"}');
-      console.log(response);
-      console.log(response.body);
-      console.log(response.status);
+        .send(password)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+        .expect('{"message":"Your password has been updated"}');
     } catch (error) {
       console.error(error);
     }
