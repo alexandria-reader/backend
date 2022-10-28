@@ -41,12 +41,12 @@
   },
   "homepage": "https://github.com/alexandria-reader/backend#readme",
   "dependencies": {
-    "@hapi/boom": "^9.1.4",
+    "@hapi/boom": "^10.0.0",
     "@sendgrid/mail": "^7.7.0",
     "article-parser": "^7.2.4",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
@@ -54,7 +54,7 @@
     "pg-format": "^1.0.4",
     "tslib": "^2.4.0",
     "typescript": "^4.8.4",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -72,7 +72,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.26.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^16.2.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
