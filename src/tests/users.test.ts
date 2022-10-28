@@ -57,7 +57,7 @@ describe('Testing adding users', () => {
       .send(newUser)
       .expect(406)
       .expect('Content-Type', /application\/json/);
-
+    console.log(api);
     expect(response.text).toContain('Email already in use');
   });
 
@@ -67,6 +67,8 @@ describe('Testing adding users', () => {
       newPassword: 'password',
     };
 
+    console.log(api);
+    console.log(token);
     await api
       .put('/api/users/change-password')
       .set('Authorization', `Bearer ${token}`)
@@ -82,6 +84,7 @@ describe('Testing adding users', () => {
       newPassword: 'password',
     };
 
+    console.log(token);
     const response = await api
       .put('/api/users/change-password')
       .set('Authorization', `Bearer ${token}`)

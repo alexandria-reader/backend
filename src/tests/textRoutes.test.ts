@@ -32,14 +32,15 @@ describe('Testing adding texts', () => {
       title: 'The Little Match Girl',
       body: 'It was so terribly cold.',
     };
-
+    console.log(api);
+    console.log(token);
     const response = await api
       .post('/api/texts')
       .set('Authorization', `Bearer ${token}`)
       .send(text)
       .expect(200)
       .expect('Content-Type', /application\/json/);
-
+    console.log(response);
     expect(response.text).toMatch(/The Little Match Girl/);
   });
 
