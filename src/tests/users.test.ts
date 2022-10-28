@@ -84,13 +84,15 @@ describe('Testing adding users', () => {
     };
 
     console.log(token);
+    console.log(token.length);
     const response = await api
       .put('/api/users/change-password')
       .set('Authorization', `Bearer ${token}`)
       .send(password)
       .expect(406)
       .expect('Content-Type', /application\/json/);
-
+    console.log(response);
+    console.log(response.body);
     expect(response.text).toContain('Incorrect password');
   });
 

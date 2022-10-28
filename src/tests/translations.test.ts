@@ -27,19 +27,21 @@ describe('Testing adding translations', () => {
     const ADD_WORD =
       'INSERT INTO words (language_id, word, ts_config) VALUES(%L, %L, %L) RETURNING *';
     const LAST_ADD_WORD = await dbQuery(ADD_WORD, 'en', 'hello', 'english');
-    await dbQuery('SELECT * FROM words WHERE id=11');
+    const result = await dbQuery('SELECT * FROM words WHERE id=11');
+    console.log(result);
     const LAST_ID = Number(LAST_ADD_WORD.rows[0].id);
     const newTranslation = {
       wordId: LAST_ID,
       translation: 'allo',
       targetLanguageId: 'fr',
     };
-    await api
+    const apiResult = await api
       .post('/api/translations')
       .set('Authorization', `Bearer ${token}`)
       .send(newTranslation)
       .expect(200)
       .expect('Content-Type', 'application/json; charset=utf-8');
+    console.log(apiResult);
   });
 
   test('update translation with specified id', async () => {
