@@ -29,13 +29,10 @@
 
 <!-- If UI feature, take provide screenshots -->
 
-
 ### After
 
 <!-- If UI feature, take provide screenshots -->
 
-
 ## Testing Steps / QA Criteria
 
 <!-- Provide steps reviewers need to follow to properly test your additions. -->
-

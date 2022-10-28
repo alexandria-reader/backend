@@ -1,17 +1,14 @@
 import boom from '@hapi/boom';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import userData from '../data-access/users';
+import { convertUserTypes, LoggedInUser, User, UserDB } from '../types';
 import users from './users';
-import {
-  UserDB,
-  LoggedInUser,
-  User,
-  convertUserTypes,
-} from '../types';
 
-
-const verifyLoginDetails = async function (email: string, password: string): Promise<UserDB> {
+const verifyLoginDetails = async function(
+  email: string,
+  password: string
+): Promise<UserDB> {
   const result = await userData.getByEmail(email);
 
   const user: UserDB | null = result.rowCount > 0 ? result.rows[0] : null;
@@ -27,9 +24,13 @@ const verifyLoginDetails = async function (email: string, password: string): Pro
   return user;
 };
 
-
-const login = async function (email: string, password: string): Promise<LoggedInUser> {
-  const verifiedUser: User = convertUserTypes(await verifyLoginDetails(email, password));
+const login = async function(
+  email: string,
+  password: string
+): Promise<LoggedInUser> {
+  const verifiedUser: User = convertUserTypes(
+    await verifyLoginDetails(email, password)
+  );
 
   const sanitizedUser = users.sanitizeUser(verifiedUser);
 
@@ -41,14 +42,13 @@ const login = async function (email: string, password: string): Promise<LoggedIn
   const token = jwt.sign(
     userForToken,
     String(process.env.SECRET),
-    { expiresIn: 60 * 60 * 24 * 7 }, // token expires in one week
+    { expiresIn: 60 * 60 * 24 * 7 } // token expires in one week
   );
 
   const loggedInUser: LoggedInUser = { ...sanitizedUser, token };
 
   return loggedInUser;
 };
-
 
 export default {
   login,

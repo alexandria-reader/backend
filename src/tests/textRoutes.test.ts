@@ -13,15 +13,16 @@ beforeAll(async () => {
   await dbQuery(seed);
 });
 
-xdescribe('Testing adding texts', () => {
-  test('Texts are returned as json, there are no users', async () => {
-    const response = await api
-      .get('/api/texts')
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
+describe('Testing adding texts', () => {
+  let token = '';
 
-    const responseBody = JSON.parse(response.text);
-    expect(responseBody).toHaveLength(0);
+  beforeAll(async () => {
+    const loginDetails = {
+      password: 'password',
+      email: 'eamon@example.com',
+    };
+    const response = await api.post('/api/login').send(loginDetails);
+    token = response.body.token;
   });
 
   test('A text is added successfully', async () => {
@@ -34,8 +35,9 @@ xdescribe('Testing adding texts', () => {
 
     const response = await api
       .post('/api/texts')
+      .set('Authorization', `Bearer ${token}`)
       .send(text)
-      .expect(201)
+      .expect(200)
       .expect('Content-Type', /application\/json/);
 
     expect(response.text).toMatch(/The Little Match Girl/);
@@ -44,6 +46,7 @@ xdescribe('Testing adding texts', () => {
   test('Texts can be found by id', async () => {
     const response = await api
       .get('/api/texts/1')
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -60,6 +63,7 @@ xdescribe('Testing adding texts', () => {
 
     const response = await api
       .put('/api/texts/1')
+      .set('Authorization', `Bearer ${token}`)
       .send(text)
       .expect(200)
       .expect('Content-Type', /application\/json/);

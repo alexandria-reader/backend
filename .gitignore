@@ -4,3 +4,8 @@ src/model/temp.sql
 .vscode
 coverage
 requests
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
+!.env.sample

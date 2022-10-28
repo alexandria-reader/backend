@@ -1,8 +1,7 @@
 import boom from '@hapi/boom';
 import { QueryResult } from 'pg';
 import languageData from '../data-access/languages';
-import { LanguageDB, Language, convertLanguageTypes } from '../types';
-
+import { convertLanguageTypes, Language, LanguageDB } from '../types';
 
 const getAll = async function(): Promise<Array<Language>> {
   const result: QueryResult = await languageData.getAll();
@@ -11,7 +10,6 @@ const getAll = async function(): Promise<Array<Language>> {
 
   return result.rows.map((dbItem: LanguageDB) => convertLanguageTypes(dbItem));
 };
-
 
 export default {
   getAll,

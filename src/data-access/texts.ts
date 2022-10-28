@@ -3,7 +3,6 @@ import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 import { Text } from '../types';
 
-
 const getAll = async function(): Promise<QueryResult> {
   const ALL_TEXTS: string = `
     SELECT * FROM texts`;
@@ -12,7 +11,6 @@ const getAll = async function(): Promise<QueryResult> {
 
   return result;
 };
-
 
 const getById = async function(textId: number): Promise<QueryResult> {
   const TEXT_BY_ID: string = `
@@ -24,8 +22,10 @@ const getById = async function(textId: number): Promise<QueryResult> {
   return result;
 };
 
-
-const getByUserAndLanguage = async function(userId: number, languageId: string): Promise<QueryResult> {
+const getByUserAndLanguage = async function(
+  userId: number,
+  languageId: string
+): Promise<QueryResult> {
   const TEXTS_BY_USER: string = `
       SELECT * FROM texts
        WHERE user_id = %L AND language_id = %L
@@ -36,17 +36,9 @@ const getByUserAndLanguage = async function(userId: number, languageId: string):
   return result;
 };
 
-
 const addNew = async function(textObject: Text): Promise<QueryResult> {
-  const {
-    userId,
-    languageId,
-    title,
-    author,
-    body,
-    sourceURL,
-    sourceType,
-  } = textObject;
+  const { userId, languageId, title, author, body, sourceURL, sourceType } =
+    textObject;
 
   const ADD_TEXT: string = `
     INSERT INTO texts (user_id, language_id, title, author,
@@ -64,24 +56,15 @@ const addNew = async function(textObject: Text): Promise<QueryResult> {
     body,
     languageId,
     sourceURL || null,
-    sourceType || null,
+    sourceType || null
   );
 
   return result;
 };
 
-
 const update = async function(textObject: Text): Promise<QueryResult> {
-  const {
-    id,
-    userId,
-    languageId,
-    title,
-    author,
-    body,
-    sourceURL,
-    sourceType,
-  } = textObject;
+  const { id, userId, languageId, title, author, body, sourceURL, sourceType } =
+    textObject;
 
   const ADD_TEXT: string = `
        UPDATE texts 
@@ -104,12 +87,11 @@ const update = async function(textObject: Text): Promise<QueryResult> {
     body,
     sourceURL || null,
     sourceType || null,
-    id,
+    id
   );
 
   return result;
 };
-
 
 const remove = async function(textId: number): Promise<QueryResult> {
   const REMOVE_TEXT: string = `
@@ -122,7 +104,6 @@ const remove = async function(textId: number): Promise<QueryResult> {
   return result;
 };
 
-
 const addMatchGirlToUser = async function(userId: number, languageId: string) {
   const ADD_MATCH_GIRL = `
     INSERT INTO texts (user_id, language_id, author, title, body, ts_config) 
@@ -132,11 +113,17 @@ const addMatchGirlToUser = async function(userId: number, languageId: string) {
                   (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig)
       RETURNING *`;
 
-  const result = await dbQuery(ADD_MATCH_GIRL, userId, languageId, languageId, languageId, languageId);
+  const result = await dbQuery(
+    ADD_MATCH_GIRL,
+    userId,
+    languageId,
+    languageId,
+    languageId,
+    languageId
+  );
 
   return result;
 };
-
 
 export default {
   getAll,

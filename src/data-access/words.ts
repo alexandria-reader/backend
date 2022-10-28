@@ -4,7 +4,6 @@ import dbQuery from '../model/db-query';
 import { Word } from '../types';
 import languages from './languages';
 
-
 // Returning all words in the database is only needed in tests
 const getAll = async function(): Promise<QueryResult> {
   const ALL_WORDS: string = `
@@ -15,8 +14,10 @@ const getAll = async function(): Promise<QueryResult> {
   return result;
 };
 
-
-const getWordInLanguage = async function(word: string, languageId: string): Promise<QueryResult> {
+const getWordInLanguage = async function(
+  word: string,
+  languageId: string
+): Promise<QueryResult> {
   const WORD_BY_LANGUAGE_AND_WORD: string = `
     SELECT * FROM words 
      WHERE language_id = %L 
@@ -28,9 +29,13 @@ const getWordInLanguage = async function(word: string, languageId: string): Prom
   return result;
 };
 
-
 // Finds all words in a text that a user has previously marked and returns translations and contexts as well
-const getUserwordsInText = async function(userId: number, textId: number, targetLanguageId: string, simple: boolean = true): Promise<QueryResult> {
+const getUserwordsInText = async function(
+  userId: number,
+  textId: number,
+  targetLanguageId: string,
+  simple: boolean = true
+): Promise<QueryResult> {
   const tsvectorType = simple ? 'simple' : 'language';
 
   const USER_WORDS_IN_TEXT: string = `
@@ -57,22 +62,24 @@ const getUserwordsInText = async function(userId: number, textId: number, target
                                             WHERE t.id = %s)        
     GROUP BY w.id, w.word, uw.word_status`;
 
-
   const result = await dbQuery(
     USER_WORDS_IN_TEXT,
     userId,
     userId,
     targetLanguageId,
     textId,
-    textId,
+    textId
   );
 
   return result;
 };
 
-
 // Finds all words a user has marked in a given language and returns translations and contexts as well
-const getUserwordsByLanguage = async function(languageId: string, userId: number, simple: boolean = true): Promise<QueryResult> {
+const getUserwordsByLanguage = async function(
+  languageId: string,
+  userId: number,
+  simple: boolean = true
+): Promise<QueryResult> {
   let tsvectorType = 'simple';
   let tsConfig = 'simple';
 
@@ -109,18 +116,14 @@ const getUserwordsByLanguage = async function(languageId: string, userId: number
     WORDS_BY_LANGUAGE_AND_USER,
     userId,
     userId,
-    languageId,
+    languageId
   );
 
   return result;
 };
 
-
 const addNew = async function(wordObject: Word): Promise<QueryResult> {
-  const {
-    languageId,
-    word,
-  } = wordObject;
+  const { languageId, word } = wordObject;
 
   const existingWord = await getWordInLanguage(word, languageId);
   if (existingWord.rowCount > 0) {
@@ -132,36 +135,32 @@ const addNew = async function(wordObject: Word): Promise<QueryResult> {
          VALUES (%L, %L, (SELECT "name" FROM languages AS l WHERE l.id = %L)::regconfig)
       RETURNING *`;
 
-  const result = await dbQuery(
-    ADD_WORD,
-    languageId,
-    word,
-    languageId,
-  );
+  const result = await dbQuery(ADD_WORD, languageId, word, languageId);
 
   return result;
 };
 
-
 // Retrieves word status string for given user
-const getStatus = async function(wordId: number, userId: number): Promise<QueryResult> {
+const getStatus = async function(
+  wordId: number,
+  userId: number
+): Promise<QueryResult> {
   const USER_WORD_STATUS: string = `
     SELECT word_status FROM users_words 
      WHERE user_id = %s 
            AND
            word_id = %s`;
 
-  const result = await dbQuery(
-    USER_WORD_STATUS,
-    userId,
-    wordId,
-  );
+  const result = await dbQuery(USER_WORD_STATUS, userId, wordId);
 
   return result;
 };
 
-
-const addStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<QueryResult> {
+const addStatus = async function(
+  wordId: number,
+  userId: number,
+  wordStatus: string
+): Promise<QueryResult> {
   const existingStatus = await getStatus(wordId, userId);
 
   if (existingStatus.rowCount > 0) {
@@ -177,14 +176,17 @@ const addStatus = async function(wordId: number, userId: number, wordStatus: str
     ADD_USER_WORD_STATUS,
     userId,
     wordId,
-    wordStatus,
+    wordStatus
   );
 
   return result;
 };
 
-
-const updateStatus = async function(wordId: number, userId: number, wordStatus: string): Promise<QueryResult> {
+const updateStatus = async function(
+  wordId: number,
+  userId: number,
+  wordStatus: string
+): Promise<QueryResult> {
   const UPDATE_USER_WORD_STATUS: string = `
        UPDATE users_words 
           SET word_status = %L 
@@ -197,44 +199,37 @@ const updateStatus = async function(wordId: number, userId: number, wordStatus: 
     UPDATE_USER_WORD_STATUS,
     wordStatus,
     userId,
-    wordId,
+    wordId
   );
 
   return result;
 };
 
-
-const removeUserWord = async function(wordId: number, userId: number): Promise<QueryResult> {
+const removeUserWord = async function(
+  wordId: number,
+  userId: number
+): Promise<QueryResult> {
   const REMOVE_USER_WORD: string = `
     DELETE FROM users_words 
           WHERE user_id = %s 
             AND word_id = %s
     RETURNING *`;
 
-  const result = await dbQuery(
-    REMOVE_USER_WORD,
-    userId,
-    wordId,
-  );
+  const result = await dbQuery(REMOVE_USER_WORD, userId, wordId);
 
   return result;
 };
 
-
-const remove = async function(wordId: number): Promise <QueryResult> {
+const remove = async function(wordId: number): Promise<QueryResult> {
   const DELETE_WORD: string = `
        DELETE FROM words
         WHERE id = %s
     RETURNING *`;
 
-  const result = await dbQuery(
-    DELETE_WORD,
-    wordId,
-  );
+  const result = await dbQuery(DELETE_WORD, wordId);
 
   return result;
 };
-
 
 export default {
   getAll,

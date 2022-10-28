@@ -1,11 +1,14 @@
 /* eslint-disable max-len */
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import boom from '@hapi/boom';
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import users from '../services/users';
 
-
-export const extractToken = function(req: Request, res: Response, next: NextFunction) {
+export const extractToken = function (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const authorization = req.get('authorization');
 
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
@@ -15,15 +18,23 @@ export const extractToken = function(req: Request, res: Response, next: NextFunc
   next();
 };
 
-
-const isJWTPayload = function (value: JwtPayload | String): value is JwtPayload {
+const isJWTPayload = function (
+  value: JwtPayload | String
+): value is JwtPayload {
   return (value as JwtPayload).id !== undefined;
 };
 
-export const getUserFromToken = async function(_req: Request, res: Response, next: NextFunction) {
+export const getUserFromToken = async function (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (!res.locals.token) throw boom.unauthorized('token missing or invalid');
 
-  const decodedToken = jwt.verify(res.locals.token, process.env.SECRET as Secret);
+  const decodedToken = jwt.verify(
+    res.locals.token,
+    process.env.SECRET as Secret
+  );
 
   if (isJWTPayload(decodedToken)) {
     if (!decodedToken.id) throw boom.unauthorized('token invalid or missing');

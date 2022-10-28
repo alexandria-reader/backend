@@ -7,107 +7,58 @@ const api = supertest(app);
 
 const reset = fs.readFileSync('./src/model/reset.sql', 'utf-8');
 const seed = fs.readFileSync('./src/model/seed.sql', 'utf-8');
+let token = '';
 
-beforeAll(async () => {
-  await dbQuery(reset);
-  await dbQuery(seed);
-});
-
-xdescribe('Testing retrieving translations', () => {
+describe('Testing adding translations', () => {
   beforeAll(async () => {
-    await api.get('/api/translations');
+    await dbQuery(reset);
+    await dbQuery(seed);
+
+    const loginDetails = {
+      password: 'password',
+      email: 'eamon@example.com',
+    };
+    const response = await api.post('/api/login').send(loginDetails);
+    token = response.body.token;
   });
 
-  test('retrieve all translations', async () => {
-    await api
-      .get('/api/translations')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body.length).toEqual(24);
-      });
-  });
-
-  test('retrieve all translations for user', async () => {
-    await api
-      .get('/api/translations/user/1')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body[0].translation).toEqual('natürlich');
-      });
-  });
-
-  test('retrieve one translations by id', async () => {
-    await api
-      .get('/api/translations/2')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body.translation).toEqual('klar doch');
-      });
-  });
-
-  test('retrieve translations by word for user', async () => {
-    await api
-      .get('/api/translations/word/of%20course/user/1')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body[0].translation).toEqual('natürlich');
-      });
-  });
-
-  test('retrieve translation with specified id and target language', async () => {
-    await api
-      .get('/api/translations/word/all%20day%20long/target/fr')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((response) => {
-        expect(response.body[0].translation).toEqual('toute la journée');
-      });
-  });
-});
-
-xdescribe('Testing adding translations', () => {
   test('new translation is correctly added', async () => {
     await dbQuery('SELECT * FROM languages');
-    const ADD_WORD = 'INSERT INTO words (language_id, word, ts_config) VALUES(%L, %L, %L) RETURNING *';
+    const ADD_WORD =
+      'INSERT INTO words (language_id, word, ts_config) VALUES(%L, %L, %L) RETURNING *';
     const LAST_ADD_WORD = await dbQuery(ADD_WORD, 'en', 'hello', 'english');
     await dbQuery('SELECT * FROM words WHERE id=11');
     const LAST_ID = Number(LAST_ADD_WORD.rows[0].id);
     const newTranslation = {
       wordId: LAST_ID,
       translation: 'allo',
-      targetLang: 'fr',
+      targetLanguageId: 'fr',
     };
     await api
-      .post('/api/translations/user/1')
+      .post('/api/translations')
+      .set('Authorization', `Bearer ${token}`)
       .send(newTranslation)
       .expect(200)
       .expect('Content-Type', 'application/json; charset=utf-8');
   });
-});
 
-xdescribe('Testing deleting translations', () => {
-  test('translation with specified id is deleted', async () => {
-    await api
-      .delete('/api/translations/23')
-      .expect(200)
-      .expect('Content-Type', 'application/json; charset=utf-8');
-  });
-});
-
-xdescribe('Testing updating translations', () => {
   test('update translation with specified id', async () => {
     const updatedTranslation = {
-      translation: 'affamé',
+      translation: 'translation',
     };
     await api
-      .put('/api/translations/translation/14')
+      .put('/api/translations/23')
+      .set('Authorization', `Bearer ${token}`)
       .send(updatedTranslation)
       .expect(200)
       .expect('Content-Type', 'application/json; charset=utf-8');
+  });
+
+  test('translation with specified id is deleted', async () => {
+    await api
+      .delete('/api/translations/23')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
   });
 });
 

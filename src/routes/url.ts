@@ -3,8 +3,7 @@ import { ArticleData, extract } from 'article-parser';
 
 const router: express.Router = express.Router();
 
-
-router.post('/', async(req, res) => {
+router.post('/', async (req, res) => {
   const { url } = req.body;
   const timer = setTimeout(() => res.status(204).send(), 2000);
 

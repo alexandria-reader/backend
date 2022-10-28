@@ -5,17 +5,18 @@ import { Text } from '../types';
 
 const router: express.Router = express.Router();
 
-
-router.get('/language/:languageId/', async(req, res): Promise<void> => {
+router.get('/language/:languageId/', async (req, res): Promise<void> => {
   const { user } = res.locals;
   const { languageId } = req.params;
 
-  const allTexts: Array<Text> = await texts.getByUserAndLanguage(Number(user.id), languageId);
+  const allTexts: Array<Text> = await texts.getByUserAndLanguage(
+    Number(user.id),
+    languageId
+  );
   res.json(allTexts);
 });
 
-
-router.get('/:id', async(req, res): Promise<void> => {
+router.get('/:id', async (req, res): Promise<void> => {
   const { user } = res.locals;
   const { id } = req.params;
 
@@ -28,8 +29,7 @@ router.get('/:id', async(req, res): Promise<void> => {
   res.status(404).send();
 });
 
-
-router.get('/', async(_req, res): Promise<void> => {
+router.get('/', async (_req, res): Promise<void> => {
   const { user } = res.locals;
   const isAdmin = await users.isAdmin(Number(user.id));
 
@@ -41,8 +41,7 @@ router.get('/', async(_req, res): Promise<void> => {
   res.status(404).send();
 });
 
-
-router.post('/', async(req, res): Promise<void> => {
+router.post('/', async (req, res): Promise<void> => {
   const { user } = res.locals;
 
   if (user.verified === true) {
@@ -56,8 +55,7 @@ router.post('/', async(req, res): Promise<void> => {
   res.status(406).send();
 });
 
-
-router.put('/:id', async(req, res): Promise<void> => {
+router.put('/:id', async (req, res): Promise<void> => {
   const { user } = res.locals;
 
   const id: number = Number(req.params.id);
@@ -71,8 +69,7 @@ router.put('/:id', async(req, res): Promise<void> => {
   res.status(406).send();
 });
 
-
-router.delete('/:id', async(req, res): Promise<void> => {
+router.delete('/:id', async (req, res): Promise<void> => {
   const { user } = res.locals;
   const id: number = Number(req.params.id);
 
@@ -85,6 +82,5 @@ router.delete('/:id', async(req, res): Promise<void> => {
 
   res.status(406).send();
 });
-
 
 export default router;

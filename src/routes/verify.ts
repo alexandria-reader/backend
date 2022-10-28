@@ -7,18 +7,20 @@ import sendmail from '../utils/sendmail';
 
 const verifyRouter = express.Router();
 
-
 verifyRouter.get('/resend-email', getUserFromToken, async (_req, res) => {
   const { user } = res.locals;
-  const fullUser: User = await users.getById(user.id, false) as User;
+  const fullUser: User = (await users.getById(user.id, false)) as User;
 
   if (!user.verified) {
-    await sendmail.sendVerificationEmail(fullUser.verificationCode, user.email, user.username);
+    await sendmail.sendVerificationEmail(
+      fullUser.verificationCode,
+      user.email,
+      user.username
+    );
   }
 
   res.send('Sent email again.');
 });
-
 
 verifyRouter.get('/:code/:token', async (req, res) => {
   const { code, token } = req.params;
@@ -29,6 +31,5 @@ verifyRouter.get('/:code/:token', async (req, res) => {
 
   res.status(404).send();
 });
-
 
 export default verifyRouter;
