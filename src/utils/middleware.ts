@@ -35,9 +35,12 @@ export const getUserFromToken = async function(
     res.locals.token,
     process.env.SECRET as Secret
   );
-
+  console.log('process.env.SECRET');
+  console.log(process.env.SECRET);
+  console.log(process.env);
+  console.log('isJWTPayload(decodedToken)');
+  console.log(isJWTPayload(decodedToken));
   if (isJWTPayload(decodedToken)) {
-    console.log('isJWTPayload(decodedToken)');
     if (!decodedToken.id) throw boom.unauthorized('token invalid or missing');
 
     const userById = await users.getById(decodedToken.id);
