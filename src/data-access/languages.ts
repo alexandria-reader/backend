@@ -2,7 +2,7 @@
 import { QueryResult } from 'pg';
 import dbQuery from '../model/db-query';
 
-const getAll = async function(): Promise<QueryResult> {
+const getAll = async function (): Promise<QueryResult> {
   const ALL_LANGUAGES: string = `
     SELECT * FROM languages`;
 
@@ -11,7 +11,7 @@ const getAll = async function(): Promise<QueryResult> {
   return result;
 };
 
-const getById = async function(languageId: string): Promise<QueryResult> {
+const getById = async function (languageId: string): Promise<QueryResult> {
   const LANGUAGE_BY_ID: string = `
     SELECT * FROM languages WHERE id = %L`;
 

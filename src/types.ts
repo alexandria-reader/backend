@@ -19,7 +19,7 @@ export type LanguageDB = {
   is_right_to_left: boolean;
 };
 
-export const convertLanguageTypes = function(dbItem: LanguageDB): Language {
+export const convertLanguageTypes = function (dbItem: LanguageDB): Language {
   return {
     id: dbItem.id,
     name: dbItem.name,
@@ -55,7 +55,7 @@ export type SanitizedUser = Omit<User, 'passwordHash' | 'verificationCode'>;
 
 export type LoggedInUser = SanitizedUser & { token: string };
 
-export const convertUserTypes = function(dbItem: UserDB): User {
+export const convertUserTypes = function (dbItem: UserDB): User {
   return {
     id: dbItem.id,
     username: dbItem.username,
@@ -94,7 +94,7 @@ export type TextDB = {
   is_public: boolean;
 };
 
-export const convertTextTypes = function(dbItem: TextDB): Text {
+export const convertTextTypes = function (dbItem: TextDB): Text {
   return {
     id: dbItem.id,
     userId: dbItem.user_id,
@@ -121,7 +121,7 @@ export type WordDB = {
   word: string;
 };
 
-export const convertWordTypes = function(dbItem: WordDB): Word {
+export const convertWordTypes = function (dbItem: WordDB): Word {
   return {
     id: dbItem.id,
     languageId: dbItem.language_id,
@@ -145,7 +145,7 @@ export type WebdictionaryDB = {
   url: string;
 };
 
-export const convertWebdictionaryTypes = function(
+export const convertWebdictionaryTypes = function (
   dbItem: WebdictionaryDB
 ): Webdictionary {
   return {
@@ -171,7 +171,7 @@ export type TranslationDB = {
   target_language_id: string;
 };
 
-export const convertTranslationTypes = function(
+export const convertTranslationTypes = function (
   dbItem: TranslationDB
 ): Translation {
   return {

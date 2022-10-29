@@ -26,7 +26,6 @@
   "lint-staged": {
     "src/**/*.{js,ts}": [
       "prettier --write --ignore-unknown",
-      "eslint --fix src/",
       "git add"
     ]
   },
