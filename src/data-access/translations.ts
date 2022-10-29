@@ -1,12 +1,12 @@
 import dbQuery from '../model/db-query';
 
-const getAll = async function() {
+const getAll = async function () {
   const FIND_TRANSLATIONS = 'SELECT * FROM translations';
   const results = await dbQuery(FIND_TRANSLATIONS);
   return results;
 };
 
-const add = async function(
+const add = async function (
   wordId: number,
   translation: string,
   targetLang: string
@@ -22,14 +22,14 @@ const add = async function(
   return results;
 };
 
-const update = async function(translationId: number, translation: string) {
+const update = async function (translationId: number, translation: string) {
   const UPDATE_TRANSLATION =
     'UPDATE translations SET translation = %L WHERE id = %L RETURNING translations.*';
   const result = await dbQuery(UPDATE_TRANSLATION, translation, translationId);
   return result;
 };
 
-const getUserTranslationContext = async function(
+const getUserTranslationContext = async function (
   userId: number,
   translationId: number
 ) {
@@ -39,14 +39,14 @@ const getUserTranslationContext = async function(
   return result;
 };
 
-const remove = async function(translationId: number) {
+const remove = async function (translationId: number) {
   const REMOVE_USERS_TRANSLATIONS =
     'DELETE FROM users_translations WHERE translation_id = %L RETURNING *';
   const result = await dbQuery(REMOVE_USERS_TRANSLATIONS, translationId);
   return result;
 };
 
-const addToUsersTranslations = async function(
+const addToUsersTranslations = async function (
   userId: number,
   translationId: number,
   context: string | undefined

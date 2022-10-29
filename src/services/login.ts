@@ -5,12 +5,12 @@ import userData from '../data-access/users';
 import { convertUserTypes, LoggedInUser, User, UserDB } from '../types';
 import users from './users';
 
-const verifyLoginDetails = async function(
+const verifyLoginDetails = async function (
   email: string,
   password: string
 ): Promise<UserDB> {
   const result = await userData.getByEmail(email);
-
+  // console.log(result);
   const user: UserDB | null = result.rowCount > 0 ? result.rows[0] : null;
 
   const passwordsMatch: boolean = user
@@ -24,16 +24,14 @@ const verifyLoginDetails = async function(
   return user;
 };
 
-const login = async function(
+const login = async function (
   email: string,
   password: string
 ): Promise<LoggedInUser> {
   const verifiedUser: User = convertUserTypes(
     await verifyLoginDetails(email, password)
   );
-
   const sanitizedUser = users.sanitizeUser(verifiedUser);
-
   const userForToken = {
     email: verifiedUser.email,
     id: verifiedUser.id,
