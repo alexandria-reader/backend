@@ -3,7 +3,7 @@ on: push
 
 jobs:
   # Label of the container job
-  pg-test-job:
+  ci test run:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
