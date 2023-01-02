@@ -6,11 +6,13 @@ Alexandria is accessible [here](https://tryalexandria.com/).
 
 # Running Alexandria locally for development
 
-First clone both this repo and the [frontend](https://github.com/alexandria-reader/frontend).
-Run `npm install` to install the dependencies, then add a .`env` file to the root directory with the values from `src/model/.env.sample`.
-Then run `npm run start-docker-postgres`, and add the seed data from `src/model/seed.sql`. Finally, run `npm run dev`.
-
-Now that the backend is started, follow the getting started instructions in the frontend `README.md`.
+1. Follow the instructions here [https://docs.docker.com/get-docker/] to install Docker Desktop
+2. Clone this repo and the [frontend](https://github.com/alexandria-reader/frontend)
+3. Run `npm install` to install the dependencies
+4. Add a .`env` file to the root directory with the values from `src/model/.env.sample`
+5. Run `npm run start-docker-postgres`
+6. Run `npm run dev`
+7. Follow the getting started instructions in the frontend `README.md`
 
 # Testing
 
