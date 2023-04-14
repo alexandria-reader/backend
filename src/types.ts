@@ -233,3 +233,12 @@ export type UserWord = {
   status: string;
   translations: Array<UserTranslation>;
 };
+
+export type TextPagination = {
+  currentPage: number;
+  nextPage: number;
+  prevPage: number;
+  data: Text[];
+  totalPages: number;
+  totalTexts: number;
+};
