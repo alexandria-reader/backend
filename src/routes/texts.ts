@@ -1,19 +1,19 @@
 import express from 'express';
 import texts from '../services/texts';
 import users from '../services/users';
-import { Text } from '../types';
+import { TextPagination, Text } from '../types';
 
 const router: express.Router = express.Router();
 
-router.get('/language/:languageId/', async (req, res): Promise<void> => {
+router.get('/language/:languageId/:page/', async (req, res): Promise<void> => {
   const { user } = res.locals;
-  const { languageId } = req.params;
-
-  const allTexts: Array<Text> = await texts.getByUserAndLanguage(
+  const { languageId, page } = req.params;
+  const textPagination: TextPagination = await texts.getByUserAndLanguage(
     Number(user.id),
-    languageId
+    languageId,
+    page
   );
-  res.json(allTexts);
+  res.json(textPagination);
 });
 
 router.get('/:id', async (req, res): Promise<void> => {

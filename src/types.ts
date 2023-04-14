@@ -20,12 +20,19 @@ export type LanguageDB = {
 };
 
 export const convertLanguageTypes = function (dbItem: LanguageDB): Language {
+  const {
+    id,
+    name,
+    flag,
+    each_char_is_word: eachCharIsWord,
+    is_right_to_left: isRightToLeft,
+  } = dbItem;
   return {
-    id: dbItem.id,
-    name: dbItem.name,
-    flag: dbItem.flag,
-    eachCharIsWord: dbItem.each_char_is_word,
-    isRightToLeft: dbItem.is_right_to_left,
+    id,
+    name,
+    flag,
+    eachCharIsWord,
+    isRightToLeft,
   };
 };
 
@@ -56,15 +63,25 @@ export type SanitizedUser = Omit<User, 'passwordHash' | 'verificationCode'>;
 export type LoggedInUser = SanitizedUser & { token: string };
 
 export const convertUserTypes = function (dbItem: UserDB): User {
+  const {
+    id,
+    username,
+    password_hash: passwordHash,
+    email,
+    known_language_id: knownLanguageId,
+    learn_language_id: learnLanguageId,
+    verified,
+    verification_code: verificationCode,
+  } = dbItem;
   return {
-    id: dbItem.id,
-    username: dbItem.username,
-    passwordHash: dbItem.password_hash,
-    email: dbItem.email,
-    knownLanguageId: dbItem.known_language_id,
-    learnLanguageId: dbItem.learn_language_id,
-    verified: dbItem.verified,
-    verificationCode: dbItem.verification_code,
+    id,
+    username,
+    passwordHash,
+    email,
+    knownLanguageId,
+    learnLanguageId,
+    verified,
+    verificationCode,
   };
 };
 
@@ -95,17 +112,29 @@ export type TextDB = {
 };
 
 export const convertTextTypes = function (dbItem: TextDB): Text {
+  const {
+    id,
+    user_id: userId,
+    language_id: languageId,
+    title,
+    author,
+    body,
+    source_url: sourceURL,
+    source_type: sourceType,
+    upload_time: uploadTime,
+    is_public: isPublic,
+  } = dbItem;
   return {
-    id: dbItem.id,
-    userId: dbItem.user_id,
-    languageId: dbItem.language_id,
-    title: dbItem.title,
-    author: dbItem.author,
-    body: dbItem.body,
-    sourceURL: dbItem.source_url,
-    sourceType: dbItem.source_type,
-    uploadTime: new Date(dbItem.upload_time),
-    isPublic: dbItem.is_public,
+    id,
+    userId,
+    languageId,
+    title,
+    author,
+    body,
+    sourceURL,
+    sourceType,
+    uploadTime: new Date(uploadTime),
+    isPublic,
   };
 };
 
@@ -122,10 +151,11 @@ export type WordDB = {
 };
 
 export const convertWordTypes = function (dbItem: WordDB): Word {
+  const { id, language_id: languageId, word } = dbItem;
   return {
-    id: dbItem.id,
-    languageId: dbItem.language_id,
-    word: dbItem.word,
+    id,
+    languageId,
+    word,
   };
 };
 
@@ -148,12 +178,19 @@ export type WebdictionaryDB = {
 export const convertWebdictionaryTypes = function (
   dbItem: WebdictionaryDB
 ): Webdictionary {
+  const {
+    id,
+    source_language_id: sourceLanguageId,
+    target_language_id: targetLanguageId,
+    name,
+    url,
+  } = dbItem;
   return {
-    id: dbItem.id,
-    sourceLanguageId: dbItem.source_language_id,
-    targetLanguageId: dbItem.target_language_id,
-    name: dbItem.name,
-    url: dbItem.url,
+    id,
+    sourceLanguageId,
+    targetLanguageId,
+    name,
+    url,
   };
 };
 
@@ -174,11 +211,17 @@ export type TranslationDB = {
 export const convertTranslationTypes = function (
   dbItem: TranslationDB
 ): Translation {
+  const {
+    id,
+    word_id: wordId,
+    translation,
+    target_language_id: targetLanguageId,
+  } = dbItem;
   return {
-    id: dbItem.id,
-    wordId: dbItem.word_id,
-    translation: dbItem.translation,
-    targetLanguageId: dbItem.target_language_id,
+    id,
+    wordId,
+    translation,
+    targetLanguageId,
   };
 };
 
@@ -189,4 +232,13 @@ export type UserWord = {
   word: string;
   status: string;
   translations: Array<UserTranslation>;
+};
+
+export type TextPagination = {
+  currentPage: number;
+  nextPage: number;
+  prevPage: number;
+  data: Text[];
+  totalPages: number;
+  totalTexts: number;
 };
